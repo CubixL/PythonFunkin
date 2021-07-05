@@ -1,7 +1,7 @@
 import os
 
 
-if os.name == 'posix' or True:
+if os.name == 'posix':
     from .rect import Rect
     from .constants import *
     from .gameapp_pythonista import GameApp, GameText, GameFont, GameImage
