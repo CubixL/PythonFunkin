@@ -9,16 +9,6 @@
 from gameapp import *
 import os, sys, random, time, math, getopt
 
-class MillisecondTimer():
-    def __init__(self, parent):
-        self.currentTime = 0
-        self.parent = parent
-        self.font = GameFont('fonts\\vcr.ttf', 12, False)
-        self.MillisecondTimerText = GameText(self.font)
-    def update(self):
-        self.currentTime += self.parent.clock.get_time()
-    def render(self):
-        self.MillisecondTimerText.renderText(f"Game time: {str(self.currentTime)}", (0, 0))
 
 class PlayerArrow():
     def __init__(self, type):
@@ -27,7 +17,7 @@ class PlayerArrow():
         self.key = None
         self.altkey = None
         self.scale = 2
-        self.img_default = GameImage(f"images\\GUI_Arrow{type}Default.png")
+        self.img_default = GameImage(f"images/GUI_Arrow{type}Default.png")
         self.img_default.position.y = 10 * self.scale
         self.img_default.scale2x() 
         self.img_pressed = GameImage(f"images\\GUI_Arrow{type}Pressed.png")
@@ -112,14 +102,14 @@ class PythonFunkin(GameApp):
 
         # font & text
         self.GUIFont = GameFont('fonts\\vcr.ttf', 12, False)
-        self.testtext = GameText(self.GUIFont, "test")
-        self.MilliTimer = MillisecondTimer(self)
+        self.MSText = GameText(self.GUIFont)
+
 
 
     def on_loop(self):
         for target in self.TargetList:
             target.move()
-        self.MilliTimer.update()
+        
 
     def on_render(self):                    # Layering order:
         self.Background.render()            # 1. Background
@@ -130,7 +120,8 @@ class PythonFunkin(GameApp):
         for target in self.TargetList:      # 3. Target arrows
             target.render()
         
-        self.MilliTimer.render()            # 4. GUI
+        self.MSText.renderText(self.milliseconds_since_start)
+
     
     def on_event(self, eventId):
         pass

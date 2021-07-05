@@ -1,7 +1,15 @@
-import pygame
-from pygame import Rect
-from pygame.locals import *
+import os
+from rect import Rect
+from constants import *
+from pygamew import pygame
 
+if os.name == 'nt':
+    from scenew import run, Scene, SpriteNode
+else:
+    from scene import *
+
+allImages = []
+renderImages = []
 
 class GameImage():
     def __init__(self, fileName = None, position = (0,0)):
@@ -12,7 +20,9 @@ class GameImage():
 
     def load(self):
         if self.fileName and not self.image:
-            self.image = pygame.image.load(self.fileName).convert()
+            self.image = SpriteNode(self.fileName, (self.position.x, self.position.y))
+            allImages.append(self)
+            
 
     def render(self, position = None):
         # self.load()
@@ -21,7 +31,9 @@ class GameImage():
             self.position.x = position[0]
             self.position.y = position[1]
 
-        pygame.display.get_surface().blit(self.image, self.position)
+
+        renderImages.append(self)
+        # pygame.display.get_surface().blit(self.image, self.position)
 
     def scale2x(self):
         self.image = pygame.transform.scale2x(self.image)
@@ -64,7 +76,20 @@ class GameText(GameImage):
             self.image = self.font.font.render(self.text, True, self.color)
             pygame.display.get_surface().blit(self.image, self.position)
 
-class GameApp:
+class MyScene(Scene):
+    def update(self):
+        for image in renderImages:
+            image.image.remove_from_parent()
+
+        renderImages.clear()
+        self.gameapp.on_render()
+        for image in renderImages:
+            self.add_child(image.image)
+
+        self.gameapp.on_loop()
+
+
+class GameApp():
     def __init__(self, width=640, height=480):
         self.isRunning = True
         self.surface = None
@@ -74,9 +99,10 @@ class GameApp:
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self.clock = None
         self.milliseconds_since_start = 0
-        pygame.init()
+
+
+        # pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode((self.width, self.height))
         if self.isFullScreen == True:
@@ -106,32 +132,40 @@ class GameApp:
         return self.curUserEventId
     
     def start(self):
-
         self.on_start()
 
-        while( self.isRunning ):
-            self.keysPressed = pygame.key.get_pressed()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.isRunning = False
+        s = MyScene()
+        s.gameapp = self
+        run(s)
 
-                self.on_event(event.type)
 
-                if event.type == KEYDOWN:
-                    self.on_key(True, event.key, event.mod)
-                if event.type == KEYUP:
-                    self.on_key(False, event.key, event.mod)
+        # while( self.isRunning ):
+        #     print('loop')
+        #     self.keysPressed = pygame.key.get_pressed()
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             self.isRunning = False
+
+        #         self.on_event(event.type)
+
+        #         if event.type == KEYDOWN:
+        #             self.on_key(True, event.key, event.mod)
+        #         if event.type == KEYUP:
+        #             self.on_key(False, event.key, event.mod)
                 
 
 
-            self.on_loop()
-            self.on_render()
+        #     self.on_loop()
+        #     self.on_render()
 
-            pygame.display.update()
-            self.milliseconds_since_start += self.clock.get_time()
-            self.clock.tick(self.fps)
+        #     pygame.display.update()
+        #     self.milliseconds_since_start += self.clock.get_time()
+        #     self.clock.tick(self.fps)
  
 
 if __name__ == "__main__" :
+    print('start')
+    app = GameApp()
     
+   # app.image.render()
     GameApp().start()
