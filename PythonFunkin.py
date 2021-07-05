@@ -9,17 +9,6 @@
 from gameapp import *
 import os, sys, random, time, math, getopt
 
-class MillisecondTimer():
-    def __init__(self, parent):
-        self.currentTime = 0
-        self.parent = parent
-        self.font = GameFont('fonts\\vcr.ttf', 12, False)
-        self.MillisecondTimerText = GameText(self.font)
-    def update(self):
-        self.currentTime += self.parent.clock.get_time()
-    def render(self):
-        self.MillisecondTimerText.renderText(str(self.currentTime), (0, 0))
-
 class PlayerArrow():
     def __init__(self, type):
         self.type = type
@@ -107,14 +96,14 @@ class PythonFunkin(GameApp):
 
         # font & text
         self.GUIFont = GameFont('fonts\\vcr.ttf', 12, False)
-        self.testtext = GameText(self.GUIFont, "test")
-        self.MilliTimer = MillisecondTimer(self)
+        self.MSText = GameText(self.GUIFont)
+
 
 
     def on_loop(self):
         for target in self.TargetList:
             target.move()
-        self.MilliTimer.update()
+        
 
     def on_render(self):
         self.Background.render()
@@ -125,9 +114,8 @@ class PythonFunkin(GameApp):
         for target in self.TargetList:
             target.render()
         
-        self.MilliTimer.render()
+        self.MSText.renderText(self.milliseconds_since_start)
 
-        # self.testtext.renderText('coco', (100,100))
     
     def on_event(self, eventId):
         pass
