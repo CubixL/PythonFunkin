@@ -18,13 +18,14 @@ class MillisecondTimer():
     def update(self):
         self.currentTime += self.parent.clock.get_time()
     def render(self):
-        self.MillisecondTimerText.renderText(str(self.currentTime), (0, 0))
+        self.MillisecondTimerText.renderText(f"Game time: {str(self.currentTime)}", (0, 0))
 
 class PlayerArrow():
     def __init__(self, type):
         self.type = type
         self.isPressed = False
         self.key = None
+        self.altkey = None
         self.scale = 2
         self.img_default = GameImage(f"images\\GUI_Arrow{type}Default.png")
         self.img_default.position.y = 10 * self.scale
@@ -36,19 +37,23 @@ class PlayerArrow():
         if self.type == "Left":
             self.img_default.position.x = 80 * self.scale
             self.img_pressed.position.x = 80 * self.scale
-            self.key = K_a
+            self.key = K_LEFT
+            self.altkey = K_a
         if self.type == "Down":
             self.img_default.position.x = 101 * self.scale
             self.img_pressed.position.x = 101 * self.scale
-            self.key = K_s
+            self.key = K_DOWN
+            self.altkey = K_s
         if self.type == "Up":
             self.img_default.position.x = 123 * self.scale
             self.img_pressed.position.x = 123 * self.scale
-            self.key = K_w
+            self.key = K_UP
+            self.altkey = K_w
         if self.type == "Right":
             self.img_default.position.x = 144 * self.scale
             self.img_pressed.position.x = 144 * self.scale
-            self.key = K_d
+            self.key = K_RIGHT
+            self.altkey = K_d
     
     def render(self):
         if self.isPressed == False:
@@ -57,13 +62,13 @@ class PlayerArrow():
             self.img_pressed.render() 
 
     def on_key(self, isDown, key):
-        if isDown == True and key == self.key:
+        if isDown == True and key == self.key or isDown == True and key == self.altkey:
             self.isPressed = True
-        elif isDown == False and key == self.key:
+        elif isDown == False and key == self.key or isDown == False and key == self.altkey:
             self.isPressed = False
 
 class TargetArrow():
-    def __init__(self, type):
+    def __init__(self, type,):
         self.type = type
         self.scale = 2
         self.img = GameImage(f"images\\GUI_Arrow{type}Target.png") 
@@ -87,10 +92,12 @@ class TargetArrow():
 
 
     def render(self):
+    # if self.parent.MilliTimer.currentTime >= self.milli:
         self.img.render()
     
 class PythonFunkin(GameApp):
     def __init__(self):
+        # misc
         super().__init__(480,240)
         self.fps = 66.666
 
@@ -102,8 +109,6 @@ class PythonFunkin(GameApp):
         self.PlayerArrowU = PlayerArrow(type = "Up")
         self.PlayerArrowR = PlayerArrow(type = "Right")
         self.TargetList = []
-        self.TargetList.append(TargetArrow(type = "Left"))
-        self.TargetList.append(TargetArrow(type = "Right"))
 
         # font & text
         self.GUIFont = GameFont('fonts\\vcr.ttf', 12, False)
@@ -116,18 +121,16 @@ class PythonFunkin(GameApp):
             target.move()
         self.MilliTimer.update()
 
-    def on_render(self):
-        self.Background.render()
-        self.PlayerArrowL.render()
+    def on_render(self):                    # Layering order:
+        self.Background.render()            # 1. Background
+        self.PlayerArrowL.render()          # 2. Player arrows
         self.PlayerArrowD.render()
         self.PlayerArrowU.render()
         self.PlayerArrowR.render()
-        for target in self.TargetList:
+        for target in self.TargetList:      # 3. Target arrows
             target.render()
         
-        self.MilliTimer.render()
-
-        # self.testtext.renderText('coco', (100,100))
+        self.MilliTimer.render()            # 4. GUI
     
     def on_event(self, eventId):
         pass
@@ -139,9 +142,13 @@ class PythonFunkin(GameApp):
         self.PlayerArrowD.on_key(isDown, key)
         self.PlayerArrowU.on_key(isDown, key)
         self.PlayerArrowR.on_key(isDown, key)
-
-
-        if isDown and key == K_t:
+        if isDown == True and key == K_j:
+            self.TargetList.append(TargetArrow(type = "Left"))
+        if isDown == True and key == K_k:
+            self.TargetList.append(TargetArrow(type = "Down"))
+        if isDown == True and key == K_i:
+            self.TargetList.append(TargetArrow(type = "Up"))
+        if isDown == True and key == K_l:
             self.TargetList.append(TargetArrow(type = "Right"))
 
 if __name__ == "__main__":
