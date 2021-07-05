@@ -1,6 +1,7 @@
 from rect import Rect
 from constants import *
 from pygamew import pygame
+from scenew import run, Scene
 
 class GameImage():
     def __init__(self, fileName = None, position = (0,0)):
@@ -63,7 +64,11 @@ class GameText(GameImage):
             self.image = self.font.font.render(self.text, True, self.color)
             pygame.display.get_surface().blit(self.image, self.position)
 
-class GameApp:
+class MyScene(Scene):
+    def draw(self):
+        pass
+
+class GameApp():
     def __init__(self, width=640, height=480):
         self.isRunning = True
         self.surface = None
@@ -104,8 +109,8 @@ class GameApp:
         return self.curUserEventId
     
     def start(self):
-
         self.on_start()
+        run(MyScene())
 
         while( self.isRunning ):
             print('loop')
