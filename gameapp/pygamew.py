@@ -1,6 +1,5 @@
 import typing
 
-from pygame.transform import scale2x
 
 class PGSurface():
     def __init__(self):
