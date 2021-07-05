@@ -28,15 +28,20 @@ class GameImage():
         
 
 class GameFont():
-    def __init__(self, name, size):
+    def __init__(self, name, size, isSys = True):
         self.name = name
         self.size = size
         self.font = None
+        self.isSys = isSys
         self.load()
 
     def load(self):
         if not self.font:
-            self.font = pygame.font.SysFont(self.name, self.size)
+            if self.isSys:
+                self.font = pygame.font.SysFont(self.name, self.size)
+            else:
+                self.font = pygame.font.Font(self.name, self.size)
+
 
 class GameText(GameImage):
     def __init__(self, font, text = '', position = (0,0), col:pygame.Color = pygame.Color(0,0,0,0)):
