@@ -37,6 +37,11 @@ class Rect():
         self.y = self.top
         self.right = self.x + self.width
         self.bottom = self.y + self.height
+        
+    def move_ip(self, x=0, y=0):
+        self.x += x
+        self.y += y
+        
    
 
 if __name__ == '__main__':
