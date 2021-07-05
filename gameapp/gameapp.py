@@ -44,14 +44,14 @@ class GameFont():
 
 
 class GameText(GameImage):
-    def __init__(self, font, text = '', position = (0,0), col:pygame.Color = pygame.Color(0,0,0,0)):
+    def __init__(self, font, text = '', position = (0,0), RGB = (0,0,0)):
         super().__init__(fileName=None, position=position)
         self.font = font
         self.text = text
-        self.color = col
+        self.color = pygame.Color(RGB[0],RGB[1],RGB[2])
 
     def renderText(self, text, position = None):
-        self.text = text
+        self.text = str(text)
         self.render(position)
 
     def render(self, position = None):
@@ -75,6 +75,7 @@ class GameApp:
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self.clock = None
+        self.milliseconds_since_start = 0
         pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode((self.width, self.height))
@@ -127,6 +128,7 @@ class GameApp:
             self.on_render()
 
             pygame.display.update()
+            self.milliseconds_since_start += self.clock.get_time()
             self.clock.tick(self.fps)
  
 
