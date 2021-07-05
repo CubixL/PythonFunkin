@@ -1,6 +1,6 @@
-from .rect import Rect
-from .constants import *
-from .pygamew import pygame
+from rect import Rect
+from constants import *
+from pygamew import pygame
 
 class GameImage():
     def __init__(self, fileName = None, position = (0,0)):
@@ -108,6 +108,7 @@ class GameApp:
         self.on_start()
 
         while( self.isRunning ):
+            print('loop')
             self.keysPressed = pygame.key.get_pressed()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -131,5 +132,6 @@ class GameApp:
  
 
 if __name__ == "__main__" :
+    print('start')
     
     GameApp().start()
