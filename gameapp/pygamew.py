@@ -9,7 +9,8 @@ class PGSurface():
         return PGSurface()
 
     def blit(self, image, position):
-        pass
+    	print('blitting')
+        
     
 
 
