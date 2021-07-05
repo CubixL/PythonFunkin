@@ -1,5 +1,5 @@
 import pygame
-from pygame import Rect, transform
+from pygame import Rect
 from pygame.locals import *
 
 
@@ -24,7 +24,7 @@ class GameImage():
         pygame.display.get_surface().blit(self.image, self.position)
 
     def scale2x(self):
-        self.image = transform.scale2x(self.image)
+        self.image = pygame.transform.scale2x(self.image)
         
 
 class GameFont():

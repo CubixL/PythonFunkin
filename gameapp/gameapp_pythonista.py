@@ -1,7 +1,6 @@
 from .rect import Rect
 from .constants import *
-import pygamew as pygame
-import pygametransformw as transform
+from .pygamew import pygame
 
 class GameImage():
     def __init__(self, fileName = None, position = (0,0)):
@@ -24,7 +23,7 @@ class GameImage():
         pygame.display.get_surface().blit(self.image, self.position)
 
     def scale2x(self):
-        self.image = transform.scale2x(self.image)
+        self.image = pygame.transform.scale2x(self.image)
         
 
 class GameFont():
@@ -74,7 +73,6 @@ class GameApp:
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self.clock = None
         self.milliseconds_since_start = 0
         pygame.init()
         self.clock = pygame.time.Clock()
