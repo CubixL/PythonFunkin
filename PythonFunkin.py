@@ -15,7 +15,7 @@ class PlayerArrow():
         self.isPressed = False
         self.key = None
         self.scale = 2
-        self.img_default = GameImage(f"images\\GUI_Arrow{type}Default.png")
+        self.img_default = GameImage(f"images/GUI_Arrow{type}Default.png")
         self.img_default.position.y = 10 * self.scale
         self.img_default.scale2x() 
         self.img_pressed = GameImage(f"images\\GUI_Arrow{type}Pressed.png")
