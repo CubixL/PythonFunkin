@@ -100,7 +100,6 @@ class GameApp():
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self.milliseconds_since_start = 0
-        self.image = GameImage('spc:PlayerShip1Orange', (100,100))
 
 
         # pygame.init()
@@ -117,7 +116,6 @@ class GameApp():
     def on_loop(self):
         pass
     def on_render(self):
-        self.image.render()
         pass
     def on_event(self, eventId):
         pass
