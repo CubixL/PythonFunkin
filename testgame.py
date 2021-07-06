@@ -3,7 +3,7 @@ from gameapp import *
 
 class MyRedCar(GameImage):
     def __init__(self):
-        super().__init__("gameapp\\images\\redcar.png", (200, 300))
+        super().__init__("images/testBG.gif")
         self.bRightSide = True
         self.t = Rect(0,0,0,0)
 
@@ -29,13 +29,16 @@ class TestGame(GameApp):
         self.redcar = MyRedCar()
         self.fps = 50
         self.bluecar = GameImage('gameapp\\images\\bluecar.png', (10,500))
-        self.bluecar.scale2x()
+       # self.bluecar.scale2x()
         # self.redcar = 
-        self.fontVerdana = GameFont('Verdana',50)
+        self.fontVerdana = GameFont()
         self.myText = GameText(self.fontVerdana, 'mart is great', (125, 300), (255, 255, 125))
+        self.myText2 = GameText(self.fontVerdana, 'test')
 
 
     def on_loop(self):
+        pass
+        #self.bluecar.position.x = 200
         self.bluecar.position.move_ip(0, -5)
         if self.bluecar.position.y < 5:
             self.bluecar.position.y  = 500
@@ -43,26 +46,29 @@ class TestGame(GameApp):
         self.redcar.move()
 
     def on_render(self):
-        self.surface.fill((100 ,100,255))
+       # self.surface.fill((100 ,100,255))
         self.bluecar.render()
-        self.myText.position.x = 10
-        self.myText.position.y = 10
+        self.redcar.render()
+        self.myText.position.x = 100
+        self.myText.position.y = 50
         self.myText.text = str(self.milliseconds_since_start)
         self.myText.render()
-        self.redcar.render()
+        self.myText2.renderText(self.scene.size)
+
 
 
     def on_event(self, eventId):
         pass
 
     def on_key(self, isDown, key, mod):
-        if isDown == True and key == K_q:
+        if isDown == True and key == K_LEFT:
             self.isRunning = False
 
-        if isDown == True and key == K_t:
+        if isDown == True and key == K_RIGHT:
 
             self.redcar.toggle()
 
 
 if __name__ == "__main__" :
-    TestGame().start()
+    app = TestGame()
+    app.start()

@@ -6,7 +6,7 @@ class PGSurface():
         pass
 
     def convert(self):
-        return PGSurface()
+        return self
 
     def blit(self, image, position):
     	print('blitting')
