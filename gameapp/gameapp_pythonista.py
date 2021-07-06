@@ -38,11 +38,12 @@ class GameImage():
             self.position.x = position[0]
             self.position.y = position[1]
 
-        self.image.position = (self.position.x, screen_size[1] - self.position.y  - self.image.size[1])
+        self.image.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
         renderImages.append(self)
        
 
     def scale2x(self):
+        self.image.scale = 2.0
         pass
         #self.image = pygame.transform.scale2x(self.image)
         
@@ -90,7 +91,10 @@ class GameText():
         
         
 class MyScene(Scene):
+    def setup(self):
+        self.isShift = False
     def update(self):
+        self.gameapp.milliseconds_since_start += 16.66666666666666666666
         screen_size = self.size
         for image in renderImages:
             image.image.remove_from_parent()
@@ -102,7 +106,45 @@ class MyScene(Scene):
 
         self.gameapp.on_loop()
 
+    def process_touch(self, touch, isDown):
+        
+        x = touch.location[0]
+        y = touch.location[1]
+        
+        if y < 200 and x < 350:
+            self.isShift = isDown
+            
+        print(f'touch  {touch.location} {isDown} {self.isShift}')
 
+        if self.isShift:            
+            if x < 350 and y > 200 and y < 568:
+                self.gameapp.on_key(isDown, K_j, None)
+            if x > 674 and y > 200 and y < 568:
+                self.gameapp.on_key(isDown, K_l, None)
+            if y < 200 and x > 350 and x < 674:
+                self.gameapp.on_key(isDown, K_k, None)
+            if y > 568 and x > 350 and x < 674:
+                self.gameapp.on_key(isDown, K_i, None)
+        else:
+            if x < 350 and y > 200 and y < 568:
+                self.gameapp.on_key(isDown, K_LEFT, None)
+            if x > 674 and y > 200 and y < 568:
+                self.gameapp.on_key(isDown, K_RIGHT, None)
+            if y < 200 and x > 350 and x < 674:
+                self.gameapp.on_key(isDown, K_DOWN, None)
+            if y > 568 and x > 350 and x < 674:
+                self.gameapp.on_key(isDown, K_UP, None)
+
+        
+    def touch_began(self, touch):
+        self.process_touch(touch, True)
+            
+            
+            
+    def touch_ended(self, touch):
+        self.process_touch(touch, False)
+            
+        
 class GameApp():
     def __init__(self, width=640, height=480):
         gblgameapp = self
@@ -115,7 +157,7 @@ class GameApp():
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self.milliseconds_since_start = 0
+        self.milliseconds_since_start = 0.0
         self.scene = MyScene()
         self.scene.gameapp = self
 

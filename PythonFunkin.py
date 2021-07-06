@@ -92,7 +92,7 @@ class PythonFunkin(GameApp):
         self.fps = 66.666
 
         # assets
-        self.Background = GameImage("images\\BGE_Week6BackgroundScaled.png", (0, 0))
+        self.Background = GameImage("images/testBG.gif", (0, 0))
         self.Background.scale2x()
         self.PlayerArrowL = PlayerArrow(type = "Left")
         self.PlayerArrowD = PlayerArrow(type = "Down")

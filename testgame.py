@@ -3,7 +3,7 @@ from gameapp import *
 
 class MyRedCar(GameImage):
     def __init__(self):
-        super().__init__("gameapp\\images\\redcar.png", (0, 0))
+        super().__init__("images/testBG.gif")
         self.bRightSide = True
         self.t = Rect(0,0,0,0)
 
@@ -61,10 +61,10 @@ class TestGame(GameApp):
         pass
 
     def on_key(self, isDown, key, mod):
-        if isDown == True and key == K_q:
+        if isDown == True and key == K_LEFT:
             self.isRunning = False
 
-        if isDown == True and key == K_t:
+        if isDown == True and key == K_RIGHT:
 
             self.redcar.toggle()
 
