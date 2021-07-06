@@ -65,7 +65,7 @@ class GameText(GameImage):
             pygame.display.get_surface().blit(self.image, self.position)
 
 class GameApp:
-    def __init__(self, width=640, height=480):
+    def __init__(self, width=640, height=480, displayNumber = 0):
         self.isRunning = True
         self.surface = None
         self.width = width
@@ -78,7 +78,7 @@ class GameApp:
         self.milliseconds_since_start = 0
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.surface = pygame.display.set_mode((self.width, self.height))
+        self.surface = pygame.display.set_mode((self.width, self.height), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
