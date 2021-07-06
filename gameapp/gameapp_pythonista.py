@@ -4,7 +4,7 @@ from .constants import *
 from .pygamew import pygame
 
 if os.name == 'nt':
-    from scenew import run, Scene, SpriteNode
+    from scenew import run, Scene, SpriteNode, LabelNode
 else:
     from scene import SpriteNode, Scene, run, LabelNode
     
