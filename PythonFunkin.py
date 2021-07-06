@@ -108,7 +108,7 @@ class TargetArrow():
 class PythonFunkin(GameApp):
     def __init__(self):
         # misc
-        super().__init__(480, 240) # screen size
+        super().__init__(480, 240, 1) # screen size
         self.fps = 66.666
 
         # assets
@@ -189,13 +189,13 @@ class PythonFunkin(GameApp):
         currentscore = 0
         for target in self.TargetList:
             # If target arrow was in score range and correct key was pressed
-            if target.calcScore() > 0 and key == target.key and isDown:
+            if target.calcScore() > 0 and key == target.key and isDown and target.state == "active":
                 target.state = "played"
                 currentscore += target.calcScore()
         
         # If score is still 0, the bad key was pressed
-        if currentscore == 0 and key in (K_DOWN, K_UP, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d):
-            currentscore == -10
+        if currentscore == 0 and key in (K_DOWN, K_UP, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d) and isDown:
+            currentscore = -10
         self.PlayerScore += currentscore
 
         if isDown == True and key == K_j:
