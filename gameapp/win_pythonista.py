@@ -1,3 +1,17 @@
+class Path():
+    #Create a Path with an oval in the given rectangle.
+    def oval(self, x, y, width, height):
+        pass
+
+
+    #Create a Path with a given rectangle.
+    def rect(x, y, width, height):
+        pass
+
+    #Create a Path with a rounded rectangle.
+    def rounded_rect(x, y, width, height, corner_radius):
+        pass
+
 class Scene():
     pass
 
@@ -24,6 +38,6 @@ class LabelNode():
 class ShapeNode():
     def __init__(self, path=None, fill_color='white', stroke_color='clear', shadow=None):
         pass
-    
+
 def run(scene, orientation='DEFAULT_ORIENTATION', frame_interval=1, anti_alias=False, show_fps=False, multi_touch=True):
     pass

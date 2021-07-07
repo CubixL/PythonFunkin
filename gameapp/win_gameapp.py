@@ -1,7 +1,7 @@
 import pygame
 from pygame import Rect
 from pygame.locals import *
-
+import typing
 
 
 class GameImage():
@@ -82,11 +82,11 @@ class GameText(GameImage):
 
 class VirtualKey():
     def __init__(self, parent, label, key, position):
-        # super().__init__(fileName=None, position = 0 )
         self.parent = parent
         self.scale = 1
         self.label = label
         self.key = key
+        self.diameter = 20
         self.position = self.position = Rect(position[0], position[1], 0, 0)
         self.text = GameText(self, GameFont(self, 'Calibri', 10), label, position)
         
@@ -94,12 +94,14 @@ class VirtualKey():
 
     def render(self):
         surf = pygame.display.get_surface()
-        pygame.draw.circle(surf, (255,255,255), (self.position[0], self.position[1]), 20)
+        pygame.draw.circle(surf, (255,255,255), (self.position[0], self.position[1]), self.diameter)
         self.text.render()
         
         
 class GameApp:
-    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0):
+    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
+        self.hasVK = hasVK
+        self.platform = 'win'
         self.scale = scale
         self.isRunning = True
         self.surface = None
@@ -111,10 +113,17 @@ class GameApp:
         self.curUserEventId = USEREVENT 
         self.clock = None
         self._milliseconds_since_start = 0.0
+
         self.virtualKeys = []
+
+
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale)), display=displayNumber)
+        vkspace = 0
+        if hasVK:
+            vkspace = 200
+
+        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale) + vkspace), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
@@ -143,10 +152,15 @@ class GameApp:
         return self.curUserEventId
     
     def start(self):
-        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,200)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,200)))
-        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,150)))
-        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,200)))
+
+        if self.hasVK:
+            height = self.surface.get_height() - 50
+            self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,height)))
+            self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,height)))
+            self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,height - 50)))
+            self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,height)))
+
+
         self.on_start()
 
         while( self.isRunning ):
@@ -161,8 +175,13 @@ class GameApp:
                     self.on_key(True, event.key, event.mod)
                 if event.type == KEYUP:
                     self.on_key(False, event.key, event.mod)
-                
-
+                if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP):
+                    pos = pygame.mouse.get_pos()
+                    for vk in self.virtualKeys:
+                        vk: VirtualKey 
+                        if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
+                           pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
+                            self.on_key(event.type == MOUSEBUTTONDOWN, vk.key, None)
 
             self.on_loop()
             self.on_render()

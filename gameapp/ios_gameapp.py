@@ -3,9 +3,10 @@ from .ios_pygame import Rect
 from .ios_constants import *
 
 if os.name == 'nt':
-    from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode
+    from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path
 else:
     from scene import run, Scene, SpriteNode, LabelNode, ShapeNode
+    from ui import Path
     
 screen_size = (1024,768)
 renderImages = []
@@ -98,42 +99,50 @@ class MyScene(Scene):
         self.gameapp.on_loop()
 
     def process_touch(self, touch, isDown):
+        print(f'touch  {touch.location} {isDown}')
         
-        x = touch.location[0]
-        y = touch.location[1]
+        pos = touch.location
         
-        if y < 200 and x < 350:
-            self.isShift = isDown
-            
-        print(f'touch  {touch.location} {isDown} {self.isShift}')
+        for vk in self.gameapp.virtualKeys:
+            vk: VirtualKey 
+            if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
+               pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
+                self.gameapp.on_key(isDown, vk.key, None)
 
-        if self.isShift:            
-            if x < 350 and y > 200 and y < 568:
-                self.gameapp.on_key(isDown, K_j, None)
-            if x > 674 and y > 200 and y < 568:
-                self.gameapp.on_key(isDown, K_l, None)
-            if y < 200 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_k, None)
-            if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_r, None)
-        else:
-            if x < 350 and y > 200 and y < 568:
-                self.gameapp.on_key(isDown, K_LEFT, None)
-            if x > 674 and y > 200 and y < 568:
-                self.gameapp.on_key(isDown, K_RIGHT, None)
-            if y < 200 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_DOWN, None)
-            if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_Up, None)
+
+        # x = touch.location[0]
+        # y = touch.location[1]
+
+        # if y < 200 and x < 350:
+        #     self.isShift = isDown
+            
+
+        # if self.isShift:            
+        #     if x < 350 and y > 200 and y < 568:
+        #         self.gameapp.on_key(isDown, K_j, None)
+        #     if x > 674 and y > 200 and y < 568:
+        #         self.gameapp.on_key(isDown, K_l, None)
+        #     if y < 200 and x > 350 and x < 674:
+        #         self.gameapp.on_key(isDown, K_k, None)
+        #     if y > 568 and x > 350 and x < 674:
+        #         self.gameapp.on_key(isDown, K_r, None)
+        # else:
+        #     if x < 350 and y > 200 and y < 568:
+        #         self.gameapp.on_key(isDown, K_LEFT, None)
+        #     if x > 674 and y > 200 and y < 568:
+        #         self.gameapp.on_key(isDown, K_RIGHT, None)
+        #     if y < 200 and x > 350 and x < 674:
+        #         self.gameapp.on_key(isDown, K_DOWN, None)
+        #     if y > 568 and x > 350 and x < 674:
+        #         self.gameapp.on_key(isDown, K_UP, None)
 
         
     def touch_began(self, touch):
         self.process_touch(touch, True)
-            
-            
-            
+
     def touch_ended(self, touch):
         self.process_touch(touch, False)
+
 
 class VirtualKey():
     def __init__(self, parent, label, key, position):
@@ -143,20 +152,20 @@ class VirtualKey():
         self.key = key
         self.position = position
         self.circle =  ShapeNode(Path.oval(position[0], position[1], 50, 50))
+        self.circle.position = (self.position.x, screen_size[1] - self.position.y - (self.image.size[1]))
         self.text = GameText(parent.defaultFont, label, position)
 
 
 
     def render(self):
-        self.circle.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
         renderImages.append(self)
-
 
         
                     
         
 class GameApp():
     def __init__(self, width=640, height=480, display=0, scale=1.0):
+        self.platform = 'ios'
         self.scale = scale
         self.isRunning = True
         self.surface = None
@@ -199,7 +208,12 @@ class GameApp():
         # return self.curUserEventId
     
     def start(self):
-        gblgameapp = self
+        height = screen_size[1] - 50
+        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,height)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,height)))
+        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,height - 50)))
+        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,height)))        
+
         self.on_start()
         run(self.scene)
 
