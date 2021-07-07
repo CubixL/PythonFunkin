@@ -16,7 +16,6 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
         self.img_pressed = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Pressed.png')
         self.img_pressed.position.y = 10 
         
-
         # Determine position
         if self.type == 'Left':
             self.img_default.position.x = 80 

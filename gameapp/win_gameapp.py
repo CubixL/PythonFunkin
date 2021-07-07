@@ -81,6 +81,27 @@ class GameText(GameImage):
 
             pygame.display.get_surface().blit(self.image, scaledposition)
 
+class GameAudio():
+    def __init__(self, fileName = None):
+        self.fileName = fileName
+        if self.fileName:
+            pygame.mixer.music.load(fileName)
+    def play(self, loop = 0):
+            pygame.mixer.music.play(loops = loop)
+    def load(self, fileName):
+        pygame.mixer.music.load(fileName)
+    def unload(self):
+        pygame.mixer.music.unload()
+    def pause(self):
+        pygame.mixer.music.pause()
+    def unpause(self):
+        pygame.mixer.music.unpause()
+    def stop(self):
+        pygame.mixer.music.stop()
+
+
+
+
 class VirtualKey():
     def __init__(self, parent, label, key, position):
         self.parent = parent

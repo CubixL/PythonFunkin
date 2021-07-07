@@ -1,6 +1,9 @@
+from gameapp.win_gameapp import GameAudio
 from gameapp import *
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
+
+import json
 
 class Level():
     def __init__(self, parent):
@@ -13,6 +16,8 @@ class Level():
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.TargetList = []
         self.PlayerScore = 0
+        self.milliAtStart = self.parent.getMillisecondsSinceStart()
+        self.music = GameAudio('song\\Tutorial_Inst.ogg')
 
 
         # font & text
@@ -20,8 +25,6 @@ class Level():
         self.MSText = GameText(self, self.GUIFont)
         self.FPSText = GameText(self, self.GUIFont)
         self.ScoreText = GameText(self, self.GUIFont)
-
-        self.loadFile()
 
     def getMilli(self):
         return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
@@ -83,16 +86,16 @@ class Level():
 
             # Create target arrows (debugging)
             if isDown == True and key == K_j:
-                self.TargetList.append(TargetArrow(self, type = 'Left'))
+                self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 0))
             if isDown == True and key == K_k:
-                self.TargetList.append(TargetArrow(self, type = 'Down'))
+                self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 0))
             if isDown == True and key == K_i:
-                self.TargetList.append(TargetArrow(self, type = 'Up'))
+                self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = 0))
             if isDown == True and key == K_l:
-                self.TargetList.append(TargetArrow(self, type = 'Right'))
+                self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 0))
 
             # R resets the chart
-            if key == K_r:
+            if isDown == True and key == K_r:
                 self.loadFile()
 
 
@@ -102,11 +105,9 @@ class Level():
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
 
-        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 500))
-        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 700))
-        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = 900))
-        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 1100))
-        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 1300))
-        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 1500))
-        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 1700))
-        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 1900))
+        chart = open('song\\data.json')
+        data = json.load(chart)
+
+        print(data['notes'])
+
+        self.music.play()

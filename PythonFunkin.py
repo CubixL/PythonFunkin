@@ -18,7 +18,6 @@ class PythonFunkin(GameApp):               # Main app
         self.section = 'menu'
         self.level = Level(self)
         self.menu = Menu(self)
-    
 
     def on_loop(self): # Main loop
         if self.section == 'level':
@@ -26,23 +25,17 @@ class PythonFunkin(GameApp):               # Main app
         elif self.section == 'menu':
             self.menu.on_loop()
 
-
     def on_render(self):  # Blit stuff
         if self.section == 'level':
             self.level.on_render()
         if self.section == 'menu':
             self.menu.on_render()
 
-
-        
-
     def on_key(self, isDown, key, mod):         # Check inputs
         if self.section == 'level':
             self.level.on_key(isDown, key, mod)
         if self.section == 'menu':
             self.menu.on_key(isDown, key, mod)
-
-
 
 if __name__ == '__main__':
     PythonFunkin().start()
