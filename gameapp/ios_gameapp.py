@@ -137,7 +137,7 @@ class MyScene(Scene):
             
         
 class GameApp():
-    def __init__(self, width=640, height=480, scale=1.0):
+    def __init__(self, width=640, height=480, display=0, scale=1.0):
         self.scale = scale
         self.isRunning = True
         self.surface = None
