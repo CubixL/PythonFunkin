@@ -29,7 +29,6 @@ class TestGame(GameApp):
         self.redcar = MyRedCar()
         self.fps = 50
         self.bluecar = GameImage('gameapp\\images\\bluecar.png', (10,500))
-       # self.bluecar.scale2x()
         # self.redcar = 
         self.fontVerdana = GameFont()
         self.myText = GameText(self.fontVerdana, 'mart is great', (125, 300), (255, 255, 125))

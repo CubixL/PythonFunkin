@@ -14,26 +14,26 @@ from targetarrow import TargetArrow
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
         # GameApp variables
-        super().__init__(480, 240, 1) # Screen size + number of the display
+        super().__init__(240, 135, 1, scale=4.0) # Screen size + number of the display
         self.fps = 66.666
 
         # assets
-        self.Background = GameImage('images\\background\\testBG.gif', (0, 0))
-        self.Background.scale2x()
-        self.PlayerArrowL = PlayerArrow(type = 'Left')
-        self.PlayerArrowD = PlayerArrow(type = 'Down')
-        self.PlayerArrowU = PlayerArrow(type = 'Up')
-        self.PlayerArrowR = PlayerArrow(type = 'Right')
+        self.Background = GameImage(self, 'images\\background\\testBG.gif', (0, 0))
+        
+        self.PlayerArrowL = PlayerArrow(self, type = 'Left')
+        self.PlayerArrowD = PlayerArrow(self, type = 'Down')
+        self.PlayerArrowU = PlayerArrow(self, type = 'Up')
+        self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.TargetList = []
         self.PlayerScore = 0
         self.state = 'level'
         self.loadFile()
 
         # font & text
-        self.GUIFont = GameFont('fonts\\vcr.ttf', 12, False)
-        self.MSText = GameText(self.GUIFont)
-        self.FPSText = GameText(self.GUIFont)
-        self.ScoreText = GameText(self.GUIFont)
+        self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
+        self.MSText = GameText(self, self.GUIFont)
+        self.FPSText = GameText(self, self.GUIFont)
+        self.ScoreText = GameText(self, self.GUIFont)
 
     def loadFile(self): # Load the entire song chart (JSON file stuff)
         # When called, reset score, timer and note list to 0 before loading
@@ -41,14 +41,14 @@ class PythonFunkin(GameApp):               # Main app
         self.milliseconds_since_start = 0
         self.TargetList.clear()
 
-        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 500))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Right', milliseconds = 700))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 900))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 1100))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 1300))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 1500))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 1700))
-        self.TargetList.append(TargetArrow(parent = self, type = 'Right', milliseconds = 1900))
+        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 500))
+        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 700))
+        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 900))
+        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 1100))
+        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 1300))
+        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 1500))
+        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 1700))
+        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 1900))
 
     def on_loop(self): # Main loop
         if self.state == 'level':

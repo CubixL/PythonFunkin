@@ -1,34 +1,49 @@
 import pygame
 from pygame import Rect
 from pygame.locals import *
+from pygame.transform import scale
 
 
 class GameImage():
-    def __init__(self, fileName = None, position = (0,0)):
+    def __init__(self, parent, fileName = None, position = (0,0)):
+        self.parent = parent
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
+        self.scale = parent.scale
         self.load()
 
     def load(self):
         if self.fileName and not self.image:
             self.image = pygame.image.load(self.fileName).convert()
+            size = self.image.get_size()
+            newsize = (int(size[0] * self.scale), int(size[1] * self.scale))
+            self.image = pygame.transform.scale(self.image, newsize)
 
     def render(self, position = None):
         # self.load()
 
-        if position:
-            self.position.x = position[0]
-            self.position.y = position[1]
+        if position != None:
+            if type(position) == Rect:
+                self.position = position.copy()
+            else:
+                self.position.x = position[0]
+                self.position.y = position[1]
 
-        pygame.display.get_surface().blit(self.image, self.position)
+
+        scaledposition = self.position.copy()
+        scaledposition.x *= self.scale
+        scaledposition.y *= self.scale
+        pygame.display.get_surface().blit(self.image, scaledposition)
 
     def scale2x(self):
         self.image = pygame.transform.scale2x(self.image)
         
 
 class GameFont():
-    def __init__(self, name, size, isSys = True):
+    def __init__(self, parent, name, size, isSys = True):
+        self.parent = parent
+        self.scale = parent.scale
         self.name = name
         self.size = size
         self.font = None
@@ -38,16 +53,17 @@ class GameFont():
     def load(self):
         if not self.font:
             if self.isSys:
-                self.font = pygame.font.SysFont(self.name, self.size)
+                self.font = pygame.font.SysFont(self.name, int(self.size * self.scale))
             else:
-                self.font = pygame.font.Font(self.name, self.size)
+                self.font = pygame.font.Font(self.name, int(self.size * self.scale))
 
 
 class GameText(GameImage):
-    def __init__(self, font, text = '', position = (0,0), RGB = (0,0,0)):
-        super().__init__(fileName=None, position=position)
+    def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
+        super().__init__(parent, fileName=None, position=position)
         self.font = font
         self.text = text
+        self.scale = parent.scale
         self.color = pygame.Color(RGB[0],RGB[1],RGB[2])
 
     def renderText(self, text, position = None):
@@ -58,14 +74,25 @@ class GameText(GameImage):
         # self.font.load()
 
         if position != None:
-            self.position = position
+            if type(position) == Rect:
+                self.position = position.copy()
+            else:
+                self.position.x  = position[0]
+                self.position.y  = position[1]
+
 
         if self.text != '':
             self.image = self.font.font.render(self.text, True, self.color)
-            pygame.display.get_surface().blit(self.image, self.position)
+
+            scaledposition = self.position.copy()
+            scaledposition.x *= self.scale
+            scaledposition.y *= self.scale
+
+            pygame.display.get_surface().blit(self.image, scaledposition)
 
 class GameApp:
-    def __init__(self, width=640, height=480, displayNumber = 0):
+    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0):
+        self.scale = scale
         self.isRunning = True
         self.surface = None
         self.width = width
@@ -78,7 +105,7 @@ class GameApp:
         self.milliseconds_since_start = 0
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.surface = pygame.display.set_mode((self.width, self.height), display=displayNumber)
+        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale)), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       

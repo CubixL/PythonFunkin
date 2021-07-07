@@ -1,41 +1,41 @@
 from gameapp import *
 
 class PlayerArrow():                       # Arrows at the top, input by the player
-    def __init__(self, type):
+    def __init__(self, parent, type):
         # Set up variables and keys
+        self.parent = parent
         self.type = type
         self.isPressed = False
         self.key = None
         self.altkey = None
-        self.scale = 2
+        self.scale = parent.scale
 
         # Set up sprites + Y position
-        self.img_default = GameImage(f'images\\arrows\\GUI_Arrow{type}Default.png')
-        self.img_default.position.y = 10 * self.scale
-        self.img_default.scale2x() 
-        self.img_pressed = GameImage(f'images\\arrows\\GUI_Arrow{type}Pressed.png')
-        self.img_pressed.position.y = 10 * self.scale
-        self.img_pressed.scale2x()
+        self.img_default = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Default.png')
+        self.img_default.position.y = 10 
+        self.img_pressed = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Pressed.png')
+        self.img_pressed.position.y = 10 
+        
 
         # Determine position
         if self.type == 'Left':
-            self.img_default.position.x = 80 * self.scale
-            self.img_pressed.position.x = 80 * self.scale
+            self.img_default.position.x = 80 
+            self.img_pressed.position.x = 80 
             self.key = K_LEFT
             self.altkey = K_a
         if self.type == 'Down':
-            self.img_default.position.x = 101 * self.scale
-            self.img_pressed.position.x = 101 * self.scale
+            self.img_default.position.x = 101 
+            self.img_pressed.position.x = 101 
             self.key = K_DOWN
             self.altkey = K_s
         if self.type == 'Up':
-            self.img_default.position.x = 123 * self.scale
-            self.img_pressed.position.x = 123 * self.scale
+            self.img_default.position.x = 123 
+            self.img_pressed.position.x = 123 
             self.key = K_UP
             self.altkey = K_w
         if self.type == 'Right':
-            self.img_default.position.x = 144 * self.scale
-            self.img_pressed.position.x = 144 * self.scale
+            self.img_default.position.x = 144 
+            self.img_pressed.position.x = 144 
             self.key = K_RIGHT
             self.altkey = K_d
     
