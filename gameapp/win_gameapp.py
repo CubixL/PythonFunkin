@@ -92,7 +92,7 @@ class GameApp:
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self.clock = None
-        self._milliseconds_since_start = 0
+        self._milliseconds_since_start = 0.0
         pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale)), display=displayNumber)

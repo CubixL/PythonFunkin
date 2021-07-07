@@ -85,7 +85,7 @@ class MyScene(Scene):
     def setup(self):
         self.isShift = False
     def update(self):
-        self.gameapp.milliseconds_since_start += 16.66666666666666666666
+        self.gameapp._milliseconds_since_start += 16.66666666666666666666
         screen_size = self.size
         for image in renderImages:
             image.image.remove_from_parent()
@@ -147,7 +147,7 @@ class GameApp():
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self.milliseconds_since_start = 0.0
+        self._milliseconds_since_start = 0.0
         self.scene = MyScene()
         self.scene.gameapp = self
 
@@ -158,7 +158,8 @@ class GameApp():
         #     pygame.display.toggle_fullscreen()
       
  
-
+    def getMillisecondsSinceStart(self):
+        return self._milliseconds_since_start
 
     def on_start(self):
         pass
