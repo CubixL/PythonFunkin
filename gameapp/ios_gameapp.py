@@ -1,91 +1,82 @@
 import os
-
-from .constants import *
-from .pygamew import pygame
+from .ios_pygame import Rect
+from .ios_constants import *
 
 if os.name == 'nt':
-    from scenew import run, Scene, SpriteNode, LabelNode
+    from win_pythonista import run, Scene, SpriteNode, LabelNode
 else:
-    from scene import SpriteNode, Scene, run, LabelNode
+    from scene import run, Scene, SpriteNode, LabelNode
     
-from .rect import Rect
-
 screen_size = (1024,768)
 renderImages = []
-gblgameapp = None
 
 class GameImage():
-    def __init__(self, fileName = None, position = (0,0)):
-       # self.parent = parent
+    def __init__(self, parent, fileName = None, position = (0,0)):
+        self.parent = parent
         if fileName:
            fileName = fileName.replace('\\', '/')
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
-        self.load()
-        
-    def load(self):
+        self.scale = parent.scale
+
         if self.fileName and not self.image:
             self.image = SpriteNode(self.fileName)
+            self.image.scale = parent.scale
             self.image.anchor_point = (0,0)
-            #allImages.append(self)
             
 
     def render(self, position = None):
-        # self.load()
-
         if position:
-            self.position.x = position[0]
-            self.position.y = position[1]
+            if type(position) == Rect:
+                self.position = position.copy()
+            else:
+                self.position.x = position[0]
+                self.position.y = position[1]
 
-        self.image.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
+        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1] * self.image.scale))
         renderImages.append(self)
        
-
-    def scale2x(self):
-        self.image.scale = 2.0
-        pass
-        #self.image = pygame.transform.scale2x(self.image)
         
 
 class GameFont():
-    def __init__(self, name = 'Helvetica', size = 20, isSys = True):
-        self.name = 'Helvetica'#name
+    def __init__(self, parent, name = 'Helvetica', size = 20, isSys = True):
+        self.parent = parent
+        self.scale = parent.scale
+        self.name = name
         self.size = size
         self.font = None
         self.isSys = isSys
 
-        
-
 
 class GameText():
-    def __init__(self, font, text = '', position = (0,0), RGB = (0,0,0)):
-        #super().__init__(fileName=None, position=position)
-        #global gblgameapp
-        #self.parent = gblgameapp
+    def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
+        self.parent = parent
+        self.scale = parent.scale
         self.image = None
         self.position = Rect(position[0], position[1], 0, 0)      
         self.font = font
         self.text = text
         self.color = RGB
-        self.load()
 
-    def load(self):
         if not self.image:
-            self.image = LabelNode(self.text, position=(0,0))
+            self.image = LabelNode(self.text, font = (self.font.name, self.font.size*self.scale), position=(0,0))
             self.image.anchor_point = (0,0)
 
-            
     def renderText(self, text, position = None):
         self.text = str(text)
         self.render(position)
 
     def render(self, position = None):
         if position:
-            self.position.x = position[0]
-            self.position.y = position[1]
+            if type(position) == Rect:
+                self.position = position.copy()
+            else:
+                self.position.x  = position[0]
+                self.position.y  = position[1]
 
-        self.image.position = (self.position.x, screen_size[1] - self.position.y  - self.image.size[1])
+
+        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1]))
         self.image.text = str(self.text)
         renderImages.append(self)
         
@@ -162,11 +153,10 @@ class GameApp():
         self.scene.gameapp = self
 
 
-        # pygame.init()
-        self.clock = pygame.time.Clock()
-        self.surface = pygame.display.set_mode((self.width, self.height))
-        if self.isFullScreen == True:
-            pygame.display.toggle_fullscreen()
+        # self.clock = pygame.time.Clock()
+        # self.surface = pygame.display.set_mode((self.width, self.height))
+        # if self.isFullScreen == True:
+        #     pygame.display.toggle_fullscreen()
       
  
 
@@ -183,46 +173,18 @@ class GameApp():
         pass
 
 
-    def cleanup(self):
-        pygame.quit()
- 
     def addTimer(self, mili, runOnce = False):
-        self.curUserEventId += 1
-        pygame.time.set_timer(self.curUserEventId, mili, runOnce)
-        return self.curUserEventId
+        pass
+        # self.curUserEventId += 1
+        # pygame.time.set_timer(self.curUserEventId, mili, runOnce)
+        # return self.curUserEventId
     
     def start(self):
         gblgameapp = self
         self.on_start()
-
-        
         run(self.scene)
 
-
-        # while( self.isRunning ):
-        #     print('loop')
-        #     self.keysPressed = pygame.key.get_pressed()
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             self.isRunning = False
-
-        #         self.on_event(event.type)
-
-        #         if event.type == KEYDOWN:
-        #             self.on_key(True, event.key, event.mod)
-        #         if event.type == KEYUP:
-        #             self.on_key(False, event.key, event.mod)
-                
-
-
-        #     self.on_loop()
-        #     self.on_render()
-
-        #     pygame.display.update()
-        #     self.milliseconds_since_start += self.clock.get_time()
-        #     self.clock.tick(self.fps)
  
-
 if __name__ == "__main__" :
     print('start')
     app = GameApp()

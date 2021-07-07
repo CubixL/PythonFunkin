@@ -1,7 +1,7 @@
 import pygame
 from pygame import Rect
 from pygame.locals import *
-from pygame.transform import scale
+
 
 
 class GameImage():
@@ -11,9 +11,7 @@ class GameImage():
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
         self.scale = parent.scale
-        self.load()
 
-    def load(self):
         if self.fileName and not self.image:
             self.image = pygame.image.load(self.fileName).convert()
             size = self.image.get_size()
@@ -21,9 +19,7 @@ class GameImage():
             self.image = pygame.transform.scale(self.image, newsize)
 
     def render(self, position = None):
-        # self.load()
-
-        if position != None:
+        if position:
             if type(position) == Rect:
                 self.position = position.copy()
             else:
@@ -36,21 +32,17 @@ class GameImage():
         scaledposition.y *= self.scale
         pygame.display.get_surface().blit(self.image, scaledposition)
 
-    def scale2x(self):
-        self.image = pygame.transform.scale2x(self.image)
         
 
 class GameFont():
-    def __init__(self, parent, name, size, isSys = True):
+    def __init__(self, parent, name = 'Verdana', size = 20, isSys = True):
         self.parent = parent
         self.scale = parent.scale
         self.name = name
         self.size = size
         self.font = None
         self.isSys = isSys
-        self.load()
 
-    def load(self):
         if not self.font:
             if self.isSys:
                 self.font = pygame.font.SysFont(self.name, int(self.size * self.scale))
@@ -71,9 +63,7 @@ class GameText(GameImage):
         self.render(position)
 
     def render(self, position = None):
-        # self.font.load()
-
-        if position != None:
+        if position:
             if type(position) == Rect:
                 self.position = position.copy()
             else:

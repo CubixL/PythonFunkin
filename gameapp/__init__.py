@@ -1,15 +1,16 @@
 import os
 
-
+# load pythonsta libraries
 if os.name == 'posix':
-    from .rect import Rect
-    from .constants import *
-    from .gameapp_pythonista import GameApp, GameText, GameFont, GameImage
 
+    from .ios_constants import *
+    from .ios_gameapp import GameApp, GameText, GameFont, GameImage, Rect
+    
+#load pygame libraries
 elif os.name == 'nt':
     import pygame
     from pygame.locals import *
     # from .rect import Rect
     from pygame import Rect
-    from .gameapp import GameApp, GameText, GameFont, GameImage
+    from .win_gameapp import GameApp, GameText, GameFont, GameImage
 
