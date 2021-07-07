@@ -21,22 +21,22 @@ class TargetArrow():                       # Arrows that rise up and hitting the
        
         # X position and keys/altkeys determined by note type. Default is left.
         self.img.position.x = 80 
-        self.img_sustain.position.x = 80 
+        self.img_sustain.position.x = 86
         self.key = K_LEFT
         self.altkey = K_a
         if self.type == 'Down':
             self.img.position.x = 101 
-            self.img_sustain.position.x = 101 
+            self.img_sustain.position.x = 106 
             self.key = K_DOWN
             self.altkey = K_s
         if self.type == 'Up':
             self.img.position.x = 123 
-            self.img_sustain.position.x = 123 
+            self.img_sustain.position.x = 129
             self.key = K_UP
             self.altkey = K_w
         if self.type == 'Right':
             self.img.position.x = 144 
-            self.img_sustain.position.x = 144 
+            self.img_sustain.position.x = 150
             self.key = K_RIGHT
             self.altkey = K_d
     

@@ -102,14 +102,15 @@ class GameApp:
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self.clock = None
-        self.milliseconds_since_start = 0
+        self._milliseconds_since_start = 0
         pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale)), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
- 
+    def getMillisecondsSinceStart(self):
+        return self._milliseconds_since_start
 
 
     def on_start(self):
@@ -155,7 +156,7 @@ class GameApp:
             self.on_render()
 
             pygame.display.update()
-            self.milliseconds_since_start += self.clock.get_time()
+            self._milliseconds_since_start += self.clock.get_time()
             self.clock.tick(self.fps)
  
 
