@@ -15,14 +15,9 @@ class PythonFunkin(GameApp):               # Main app
         # GameApp variables
         super().__init__(240, 135, 1, scale=4.0) # Screen size + number of the display
         self.fps = 66.666
-
-        # level assets
-        self.section = 'level'
+        self.section = 'menu'
         self.level = Level(self)
         self.menu = Menu(self)
-
-        
-
     
 
     def on_loop(self): # Main loop
