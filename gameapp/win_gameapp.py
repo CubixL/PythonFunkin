@@ -87,7 +87,7 @@ class VirtualKey():
         self.label = label
         self.key = key
         self.diameter = 20
-        self.position = self.position = Rect(position[0], position[1], 0, 0)
+        self.position = Rect(position[0], position[1], 0, 0)
         self.text = GameText(self, GameFont(self, 'Calibri', 10), label, position)
         
         

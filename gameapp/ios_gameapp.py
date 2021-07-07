@@ -90,11 +90,21 @@ class MyScene(Scene):
         screen_size = self.size
         for image in renderImages:
             image.image.remove_from_parent()
+        for vk in self.gameapp.virtualKeys:
+            vk.text.image.remove_from_parent()   
+            vk.circle.remove_from_parent()     
+            
+            
 
         renderImages.clear()
         self.gameapp.on_render()
         for image in renderImages:
             self.add_child(image.image)
+            
+        for vk in self.gameapp.virtualKeys:
+            self.add_child(vk.text.image)
+            self.add_child(vk.circle)
+            
 
         self.gameapp.on_loop()
 
@@ -146,14 +156,15 @@ class MyScene(Scene):
 
 class VirtualKey():
     def __init__(self, parent, label, key, position):
-        
         self.parent = parent
+        self.scale = 1
         self.label = label
         self.key = key
-        self.position = position
-        self.circle =  ShapeNode(Path.oval(position[0], position[1], 50, 50))
-        self.circle.position = (self.position.x, screen_size[1] - self.position.y - (self.image.size[1]))
-        self.text = GameText(parent.defaultFont, label, position)
+        self.diameter = 50
+        self.position = Rect(position[0], position[1], 0, 0)
+        self.circle =  ShapeNode(Path.oval(position[0], position[1], self.diameter, self.diameter))
+        self.circle.position = (self.position.x, screen_size[1] - self.position.y + self.diameter)
+        self.text = GameText(self, GameFont(self), label, position)
 
 
 
@@ -178,6 +189,7 @@ class GameApp():
         self._milliseconds_since_start = 0.0
         self.scene = MyScene()
         self.scene.gameapp = self
+        self.virtualKeys = []
 
 
         # self.clock = pygame.time.Clock()
