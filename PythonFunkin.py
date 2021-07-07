@@ -7,119 +7,26 @@
 # YouTube channel: https://www.youtube.com/channel/UCNNHpyTeYJqK9bfFeub3uNw
 
 from gameapp import *
+from playerarrow import PlayerArrow
+from targetarrow import TargetArrow
 
-class PlayerArrow():
-    def __init__(self, type):
-        self.type = type
-        self.isPressed = False
-        self.key = None
-        self.altkey = None
-        self.scale = 2
-        self.img_default = GameImage(f"images/GUI_Arrow{type}Default.png")
-        self.img_default.position.y = 10 * self.scale
-        self.img_default.scale2x() 
-        self.img_pressed = GameImage(f"images\\GUI_Arrow{type}Pressed.png")
-        self.img_pressed.position.y = 10 * self.scale
-        self.img_pressed.scale2x()
-
-        if self.type == "Left":
-            self.img_default.position.x = 80 * self.scale
-            self.img_pressed.position.x = 80 * self.scale
-            self.key = K_LEFT
-            self.altkey = K_a
-        if self.type == "Down":
-            self.img_default.position.x = 101 * self.scale
-            self.img_pressed.position.x = 101 * self.scale
-            self.key = K_DOWN
-            self.altkey = K_s
-        if self.type == "Up":
-            self.img_default.position.x = 123 * self.scale
-            self.img_pressed.position.x = 123 * self.scale
-            self.key = K_UP
-            self.altkey = K_w
-        if self.type == "Right":
-            self.img_default.position.x = 144 * self.scale
-            self.img_pressed.position.x = 144 * self.scale
-            self.key = K_RIGHT
-            self.altkey = K_d
-    
-    def render(self):
-        if self.isPressed == False:
-            self.img_default.render()
-        elif self.isPressed == True:
-            self.img_pressed.render() 
-
-    def on_key(self, isDown, key):
-        if isDown == True and key == self.key or isDown == True and key == self.altkey:
-            self.isPressed = True
-        elif isDown == False and key == self.key or isDown == False and key == self.altkey:
-            self.isPressed = False
-
-class TargetArrow():
-    def __init__(self, parent, type, milliseconds):
-        self.type = type
-        self.parent = parent
-        self.milliseconds = milliseconds
-        self.scale = 2
-        self.img = GameImage(f"images\\GUI_Arrow{type}Target.png") 
-        self.img.scale2x() 
-        self.img.position.y = 110 * self.scale
-        self.state = "hidden"
-       
-        # Left by default
-        self.img.position.x = 80 * self.scale
-        self.key = K_LEFT
-        self.altkey = K_a
-        if self.type == "Down":
-            self.img.position.x = 101 * self.scale
-            self.key = K_DOWN
-            self.altkey = K_s
-        if self.type == "Up":
-            self.img.position.x = 123 * self.scale
-            self.key = K_UP
-            self.altkey = K_w
-        if self.type == "Right":
-            self.img.position.x = 144 * self.scale
-            self.key = K_RIGHT
-            self.altkey = K_d
-    
-    def move(self):
-        if self.state == "active":
-            self.img.position.y -= 1 * self.scale
-
-    def calcScore(self, key = None, isDown = True):
-        # calculate score base on y coordinate
-        score = 0
-        if self.img.position.y < 10:
-            score = -10
-        elif self.img.position.y < 20:
-            score = 200
-        elif self.img.position.y < 30:
-            score = 350
-        elif self.img.position.y < 40:
-            score = 200
-        
-        return score
-
-    def render(self):
-        if self.state == "active":
-            self.img.render()
-    
-class PythonFunkin(GameApp):
+   
+class PythonFunkin(GameApp):               # Main app
     def __init__(self):
-        # misc
-        super().__init__(480, 240, 1) # screen size
+        # GameApp variables
+        super().__init__(480, 240, 1) # Screen size + number of the display
         self.fps = 66.666
 
         # assets
-        self.Background = GameImage("images/testBG.gif", (0, 0))
+        self.Background = GameImage('images\\background\\testBG.gif', (0, 0))
         self.Background.scale2x()
-        self.PlayerArrowL = PlayerArrow(type = "Left")
-        self.PlayerArrowD = PlayerArrow(type = "Down")
-        self.PlayerArrowU = PlayerArrow(type = "Up")
-        self.PlayerArrowR = PlayerArrow(type = "Right")
+        self.PlayerArrowL = PlayerArrow(type = 'Left')
+        self.PlayerArrowD = PlayerArrow(type = 'Down')
+        self.PlayerArrowU = PlayerArrow(type = 'Up')
+        self.PlayerArrowR = PlayerArrow(type = 'Right')
         self.TargetList = []
         self.PlayerScore = 0
+        self.state = 'level'
         self.loadFile()
 
         # font & text
@@ -128,69 +35,94 @@ class PythonFunkin(GameApp):
         self.FPSText = GameText(self.GUIFont)
         self.ScoreText = GameText(self.GUIFont)
 
-
-    def loadFile(self):
+    def loadFile(self): # Load the entire song chart (JSON file stuff)
+        # When called, reset score, timer and note list to 0 before loading
         self.PlayerScore = 0
         self.milliseconds_since_start = 0
         self.TargetList.clear()
-        self.TargetList.append(TargetArrow(parent = self, type = "Left", milliseconds = 500))
-        self.TargetList.append(TargetArrow(parent = self, type = "Right", milliseconds = 700))
-        self.TargetList.append(TargetArrow(parent = self, type = "Down", milliseconds = 900))
-        self.TargetList.append(TargetArrow(parent = self, type = "Left", milliseconds = 1100))
-        self.TargetList.append(TargetArrow(parent = self, type = "Down", milliseconds = 1300))
-        self.TargetList.append(TargetArrow(parent = self, type = "Left", milliseconds = 1500))
-        self.TargetList.append(TargetArrow(parent = self, type = "Down", milliseconds = 1700))
-        self.TargetList.append(TargetArrow(parent = self, type = "Right", milliseconds = 1900))
 
+        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 500))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Right', milliseconds = 700))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 900))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 1100))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 1300))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Left', milliseconds = 1500))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Down', milliseconds = 1700))
+        self.TargetList.append(TargetArrow(parent = self, type = 'Right', milliseconds = 1900))
 
-    def on_loop(self):
+    def on_loop(self): # Main loop
+        if self.state == 'level':
+            self.on_loop_level()
+        elif self.state == 'menu':
+            self.on_loop_menu()
+        
+
+    def on_loop_menu(self): # menu loop
+        pass
+
+    def on_loop_level(self): # Main loop (level section)
         currentscore = 0
         
         for target in self.TargetList:
-            target.move()
             score = target.calcScore()
-            if target.state == "hidden" and self.milliseconds_since_start >= target.milliseconds:
-                target.state = "active"
-            if target.state == "active" and score < 0:
-                target.state = "played"
+            # Check for targets that need to become active
+            if target.state == 'hidden' and self.milliseconds_since_start >= target.milliseconds:
+                target.state = 'active'
+            # Check for targets that have passed the input range
+            if target.state == 'active' and score < 0:
+                target.state = 'played'
                 currentscore += score
+            target.move() # Move targets up
 
         self.PlayerScore += currentscore
 
-            
-        
+    def on_render(self):  # Blit stuff
+        if self.state == 'level':
+            self.on_render_level()
+        if self.state == 'menu':
+            self.on_render_menu()
 
-    def on_render(self):                                                        # Layering order:
+
+    def on_render_menu(self):
+        pass
+        
+    def on_render_level(self):  # Level rendering phase.                        # Layering order:
         self.Background.render()                                                # 1. Background
         self.PlayerArrowL.render()                                              # 2. Player arrows
         self.PlayerArrowD.render()
         self.PlayerArrowU.render()
         self.PlayerArrowR.render()
-        for target in self.TargetList:                                          # 3. Target arrows
+        for target in self.TargetList:                                          # 3. Target arrows (Note, then sustain line, then sustain end)
             target.render()
 
            
-        self.MSText.renderText(f"Game time: {self.milliseconds_since_start}")   # 4. GUI
-        self.FPSText.renderText(f"FPS: {self.fps}", position = (0, 12))
-        self.ScoreText.renderText(f"Score: {self.PlayerScore}", position = (0, 24))
+        self.MSText.renderText(f'Game time: {self.milliseconds_since_start}')   # 4. GUI (Text)
+        self.FPSText.renderText(f'FPS: {self.fps}', position = (0, 12))
+        self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (0, 24))
 
-    
-    def on_event(self, eventId):
+    def on_key(self, isDown, key, mod):         # Check inputs
+        if self.state == 'level':
+            self.on_key_level(isDown, key, mod)
+        if self.state == 'menu':
+            self.on_key_menu(isDown, key, mod)
+
+    def on_key_menu(self, isDown, key, mod):
         pass
 
-    def on_key(self, isDown, key, mod):
-        if isDown == True and key == K_ESCAPE:
+    def on_key_level(self, isDown, key, mod):   # Check inputs (level)
+        if isDown == True and key == K_ESCAPE: # ESC kills game
             self.isRunning = False
-        self.PlayerArrowL.on_key(isDown, key)
+        self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
         self.PlayerArrowD.on_key(isDown, key)
         self.PlayerArrowU.on_key(isDown, key)
         self.PlayerArrowR.on_key(isDown, key)
 
+        # Check state of target arrows
         currentscore = 0
         for target in self.TargetList:
             # If target arrow was in score range and correct key was pressed
-            if target.calcScore() > 0 and key == target.key and isDown and target.state == "active":
-                target.state = "played"
+            if target.calcScore() > 0 and key == target.key and isDown and target.state == 'active':
+                target.state = 'played'
                 currentscore += target.calcScore()
         
         # If score is still 0, the bad key was pressed
@@ -198,17 +130,19 @@ class PythonFunkin(GameApp):
             currentscore = -10
         self.PlayerScore += currentscore
 
+        # Create target arrows (debugging)
         if isDown == True and key == K_j:
-            self.TargetList.append(TargetArrow(type = "Left"))
+            self.TargetList.append(TargetArrow(type = 'Left'))
         if isDown == True and key == K_k:
-            self.TargetList.append(TargetArrow(type = "Down"))
+            self.TargetList.append(TargetArrow(type = 'Down'))
         if isDown == True and key == K_i:
-            self.TargetList.append(TargetArrow(type = "Up"))
+            self.TargetList.append(TargetArrow(type = 'Up'))
         if isDown == True and key == K_l:
-            self.TargetList.append(TargetArrow(type = "Right"))
+            self.TargetList.append(TargetArrow(type = 'Right'))
 
+        # R resets the chart
         if key == K_r:
             self.loadFile()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     PythonFunkin().start()
