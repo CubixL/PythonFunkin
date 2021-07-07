@@ -13,7 +13,8 @@ class GameImage():
         self.scale = parent.scale
 
         if self.fileName and not self.image:
-            self.image = pygame.image.load(self.fileName).convert()
+            self.image = pygame.image.load(self.fileName)#.convert()
+            # pygame.image.set_alpha(128)
             size = self.image.get_size()
             newsize = (int(size[0] * self.scale), int(size[1] * self.scale))
             self.image = pygame.transform.scale(self.image, newsize)
