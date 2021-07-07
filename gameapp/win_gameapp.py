@@ -80,6 +80,24 @@ class GameText(GameImage):
 
             pygame.display.get_surface().blit(self.image, scaledposition)
 
+class VirtualKey():
+    def __init__(self, parent, label, key, position):
+        # super().__init__(fileName=None, position = 0 )
+        self.parent = parent
+        self.scale = 1
+        self.label = label
+        self.key = key
+        self.position = self.position = Rect(position[0], position[1], 0, 0)
+        self.text = GameText(self, GameFont(self, 'Calibri', 10), label, position)
+        
+        
+
+    def render(self):
+        surf = pygame.display.get_surface()
+        pygame.draw.circle(surf, (255,255,255), (self.position[0], self.position[1]), 20)
+        self.text.render()
+        
+        
 class GameApp:
     def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0):
         self.scale = scale
@@ -93,6 +111,7 @@ class GameApp:
         self.curUserEventId = USEREVENT 
         self.clock = None
         self._milliseconds_since_start = 0.0
+        self.virtualKeys = []
         pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale)), display=displayNumber)
@@ -124,7 +143,10 @@ class GameApp:
         return self.curUserEventId
     
     def start(self):
-
+        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,200)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,200)))
+        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,150)))
+        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,200)))
         self.on_start()
 
         while( self.isRunning ):
@@ -144,6 +166,10 @@ class GameApp:
 
             self.on_loop()
             self.on_render()
+
+            #display virtual keys if we have any
+            for vk in self.virtualKeys:
+                vk.render()
 
             pygame.display.update()
             self._milliseconds_since_start += self.clock.get_time()

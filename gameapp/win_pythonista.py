@@ -20,6 +20,10 @@ class LabelNode():
             
     def remove_from_parent():
         pass
+
+class ShapeNode():
+    def __init__(self, path=None, fill_color='white', stroke_color='clear', shadow=None):
+        pass
     
 def run(scene, orientation='DEFAULT_ORIENTATION', frame_interval=1, anti_alias=False, show_fps=False, multi_touch=True):
     pass

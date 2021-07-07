@@ -1,14 +1,20 @@
 import os
-from .ios_pygame import Rect
+
 from .ios_constants import *
+from .ios_pygame import pygame
 
 if os.name == 'nt':
-    from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode
+    from win_pythonista import Path, run, Scene, SpriteNode, LabelNode, ShapeNode
+
 else:
-    from scene import run, Scene, SpriteNode, LabelNode, ShapeNode
+    from scene import SpriteNode, Scene, run, LabelNode, ShapeNode
+    from ui import Path
     
+from .ios_pygame import Rect
+
 screen_size = (1024,768)
 renderImages = []
+gblgameapp = None
 
 class GameImage():
     def __init__(self, parent, fileName = None, position = (0,0)):
@@ -18,74 +24,85 @@ class GameImage():
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
-        self.scale = parent.scale
 
         if self.fileName and not self.image:
             self.image = SpriteNode(self.fileName)
-            self.image.scale = parent.scale
             self.image.anchor_point = (0,0)
             
 
     def render(self, position = None):
         if position:
-            if type(position) == Rect:
-                self.position = position.copy()
-            else:
-                self.position.x = position[0]
-                self.position.y = position[1]
+            self.position.x = position[0]
+            self.position.y = position[1]
 
-        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1] * self.image.scale))
+        self.image.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
         renderImages.append(self)
        
+
+
         
 
 class GameFont():
-    def __init__(self, parent, name = 'Helvetica', size = 20, isSys = True):
-        self.parent = parent
-        self.scale = parent.scale
-        self.name = name
+    def __init__(self, name = 'Helvetica', size = 20, isSys = True):
+        self.name = 'Helvetica'#name
         self.size = size
         self.font = None
         self.isSys = isSys
 
+        
+
 
 class GameText():
-    def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
-        self.parent = parent
-        self.scale = parent.scale
-        self.image = None
+    def __init__(self, font, text = '', position = (0,0), RGB = (0,0,0)):
         self.position = Rect(position[0], position[1], 0, 0)      
         self.font = font
         self.text = text
         self.color = RGB
 
-        if not self.image:
-            self.image = LabelNode(self.text, font = (self.font.name, self.font.size*self.scale), position=(0,0))
-            self.image.anchor_point = (0,0)
+        self.image = LabelNode(self.text, position=(0,0))
+        self.image.anchor_point = (0,0)
 
+            
     def renderText(self, text, position = None):
         self.text = str(text)
         self.render(position)
 
     def render(self, position = None):
         if position:
-            if type(position) == Rect:
-                self.position = position.copy()
-            else:
-                self.position.x  = position[0]
-                self.position.y  = position[1]
+            self.position.x = position[0]
+            self.position.y = position[1]
 
-
-        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1]))
+        self.image.position = (self.position.x, screen_size[1] - self.position.y  - self.image.size[1])
         self.image.text = str(self.text)
         renderImages.append(self)
+
+class VirtualKey():
+    def __init__(self, parent, label, key, position):
         
+        self.parent = parent
+        self.label = label
+        self.key = key
+        self.position = position
+        self.circle =  ShapeNode(Path.oval(position[0], position[1], 50, 50))
+        self.text = GameText(parent.defaultFont, label, position)
+
+
+
+    def render(self):
+        self.circle.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
+        renderImages.append(self)
+
+
+    def render(self):
+        surf = pygame.display.get_surface()
+        pygame.draw.circle(surf, (255,255,255), self.position, 20)
+        self.text.render()        
         
 class MyScene(Scene):
     def setup(self):
         self.isShift = False
     def update(self):
-        self.gameapp._milliseconds_since_start += 16.66666666666666666666
+        self.gameapp.milliseconds_since_start += 16.66666666666666666666
         screen_size = self.size
         for image in renderImages:
             image.image.remove_from_parent()
@@ -115,7 +132,7 @@ class MyScene(Scene):
             if y < 200 and x > 350 and x < 674:
                 self.gameapp.on_key(isDown, K_k, None)
             if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_r, None)
+                self.gameapp.on_key(isDown, K_i, None)
         else:
             if x < 350 and y > 200 and y < 568:
                 self.gameapp.on_key(isDown, K_LEFT, None)
@@ -124,7 +141,7 @@ class MyScene(Scene):
             if y < 200 and x > 350 and x < 674:
                 self.gameapp.on_key(isDown, K_DOWN, None)
             if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_Up, None)
+                self.gameapp.on_key(isDown, K_UP, None)
 
         
     def touch_began(self, touch):
@@ -134,30 +151,12 @@ class MyScene(Scene):
             
     def touch_ended(self, touch):
         self.process_touch(touch, False)
-
-class VirtualKey():
-    def __init__(self, parent, label, key, position):
-        
-        self.parent = parent
-        self.label = label
-        self.key = key
-        self.position = position
-        self.circle =  ShapeNode(Path.oval(position[0], position[1], 50, 50))
-        self.text = GameText(parent.defaultFont, label, position)
-
-
-
-    def render(self):
-        self.circle.position = (self.position.x, screen_size[1] - self.position.y  - (self.image.size[1] * self.image.scale))
-        renderImages.append(self)
-
-
-        
-                    
+            
         
 class GameApp():
-    def __init__(self, width=640, height=480, display=0, scale=1.0):
-        self.scale = scale
+    def __init__(self, width=640, height=480):
+        gblgameapp = self
+        
         self.isRunning = True
         self.surface = None
         self.width = width
@@ -166,19 +165,21 @@ class GameApp():
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self._milliseconds_since_start = 0.0
+        self.milliseconds_since_start = 0.0
         self.scene = MyScene()
         self.scene.gameapp = self
+        self.virtualKeys = []
 
 
-        # self.clock = pygame.time.Clock()
-        # self.surface = pygame.display.set_mode((self.width, self.height))
-        # if self.isFullScreen == True:
-        #     pygame.display.toggle_fullscreen()
+        # pygame.init()
+        self.clock = pygame.time.Clock()
+        self.surface = pygame.display.set_mode((self.width, self.height))
+        if self.isFullScreen == True:
+            pygame.display.toggle_fullscreen()
       
- 
-    def getMillisecondsSinceStart(self):
-        return self._milliseconds_since_start
+        self.defaultFont = GameFont('Helvetica', 20) 
+
+
 
     def on_start(self):
         pass
@@ -192,18 +193,53 @@ class GameApp():
         pass
 
 
+    def cleanup(self):
+        pygame.quit()
+ 
     def addTimer(self, mili, runOnce = False):
-        pass
-        # self.curUserEventId += 1
-        # pygame.time.set_timer(self.curUserEventId, mili, runOnce)
-        # return self.curUserEventId
+        self.curUserEventId += 1
+        pygame.time.set_timer(self.curUserEventId, mili, runOnce)
+        return self.curUserEventId
     
     def start(self):
         gblgameapp = self
+
+        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,200)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,200)))
+        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,150)))
+        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,200)))
+
+
         self.on_start()
+
+        
         run(self.scene)
 
+
+        # while( self.isRunning ):
+        #     print('loop')
+        #     self.keysPressed = pygame.key.get_pressed()
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             self.isRunning = False
+
+        #         self.on_event(event.type)
+
+        #         if event.type == KEYDOWN:
+        #             self.on_key(True, event.key, event.mod)
+        #         if event.type == KEYUP:
+        #             self.on_key(False, event.key, event.mod)
+                
+
+
+        #     self.on_loop()
+        #     self.on_render()
+
+        #     pygame.display.update()
+        #     self.milliseconds_since_start += self.clock.get_time()
+        #     self.clock.tick(self.fps)
  
+
 if __name__ == "__main__" :
     print('start')
     app = GameApp()
