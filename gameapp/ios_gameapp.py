@@ -115,7 +115,7 @@ class MyScene(Scene):
             if y < 200 and x > 350 and x < 674:
                 self.gameapp.on_key(isDown, K_k, None)
             if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_i, None)
+                self.gameapp.on_key(isDown, K_r, None)
         else:
             if x < 350 and y > 200 and y < 568:
                 self.gameapp.on_key(isDown, K_LEFT, None)
@@ -124,7 +124,7 @@ class MyScene(Scene):
             if y < 200 and x > 350 and x < 674:
                 self.gameapp.on_key(isDown, K_DOWN, None)
             if y > 568 and x > 350 and x < 674:
-                self.gameapp.on_key(isDown, K_UP, None)
+                self.gameapp.on_key(isDown, K_Up, None)
 
         
     def touch_began(self, touch):

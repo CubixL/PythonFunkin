@@ -80,13 +80,13 @@ class Level():
 
         # Create target arrows (debugging)
         if isDown == True and key == K_j:
-            self.TargetList.append(TargetArrow(type = 'Left'))
+            self.TargetList.append(TargetArrow(self, type = 'Left'))
         if isDown == True and key == K_k:
-            self.TargetList.append(TargetArrow(type = 'Down'))
+            self.TargetList.append(TargetArrow(self, type = 'Down'))
         if isDown == True and key == K_i:
-            self.TargetList.append(TargetArrow(type = 'Up'))
+            self.TargetList.append(TargetArrow(self, type = 'Up'))
         if isDown == True and key == K_l:
-            self.TargetList.append(TargetArrow(type = 'Right'))
+            self.TargetList.append(TargetArrow(self, type = 'Right'))
 
         # R resets the chart
         if key == K_r:
