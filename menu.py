@@ -1,5 +1,6 @@
 from gameapp import *
 
+   
 class Menu():
     def __init__(self, parent):
         self.parent = parent
@@ -8,14 +9,30 @@ class Menu():
         self.TestText = GameText(self, self.GUIFont)
         self.MenuBackground = GameImage(self, 'images\\background\\BGE_MenuBackground.png')
 
-        # concerning menu buttons
-        self.ButtonPlay = GameImage(self, 'images\\gui\\GUI_ButtonPlay.png')
-        self.ButtonPlaySelected = GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png')
-        self.ButtonLoad = GameImage(self, 'images\\gui\\GUI_ButtonLoad.png')
-        self.ButtonLoadSelected = GameImage(self, 'images\\gui\\GUI_ButtonLoadSelected.png')
-        self.ButtonEdit = GameImage(self, 'images\\gui\\GUI_ButtonEdit.png')
-        self.ButtonEditSelected = GameImage(self, 'images\\gui\\GUI_ButtonEditSelected.png')
+        self.Buttons = []
+
+        self.Buttons.append( { 
+            'section' : 'level',
+            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
+            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17)),
+        })
+
+        self.Buttons.append( { 
+            'section' : 'load',
+            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonLoad.png', (17, 58)),
+            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonLoadSelected.png', (17, 56)),
+        })
+
+        self.Buttons.append( { 
+            'section' : 'editor',
+            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonEdit.png', (17, 99)),
+            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonEditSelected.png', (17, 97)),
+        })
+
+     
+
         self.highlighted = 0
+
 
     def on_loop(self):
         pass
@@ -25,41 +42,45 @@ class Menu():
         self.TestText.renderText(f'{self.highlighted}')
 
         # buttons
-        if self.highlighted == 0:
-            self.ButtonPlaySelected.render(position = (17, 17))
-            self.ButtonLoad.render(position = (17, 58))
-            self.ButtonEdit.render(position = (17, 99))
-        if self.highlighted == 1:
-            self.ButtonPlay.render(position = (17, 20))
-            self.ButtonLoadSelected.render(position = (17, 56))
-            self.ButtonEdit.render(position = (17, 99))
-        if self.highlighted == 2:
-            self.ButtonPlay.render(position = (17, 20))
-            self.ButtonLoad.render(position = (17, 58))
-            self.ButtonEditSelected.render(position = (17, 97))
+
+
+        for index in range(0, len(self.Buttons)):
+            currentButton = self.Buttons[index]
+            if index == self.highlighted:
+                currentButton['imgSelected'].render()
+            else:
+                currentButton['imgNormal'].render()
+
+
+            
+
+        
 
     def on_key(self, isDown, key, mod): 
-            if isDown == True and key == K_ESCAPE: # ESC kills game
+        if isDown:
+            if key == K_ESCAPE: # ESC kills game
                 self.parent.isRunning = False
             
             # menu navigating
-            if isDown == True and key == K_DOWN or isDown == True and key == K_s:
-                if self.highlighted < 2:
+            numItems = len(self.Buttons) - 1
+            if key == K_DOWN or key == K_s:
+                if self.highlighted < numItems:
                     self.highlighted += 1
                 else:
                     self.highlighted = 0
-            if isDown == True and key == K_UP or isDown == True and key == K_w:
+            if key == K_UP or key == K_w:
                 if self.highlighted > 0:
                     self.highlighted -= 1
                 else:
-                    self.highlighted = 2
+                    self.highlighted = numItems
             
             # enter key
-            if isDown == True and key == K_RETURN:
+            if key == K_RETURN:
+
+                self.parent.section = self.Buttons[self.highlighted]['section']
+
                 if self.highlighted == 0:
-                    self.parent.section = 'level'
                     self.parent.level.loadFile()
-                if self.highlighted == 1:
-                    self.parent.section = 'load'
-                if self.highlighted == 2:
-                    self.parent.section = 'editor'
+
+
+

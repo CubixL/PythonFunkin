@@ -18,6 +18,11 @@ class PythonFunkin(GameApp):               # Main app
         self.fps = 66.666
         self.section = 'menu'
         self.level = Level(self)
+
+        
+        
+
+
         self.menu = Menu(self)
         self.editor = Editor(self)
 
