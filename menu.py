@@ -59,12 +59,11 @@ class Menu():
             
             # enter key
             if key == K_RETURN:
+                self.doAction()
 
-                self.parent.section = self.Buttons[self.highlighted]['section']
 
-                if self.highlighted == 0:
-                    self.parent.level.loadFile()
-
+    def doAction(self):
+        pass
 
 
 

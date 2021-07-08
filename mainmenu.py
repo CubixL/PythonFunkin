@@ -23,4 +23,10 @@ class MainMenu(Menu):
             'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonEditSelected.png', (17, 97)),
         })        
 
-    
+    def doAction(self):
+        self.parent.section = self.Buttons[self.highlighted]['section']
+
+
+        if self.highlighted == 0:
+            self.parent.level.loadFile()
+
