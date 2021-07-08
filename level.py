@@ -2,6 +2,7 @@ from gameapp.win_gameapp import GameAudio
 from gameapp import *
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
+from rating import Rating
 
 import json
 
@@ -9,22 +10,26 @@ class Level():
     def __init__(self, parent):
         self.parent = parent
         self.scale = parent.scale        
-        self.LevelBackground = GameImage(self, 'images\\background\\testBG.gif', (0, 0))
+        self.LevelBackground = GameImage(self, 'images\\background\\StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
+        self.Rating = Rating(self)
+        self.Combo = 0
+
         self.TargetList = []
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
-        self.music = GameAudio('song\\Tutorial_Inst.ogg')
-
+        self.music = GameAudio('song\\Inst.ogg')
 
         # font & text
         self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
-        self.MSText = GameText(self, self.GUIFont)
-        self.FPSText = GameText(self, self.GUIFont)
-        self.ScoreText = GameText(self, self.GUIFont)
+        self.DebugFont = GameFont(self, 'fonts\\vcr.ttf', 4, False)
+        self.MSText = GameText(self, self.DebugFont)
+        self.FPSText = GameText(self, self.DebugFont)
+        self.ScoreText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
+        self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
 
     def getMilli(self):
         return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
@@ -37,10 +42,16 @@ class Level():
             # Check for targets that need to become active
             if target.state == 'hidden' and self.getMilli() >= target.milliseconds:
                 target.state = 'active'
-            # Check for targets that have passed the input range
-            if target.state == 'active' and score < 0:
-                target.state = 'played'
-                currentscore += score
+            # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
+            if target.isEnemy == False:
+                if target.state == 'active' and score < 0:
+                    target.state = 'played'
+                    currentscore += score
+                    # reset combo
+                    self.Combo = 0
+            elif target.isEnemy == True:
+                if target.state == 'active' and target.img.position.y < 11:
+                    target.state = 'played'
             target.move() # Move targets up
 
         self.PlayerScore += currentscore
@@ -54,18 +65,19 @@ class Level():
         self.PlayerArrowR.render()
         for target in self.TargetList:                                          # 3. Target arrows (Note, then sustain line, then sustain end)
             target.render()
-
            
         self.MSText.renderText(f'Game time: {self.getMilli()}')                 # 4. GUI (Text)
-        self.FPSText.renderText(f'FPS: {self.parent.fps}', position = (0, 6))
-        self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (0, 12))
+        self.FPSText.renderText(f'FPS: {self.parent.fps}', position = (0, 4))
+        self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
+        self.ComboText.renderText(f'{self.Combo}', position = (120, 114))
+
+        self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
+            self.music.unload()
             self.parent.section = 'menu'
         else:
-                
-
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
             self.PlayerArrowD.on_key(isDown, key)
             self.PlayerArrowU.on_key(isDown, key)
@@ -75,24 +87,19 @@ class Level():
             currentscore = 0
             for target in self.TargetList:
                 # If target arrow was in score range and correct key was pressed
-                if target.calcScore() > 0 and key == target.key and isDown and target.state == 'active':
-                    target.state = 'played'
-                    currentscore += target.calcScore()
+                if target.calcScore() > 0 and isDown and target.state == 'active':
+                    if key == target.key or key == target.altkey:
+                        target.state = 'played'
+                        currentscore += target.calcScore()
+                        # Add 1 to combo
+                        self.Combo += 1
             
             # If score is still 0, the bad key was pressed
             if currentscore == 0 and key in (K_DOWN, K_UP, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d) and isDown:
                 currentscore = -10
+                # reset combo
+                self.Combo = 0
             self.PlayerScore += currentscore
-
-            # Create target arrows (debugging)
-            if isDown == True and key == K_j:
-                self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = 0))
-            if isDown == True and key == K_k:
-                self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 0))
-            if isDown == True and key == K_i:
-                self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = 0))
-            if isDown == True and key == K_l:
-                self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = 0))
 
             # R resets the chart
             if isDown == True and key == K_r:
@@ -104,10 +111,39 @@ class Level():
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
+        self.music.load('song\\Inst.ogg')
 
         chart = open('song\\data.json')
         data = json.load(chart)
 
-        print(data['notes'])
+        self.JSONsections = data['sections']
+        for section in range (0, self.JSONsections):
+            print (data['notes'][section]['sectionNotes'])
+
+        # The big complicated stuff
+        for section in range (0, self.JSONsections): # Find the number of notes in every single section
+            self.JSONnotenumber = len(data['notes'][section]['sectionNotes'])
+            for note in range (0, self.JSONnotenumber): # For every note in a section, find it's spawn time, type, and who it must be delivered to
+                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] - 1500
+                self.JSONtype = data['notes'][section]['sectionNotes'][note][1]
+                self.JSONenemy = not data['notes'][section]['mustHitSection']
+                if self.JSONtype == 0:
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                if self.JSONtype == 1:
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                if self.JSONtype == 2:
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                if self.JSONtype == 3:
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
 
         self.music.play()
+
+
+        # 1. 'notes': the entire list of all the notes
+        # 2. int: section number
+        # 3. 'sectionNotes': notes in the section
+        # 4. int: number of the note in the section
+        # 5. int: desired variable of a specific note
+                # 0 is number in milliseconds when it appears
+                # 1 is note type (0 - left, 1 - down, 2 - up, 3 - right)
+                # 2 is sustain duration (how much time you have to hold it)

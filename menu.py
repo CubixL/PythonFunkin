@@ -58,7 +58,8 @@ class Menu():
             if isDown == True and key == K_RETURN:
                 if self.highlighted == 0:
                     self.parent.section = 'level'
+                    self.parent.level.loadFile()
                 if self.highlighted == 1:
                     self.parent.section = 'load'
                 if self.highlighted == 2:
-                    self.parent.section = 'edit'
+                    self.parent.section = 'editor'

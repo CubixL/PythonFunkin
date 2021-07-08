@@ -15,26 +15,33 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
         self.img_default.position.y = 10 
         self.img_pressed = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Pressed.png')
         self.img_pressed.position.y = 10 
+
+        self.img_enemy = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Default.png')
+        self.img_enemy.position.y = 10
         
         # Determine position
         if self.type == 'Left':
-            self.img_default.position.x = 80 
-            self.img_pressed.position.x = 80 
+            self.img_default.position.x = 144
+            self.img_pressed.position.x = 144
+            self.img_enemy.position.x = 17
             self.key = K_LEFT
             self.altkey = K_a
         if self.type == 'Down':
-            self.img_default.position.x = 101 
-            self.img_pressed.position.x = 101 
+            self.img_default.position.x = 165
+            self.img_pressed.position.x = 165
+            self.img_enemy.position.x = 38
             self.key = K_DOWN
             self.altkey = K_s
         if self.type == 'Up':
-            self.img_default.position.x = 123 
-            self.img_pressed.position.x = 123 
+            self.img_default.position.x = 186
+            self.img_pressed.position.x = 186 
+            self.img_enemy.position.x = 59
             self.key = K_UP
             self.altkey = K_w
         if self.type == 'Right':
-            self.img_default.position.x = 144 
-            self.img_pressed.position.x = 144 
+            self.img_default.position.x = 207
+            self.img_pressed.position.x = 207
+            self.img_enemy.position.x = 80
             self.key = K_RIGHT
             self.altkey = K_d
     
@@ -43,6 +50,7 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
             self.img_default.render() # Render default sprites if not pressed
         elif self.isPressed == True:
             self.img_pressed.render() # Render pressed sprites if pressed
+        self.img_enemy.render()
 
     def on_key(self, isDown, key):
         # Key and altkeys determine if isPressed is true or not
