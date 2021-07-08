@@ -8,7 +8,7 @@
 
 from gameapp import *
 from level import Level
-from menu import Menu
+from mainmenu import MainMenu
 from editor import Editor
    
 class PythonFunkin(GameApp):               # Main app
@@ -23,7 +23,7 @@ class PythonFunkin(GameApp):               # Main app
         
 
 
-        self.menu = Menu(self)
+        self.menu = MainMenu(self)
         self.editor = Editor(self)
 
     def on_loop(self): # Main loop
