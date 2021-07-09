@@ -89,7 +89,7 @@ class GameAudio():
         if self.mySound:
             self.mySound.stop()
             
-        self.mySound = pygame.mixer.Sound(fileName)
+        self.mySound = pygame.mixer.Sound(fileName + '.ogg')
 
     def play(self, numRepeat = 0):
         self.mySound.play(loops = numRepeat)     
