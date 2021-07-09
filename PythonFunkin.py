@@ -37,7 +37,7 @@ class PythonFunkin(GameApp):               # Main app
     def on_render(self):  # Blit stuff
         if self.section == 'level':
             self.level.on_render()
-        if self.section == 'menu':
+        elif self.section == 'menu':
             self.menu.on_render()
         elif self.section == 'editor':
             self.editor.on_render()
@@ -45,9 +45,9 @@ class PythonFunkin(GameApp):               # Main app
     def on_key(self, isDown, key, mod):         # Check inputs
         if self.section == 'level':
             self.level.on_key(isDown, key, mod)
-        if self.section == 'menu':
+        elif self.section == 'menu':
             self.menu.on_key(isDown, key, mod)
-        if self.section == 'editor':
+        elif self.section == 'editor':
             self.editor.on_key(isDown, key, mod)
 
 if __name__ == '__main__':

@@ -11,6 +11,9 @@ else:
 screen_size = (1024,768)
 renderImages = []
 
+def convertY(y):
+    return screen_size[1] - y
+
 class GameImage():
     def __init__(self, parent, fileName = None, position = (0,0)):
         self.parent = parent
@@ -26,6 +29,7 @@ class GameImage():
             self.image.scale = parent.scale
             self.image.anchor_point = (0,0)
             
+
 
     def render(self, position = None):
         if position:
@@ -80,7 +84,33 @@ class GameText():
         self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1]))
         self.image.text = str(self.text)
         renderImages.append(self)
-        
+
+
+class VirtualKey():
+    def __init__(self, parent, label, key, colrow):
+        self.parent = parent
+        self.scale = 1
+        self.label = label
+        self.key = key
+        self.diameter = 50
+        self.spacing = 5
+        self.distance = (self.diameter*2) + (self.spacing * 2)       
+
+
+        if parent and colrow:
+            xpos = self.diameter + self.spacing
+            ypos  = (self.distance * 3) + self.diameter + self.spacing
+            self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
+
+            self.circle =  ShapeNode(Path.oval(self.position[0], self.position[1], self.diameter, self.diameter))
+            self.circle.position = (self.position.x, screen_size[1] - self.position.y + self.diameter)
+            self.text = GameText(self, GameFont(self), label, self.position)
+
+
+
+    def render(self):
+        renderImages.append(self)
+
         
 class MyScene(Scene):
     def setup(self):
@@ -112,11 +142,10 @@ class MyScene(Scene):
         print(f'touch  {touch.location} {isDown}')
         
         pos = touch.location
-        
         for vk in self.gameapp.virtualKeys:
             vk: VirtualKey 
-            if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
-               pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
+            if (pos[0] > vk.position.x - vk.diameter) and (pos[0] < vk.position.x + vk.diameter) and \
+               (pos[1] > vk.position.y - vk.diameter) and (pos[1] < vk.position.y + vk.diameter):
                 self.gameapp.on_key(isDown, vk.key, None)
 
 
@@ -154,24 +183,23 @@ class MyScene(Scene):
         self.process_touch(touch, False)
 
 
-class VirtualKey():
-    def __init__(self, parent, label, key, position):
-        self.parent = parent
-        self.scale = 1
-        self.label = label
-        self.key = key
-        self.diameter = 50
-        self.position = Rect(position[0], position[1], 0, 0)
-        self.circle =  ShapeNode(Path.oval(position[0], position[1], self.diameter, self.diameter))
-        self.circle.position = (self.position.x, screen_size[1] - self.position.y + self.diameter)
-        self.text = GameText(self, GameFont(self), label, position)
-
-
-
-    def render(self):
-        renderImages.append(self)
-
         
+
+class GameAudio():
+    def __init__(self, fileName = None):
+       pass
+    def play(self, loop = 0):
+       pass
+    def load(self, fileName):
+       pass
+    def unload(self):
+       pass
+    def pause(self):
+       pass
+    def unpause(self):
+       pass
+    def stop(self):
+       pass
                     
         
 class GameApp():
@@ -220,11 +248,14 @@ class GameApp():
         # return self.curUserEventId
     
     def start(self):
-        height = screen_size[1] - 50
-        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,height)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,height)))
-        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,height - 50)))
-        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,height)))        
+        
+        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (5,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (7,1)))
+        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (6,0)))
+        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (6,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_r, (1,2)))
+        self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (1,0)))
+        self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (9,2)))    
 
         self.on_start()
         run(self.scene)

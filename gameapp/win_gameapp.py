@@ -100,17 +100,21 @@ class GameAudio():
         pygame.mixer.music.stop()
 
 
-
-
 class VirtualKey():
-    def __init__(self, parent, label, key, position):
+    def __init__(self, parent, label, key, colrow):
         self.parent = parent
         self.scale = 1
         self.label = label
         self.key = key
         self.diameter = 20
-        self.position = Rect(position[0], position[1], 0, 0)
-        self.text = GameText(self, GameFont(self, 'Calibri', 10), label, position)
+        self.spacing = 2.5
+        self.distance = (self.diameter*2) + (self.spacing * 2)
+
+        if parent and colrow:
+            xpos = self.diameter + self.spacing
+            ypos  = self.parent.surface.get_height() - (self.distance * 3) + self.diameter + self.spacing
+            self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
+            self.text = GameText(self, GameFont(self, 'Calibri', 10), label, self.position)
         
         
 
@@ -121,7 +125,7 @@ class VirtualKey():
         
         
 class GameApp:
-    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
+    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = True):
         self.hasVK = hasVK
         self.platform = 'win'
         self.scale = scale
@@ -143,9 +147,10 @@ class GameApp:
         self.clock = pygame.time.Clock()
         vkspace = 0
         if hasVK:
-            vkspace = 200
+            vk = VirtualKey(None, None, None, None)
+            vkspace = vk.distance * 3
 
-        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale) + vkspace), display=displayNumber)
+        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale + vkspace)), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
@@ -176,11 +181,13 @@ class GameApp:
     def start(self):
 
         if self.hasVK:
-            height = self.surface.get_height() - 50
-            self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (300,height)))
-            self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (400,height)))
-            self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (350,height - 50)))
-            self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (350,height)))
+            self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (5,1)))
+            self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (7,1)))
+            self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (6,0)))
+            self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (6,1)))
+            self.virtualKeys.append(VirtualKey(self, 'R', K_r, (1,2)))
+            self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (1,0)))
+            self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (9,2)))
 
 
         self.on_start()
