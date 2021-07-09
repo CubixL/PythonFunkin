@@ -5,7 +5,7 @@ This is a guide to fetch the project files on iOS using StaSh.
 2. Access the console by swiping left from the right edge of the screen.
 3. Type this into the command line:
 ```Python
-    import requests as r; exec(r.get('https://bit.ly/get-stash').content)
+import requests as r; exec(r.get('https://bit.ly/get-stash').content)
 ```
 4. Restart Pythonista (Open the App Switcher and swipe the app up, then come back into Pythonista again).
 5. Find the `launch_stash.py` file (usually located in the "This iPad" folder)
