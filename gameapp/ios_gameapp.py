@@ -7,6 +7,7 @@ if os.name == 'nt':
 else:
     from scene import run, Scene, SpriteNode, LabelNode, ShapeNode
     from ui import Path
+    import sound
     
 screen_size = (1024,768)
 renderImages = []
@@ -168,19 +169,27 @@ class MyScene(Scene):
 
 class GameAudio():
     def __init__(self, fileName = None):
-       pass
+        if fileName:
+           fileName = fileName.replace('\\', '/')
+
+        self.fileName = fileName
+        self.effect = None
+        
     def play(self, loop = 0):
-       pass
+        self.effect = sound.play_effect(self.fileName)
+       
     def load(self, fileName):
        pass
     def unload(self):
-       pass
+       if self.effect:
+           self.effect.stop()
     def pause(self):
        pass
     def unpause(self):
        pass
     def stop(self):
-       pass
+       if self.effect:
+           self.effect.stop()
                     
         
 class GameApp():

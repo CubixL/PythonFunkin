@@ -111,7 +111,7 @@ class Level():
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
-        self.music.load('song\\Inst.ogg')
+        self.music.load('song/Inst.ogg')
 
         chart = open('song/data.json')
         data = json.load(chart)

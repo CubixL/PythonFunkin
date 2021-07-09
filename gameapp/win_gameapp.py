@@ -114,7 +114,7 @@ class VirtualKey():
             xpos = self.diameter + self.spacing
             ypos  = self.parent.surface.get_height() - (self.distance * 3) + self.diameter + self.spacing
             self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
-            self.text = GameText(self, GameFont(self, 'Calibri', 10), label, self.position)
+            self.text = GameText(self, GameFont(self, 'Calibri', 20), label, (self.position.x-10, self.position.y-10))
         
         
 
