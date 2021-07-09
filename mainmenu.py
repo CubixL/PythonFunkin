@@ -1,5 +1,16 @@
 from menu import Menu
-from gameapp import GameImage
+from gameapp import *
+
+#  for future usage when we need a more intelligent button, like adding visual effect 
+# class GameButton():
+#     def __init__(self, section, imgNormal, imgSelected):
+#         self.type = 'text' 'image'
+#         self.section = section
+#         self.imgNormal = imgNormal
+#         self.imgSelected = imgSelected
+
+
+
 
 class MainMenu(Menu):   
     def __init__(self, parent):
@@ -10,6 +21,14 @@ class MainMenu(Menu):
             'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
             'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17)),
         })
+
+        # for future usage example on how to use the GameButton class instead of a dictionary
+        # self.Buttons.append(GameButton(
+        #                         'level',
+        #                         GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
+        #                         GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17))
+        #                     )
+        # )
 
         self.Buttons.append( { 
             'section' : 'load',
@@ -23,10 +42,15 @@ class MainMenu(Menu):
             'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonEditSelected.png', (17, 97)),
         })        
 
-    def doAction(self):
-        self.parent.section = self.Buttons[self.highlighted]['section']
+    def doAction(self, isDown, key, mod):
+        if key == K_RETURN:
+            self.parent.section = self.Buttons[self.highlighted]['section']
+            # if using the GameButton class, we need to acces the values with . instead of []
+            # self.parent.section = self.Buttons[self.highlighted].section
 
-
-        if self.highlighted == 0:
-            self.parent.level.loadFile()
+            if self.highlighted == 0:
+                self.parent.level.loadFile()
+        
+        if key == K_ESCAPE:
+            self.parent.quit()
 

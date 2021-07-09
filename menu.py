@@ -37,9 +37,6 @@ class Menu():
 
     def on_key(self, isDown, key, mod): 
         if isDown:
-            if key == K_ESCAPE: # ESC kills game
-                self.parent.quit()
-            
             # menu navigating
             numItems = len(self.Buttons) - 1
             if key == K_DOWN or key == K_s:
@@ -53,9 +50,7 @@ class Menu():
                 else:
                     self.highlighted = numItems
             
-            # enter key
-            if key == K_RETURN:
-                self.doAction()
+        self.doAction(isDown, key, mod)
 
 
     def doAction(self):
