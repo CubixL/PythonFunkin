@@ -9,7 +9,7 @@
 from gameapp import *
 from level import Level
 from mainmenu import MainMenu
-from editor import Editor
+from funkeditor import Editor
    
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
@@ -18,9 +18,6 @@ class PythonFunkin(GameApp):               # Main app
         self.fps = 66.666
         self.section = 'menu'
         self.level = Level(self)
-
-        
-        
 
 
         self.menu = MainMenu(self)

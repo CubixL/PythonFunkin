@@ -4,7 +4,7 @@ import os
 if os.name == 'posix':
 
     from .ios_constants import *
-    from .ios_gameapp import GameApp, GameText, GameFont, GameImage, Rect
+    from .ios_gameapp import GameApp, GameText, GameFont, GameImage, Rect, GameAudio
     
 #load pygame libraries
 elif os.name == 'nt':
@@ -12,5 +12,5 @@ elif os.name == 'nt':
     from pygame.locals import *
     # from .rect import Rect
     from pygame import Rect
-    from .win_gameapp import GameApp, GameText, GameFont, GameImage
+    from .win_gameapp import GameApp, GameText, GameFont, GameImage, GameAudio
 

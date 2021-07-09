@@ -66,6 +66,8 @@ class GameText():
 
         if not self.image:
             self.image = LabelNode(self.text, font = (self.font.name, self.font.size*self.scale), position=(0,0))
+            self.image.color = RGB
+            #self.image.stroke_color = 'black'
             self.image.anchor_point = (0,0)
 
     def renderText(self, text, position = None):
@@ -83,6 +85,7 @@ class GameText():
 
         self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1]))
         self.image.text = str(self.text)
+        #self.image.color = 'black'
         renderImages.append(self)
 
 
@@ -94,22 +97,23 @@ class VirtualKey():
         self.key = key
         self.diameter = 50
         self.spacing = 5
-        self.distance = (self.diameter*2) + (self.spacing * 2)       
+        self.distance = (self.diameter) + (self.spacing)       
 
 
         if parent and colrow:
             xpos = self.diameter + self.spacing
-            ypos  = (self.distance * 3) + self.diameter + self.spacing
+            ypos  = screen_size[1] - (self.distance * 3) + self.spacing
             self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
 
-            self.circle =  ShapeNode(Path.oval(self.position[0], self.position[1], self.diameter, self.diameter))
-            self.circle.position = (self.position.x, screen_size[1] - self.position.y + self.diameter)
-            self.text = GameText(self, GameFont(self), label, self.position)
-
+            self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
+            self.circle.position = (self.position.x, screen_size[1] - self.position.y)
+            self.text = GameText(self, GameFont(self), label, (self.position.x,self.position.y-self.spacing), (0,0,0))
+            self.text.image.anchor_point = (0.5,0)
 
 
     def render(self):
-        renderImages.append(self)
+        renderImages.append(self.text)
+        
 
         
 class MyScene(Scene):
@@ -132,48 +136,25 @@ class MyScene(Scene):
             self.add_child(image.image)
             
         for vk in self.gameapp.virtualKeys:
-            self.add_child(vk.text.image)
+            vk.text.render()
             self.add_child(vk.circle)
+            self.add_child(vk.text.image)
             
 
         self.gameapp.on_loop()
 
     def process_touch(self, touch, isDown):
-        print(f'touch  {touch.location} {isDown}')
+        #print(f'touch  {touch.location} {isDown}')
         
         pos = touch.location
         for vk in self.gameapp.virtualKeys:
             vk: VirtualKey 
-            if (pos[0] > vk.position.x - vk.diameter) and (pos[0] < vk.position.x + vk.diameter) and \
-               (pos[1] > vk.position.y - vk.diameter) and (pos[1] < vk.position.y + vk.diameter):
+            if (pos[0] > vk.circle.position.x - vk.diameter/2) and (pos[0] < vk.circle.position.x + vk.diameter/2) and \
+               (pos[1] > vk.circle.position.y - vk.diameter/2) and (pos[1] < vk.circle.position.y + vk.diameter/2):
                 self.gameapp.on_key(isDown, vk.key, None)
 
 
-        # x = touch.location[0]
-        # y = touch.location[1]
 
-        # if y < 200 and x < 350:
-        #     self.isShift = isDown
-            
-
-        # if self.isShift:            
-        #     if x < 350 and y > 200 and y < 568:
-        #         self.gameapp.on_key(isDown, K_j, None)
-        #     if x > 674 and y > 200 and y < 568:
-        #         self.gameapp.on_key(isDown, K_l, None)
-        #     if y < 200 and x > 350 and x < 674:
-        #         self.gameapp.on_key(isDown, K_k, None)
-        #     if y > 568 and x > 350 and x < 674:
-        #         self.gameapp.on_key(isDown, K_r, None)
-        # else:
-        #     if x < 350 and y > 200 and y < 568:
-        #         self.gameapp.on_key(isDown, K_LEFT, None)
-        #     if x > 674 and y > 200 and y < 568:
-        #         self.gameapp.on_key(isDown, K_RIGHT, None)
-        #     if y < 200 and x > 350 and x < 674:
-        #         self.gameapp.on_key(isDown, K_DOWN, None)
-        #     if y > 568 and x > 350 and x < 674:
-        #         self.gameapp.on_key(isDown, K_UP, None)
 
         
     def touch_began(self, touch):
@@ -259,6 +240,7 @@ class GameApp():
 
         self.on_start()
         run(self.scene)
+        #self.view.close()
 
  
 if __name__ == "__main__" :

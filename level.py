@@ -1,4 +1,4 @@
-from gameapp.win_gameapp import GameAudio
+
 from gameapp import *
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
@@ -113,7 +113,7 @@ class Level():
         self.TargetList.clear()
         self.music.load('song\\Inst.ogg')
 
-        chart = open('song\\data.json')
+        chart = open('song/data.json')
         data = json.load(chart)
 
         self.JSONsections = data['sections']
