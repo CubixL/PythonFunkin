@@ -168,27 +168,33 @@ class MyScene(Scene):
         
 
 class GameAudio():
-    def __init__(self, fileName = None):
-        if fileName:
-           fileName = fileName.replace('\\', '/')
-
-        self.fileName = fileName
+    def __init__(self):
         self.effect = None
+        self.fileName = None
         
     def play(self, loop = 0):
+    
+        print(f'playing {self.fileName}!')
         self.effect = sound.play_effect(self.fileName)
        
     def load(self, fileName):
-       pass
+        ...
+        if self.effect:
+            self.effect.stop()
+        if fileName:
+            fileName = fileName.replace('\\', '/').replace('.ogg', '.caf')
+        ...
+
+        self.fileName = fileName+'.caf'
     def unload(self):
-       if self.effect:
+        if self.effect:
            self.effect.stop()
     def pause(self):
-       pass
+        pass
     def unpause(self):
-       pass
+        pass
     def stop(self):
-       if self.effect:
+        if self.effect:
            self.effect.stop()
                     
         
@@ -249,7 +255,9 @@ class GameApp():
 
         self.on_start()
         run(self.scene)
-        #self.view.close()
+        
+    def quit(self):
+        self.scene.view.close()
 
  
 if __name__ == "__main__" :

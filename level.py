@@ -21,7 +21,7 @@ class Level():
         self.TargetList = []
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
-        self.music = GameAudio('song\\Inst.ogg')
+        self.music = GameAudio()
 
         # font & text
         self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
@@ -111,7 +111,7 @@ class Level():
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
-        self.music.load('song/Inst.ogg')
+        self.music.load('song/Inst')
 
         chart = open('song/data.json')
         data = json.load(chart)

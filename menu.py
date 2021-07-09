@@ -38,7 +38,7 @@ class Menu():
     def on_key(self, isDown, key, mod): 
         if isDown:
             if key == K_ESCAPE: # ESC kills game
-                self.parent.isRunning = False
+                self.parent.quit()
             
             # menu navigating
             numItems = len(self.Buttons) - 1

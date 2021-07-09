@@ -48,4 +48,5 @@ class PythonFunkin(GameApp):               # Main app
             self.editor.on_key(isDown, key, mod)
 
 if __name__ == '__main__':
+
     PythonFunkin().start()
