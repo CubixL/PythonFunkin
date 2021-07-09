@@ -10,7 +10,7 @@ class Level():
     def __init__(self, parent):
         self.parent = parent
         self.scale = parent.scale        
-        self.LevelBackground = GameImage(self, 'images\\background\\StageBackground.gif', (0, 0))
+        self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
@@ -24,8 +24,8 @@ class Level():
         self.music = GameAudio()
 
         # font & text
-        self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
-        self.DebugFont = GameFont(self, 'fonts\\vcr.ttf', 4, False)
+        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
+        self.DebugFont = GameFont(self, 'fonts/vcr.ttf', 4, False)
         self.MSText = GameText(self, self.DebugFont)
         self.FPSText = GameText(self, self.DebugFont)
         self.ScoreText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
@@ -75,6 +75,7 @@ class Level():
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
+            self.music.stop()
             self.parent.section = 'menu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -114,17 +115,19 @@ class Level():
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
 
-        self.music.load(f'song\\{songName}_Inst.ogg')
 
-        chart = open(f'song\\{songName}.json')
+        self.music.load(f'song/{songName}_Inst')
+
+        
+        chart = open(str('song') + '//' + f'{songName}.json')
         data = json.load(chart)
 
         # Song variables
         
         self.JSONbpm = data['song']['bpm']
         self.JSONsections = data['sections']
-        for section in range (0, self.JSONsections):
-            print (data['notes'][section]['sectionNotes'])
+        #for section in range (0, self.JSONsections):
+            #print (data['notes'][section]['sectionNotes'])
 
         # The big complicated note stuff
         for section in range (0, self.JSONsections): # Find the number of notes in every single section

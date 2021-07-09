@@ -175,18 +175,19 @@ class GameAudio():
         
     def play(self, loop = 0):
     
-        print(f'playing {self.fileName}!')
+        print(f'playing {self.fileName}')
         self.effect = sound.play_effect(self.fileName)
        
     def load(self, fileName):
-        ...
+        print(f'loading {fileName}')
         if self.effect:
             self.effect.stop()
         if fileName:
-            fileName = fileName.replace('\\', '/').replace('.ogg', '.caf')
-        ...
 
-        self.fileName = fileName+'.caf'
+            fileName = str(f'{fileName}.caf').replace('\\', '/')
+            self.fileName = fileName
+        
+
     def unload(self):
         if self.effect:
            self.effect.stop()
