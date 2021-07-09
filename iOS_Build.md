@@ -20,4 +20,4 @@ This is necessary because we need to run the script on Python 2.7 in order for i
 ``
 rm -r PythonFunkin/
 git clone https://YourUsename:YourPassword@github.com/CubixL/PythonFunkin
-```
+``
