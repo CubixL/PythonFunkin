@@ -170,6 +170,9 @@ class GameApp:
     def on_key(self, isDown, key, mod):
         pass
 
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        pass
+
 
     def cleanup(self):
         pygame.quit()
@@ -201,18 +204,21 @@ class GameApp:
 
                 self.on_event(event.type)
 
+                pos = pygame.mouse.get_pos()
                 if event.type == KEYDOWN:
                     self.on_key(True, event.key, event.mod)
                 if event.type == KEYUP:
                     self.on_key(False, event.key, event.mod)
                 if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP):
-                    pos = pygame.mouse.get_pos()
                     for vk in self.virtualKeys:
                         vk: VirtualKey 
                         if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
                            pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
                             self.on_key(event.type == MOUSEBUTTONDOWN, vk.key, None)
 
+                if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP):
+                    self.on_mouse(event.type == MOUSEBUTTONDOWN, event.button, pos[0], pos[1])
+                    
             self.on_loop()
             self.on_render()
 
