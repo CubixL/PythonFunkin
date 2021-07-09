@@ -17,4 +17,5 @@ This is necessary because we need to run the script on Python 2.7 in order for i
 
 7. Run the script using the Play button in the top-right corner of the screen.
 8. A new window next to the console should have appeared, titled StaSh. Type this into the command line:
-
+``rm -r PythonFunkin/``
+``git clone https://YourUsename:YourPassword@github.com/CubixL/PythonFunkin``
