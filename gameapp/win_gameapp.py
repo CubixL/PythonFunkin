@@ -124,7 +124,7 @@ class VirtualKey():
         
         
 class GameApp:
-    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = True):
+    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
         self.hasVK = hasVK
         self.platform = 'win'
         self.scale = scale
