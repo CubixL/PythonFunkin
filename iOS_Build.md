@@ -21,7 +21,7 @@ This is necessary because we need to run the script on Python 2.7 in order for i
 rm -r PythonFunkin/
 git clone https://YourUsename:YourPassword@github.com/CubixL/PythonFunkin
 ```
-**Make sure that YourUsername is changed to your GitHub username, as well as YourPassword changed to your actual password.**
+**Make sure that `YourUsername` is changed to your GitHub username, as well as `YourPassword` changed to your actual password.**
 
 9. Before processing that last command, StaSh might say something about installing the `dulwich` module. Simply press `y` and click enter.
 10. You have successfully imported the game! The PythonFunkin folder should be somewhere inside the "This iPad" folder.
