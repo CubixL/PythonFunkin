@@ -105,6 +105,8 @@ class Level():
             if isDown == True and key == K_r:
                 self.loadFile()
 
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        pass
 
     def loadFile(self, songName = None): # Load the entire song chart (JSON file stuff)
         # When called, reset score, timer and note list to 0 before loading

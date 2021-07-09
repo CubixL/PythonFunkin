@@ -47,6 +47,14 @@ class PythonFunkin(GameApp):               # Main app
         elif self.section == 'editor':
             self.editor.on_key(isDown, key, mod)
 
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        if self.section == 'level':
+            self.level.on_mouse(isDown, key, xcoord, ycoord)
+        elif self.section == 'menu':
+            self.menu.on_mouse(isDown, key, xcoord, ycoord)
+        elif self.section == 'editor':
+            self.editor.on_mouse(isDown, key, xcoord, ycoord)
+
 if __name__ == '__main__':
 
     PythonFunkin().start()

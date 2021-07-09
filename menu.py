@@ -56,6 +56,9 @@ class Menu():
             
         self.doAction(isDown, key, mod)
 
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        pass
+
 
     def doAction(self):
         pass
