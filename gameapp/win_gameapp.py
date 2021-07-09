@@ -217,7 +217,7 @@ class GameApp:
                             self.on_key(event.type == MOUSEBUTTONDOWN, vk.key, None)
 
                 if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP):
-                    self.on_mouse(event.type == MOUSEBUTTONDOWN, event.button, pos[0], pos[1])
+                    self.on_mouse(event.type == MOUSEBUTTONDOWN, event.button, pos[0] / self.scale, pos[1] / self.scale)
                     
             self.on_loop()
             self.on_render()
