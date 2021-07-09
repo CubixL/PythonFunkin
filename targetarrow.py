@@ -1,24 +1,24 @@
 from gameapp import *
 
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
-    def __init__(self, parent, type, milliseconds, isEnemy):
+    def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
         # Set up variables
         self.type = type
         self.parent = parent
         self.milliseconds = milliseconds
         self.scale = parent.scale
         self.isEnemy = isEnemy
+        self.sustainLength = sustainLength
 
         # Set up sprites + starting Y position
         self.img = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Target.png') 
         self.img_sustain = GameImage(self, f'images\\arrows\\GUI_Arrow{type}TargetHeld.png')
         self.img_sustainend = GameImage(self, f'images\\arrows\\GUI_Arrow{type}TargetHeldEnd.png')
         self.img.position.y = 110 
-        self.img_sustain.position.y = 60
+        self.img_sustain.position.y = 116
         
         # Note characteristics
         self.state = 'hidden'
-        self.sustainLength = 0
        
         # X position and keys/altkeys determined by note type. Default is left.
         if self.isEnemy == False:
@@ -64,7 +64,8 @@ class TargetArrow():                       # Arrows that rise up and hitting the
     
     def move(self): # Move up the screen every frame
         if self.state == 'active':
-            self.img.position.y -= 1 
+            self.img.position.y -= 1
+            self.img_sustain.position.y -= 1 
 
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
         score = 0
@@ -92,5 +93,5 @@ class TargetArrow():                       # Arrows that rise up and hitting the
 
     def render(self): # Render only if is currently on the screen.
         if self.state == 'active':
+            self.img_sustain.render()
             self.img.render()
-        self.img_sustain.render()

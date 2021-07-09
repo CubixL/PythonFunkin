@@ -83,19 +83,20 @@ class GameText(GameImage):
 
 class GameAudio():
     def __init__(self):
-        pass
-    def play(self, loop = 0):
-            pygame.mixer.music.play(loops = loop)
+        self.mySound = None 
+    
     def load(self, fileName):
-        pygame.mixer.music.load(fileName + '.ogg')
-    def unload(self):
-        pygame.mixer.music.unload()
-    def pause(self):
-        pygame.mixer.music.pause()
-    def unpause(self):
-        pygame.mixer.music.unpause()
+        if self.mySound:
+            self.mySound.stop()
+            
+        self.mySound = pygame.mixer.Sound(fileName)
+
+    def play(self, numRepeat = 0):
+        self.mySound.play(loops = numRepeat)     
     def stop(self):
-        pygame.mixer.music.stop()
+        self.mySound.stop()
+    def set_volume(self, volume = 1):
+        self.mySound.set_volume(volume)
 
 
 class VirtualKey():
@@ -142,6 +143,8 @@ class GameApp:
 
 
         pygame.init()
+        pygame.mixer.init()
+
         self.clock = pygame.time.Clock()
         vkspace = 0
         if hasVK:

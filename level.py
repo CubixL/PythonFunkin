@@ -75,7 +75,6 @@ class Level():
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
-            self.music.unload()
             self.parent.section = 'menu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -106,35 +105,43 @@ class Level():
                 self.loadFile()
 
 
-    def loadFile(self): # Load the entire song chart (JSON file stuff)
+    def loadFile(self, songName = None): # Load the entire song chart (JSON file stuff)
         # When called, reset score, timer and note list to 0 before loading
+        if songName == None:
+            songName = 'Tutorial'
+
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
-        self.music.load('song/Inst')
 
-        chart = open('song/data.json')
+        self.music.load(f'song\\{songName}_Inst.ogg')
+
+        chart = open(f'song\\{songName}.json')
         data = json.load(chart)
 
+        # Song variables
+        
+        self.JSONbpm = data['song']['bpm']
         self.JSONsections = data['sections']
         for section in range (0, self.JSONsections):
             print (data['notes'][section]['sectionNotes'])
 
-        # The big complicated stuff
+        # The big complicated note stuff
         for section in range (0, self.JSONsections): # Find the number of notes in every single section
             self.JSONnotenumber = len(data['notes'][section]['sectionNotes'])
-            for note in range (0, self.JSONnotenumber): # For every note in a section, find it's spawn time, type, and who it must be delivered to
-                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] - 1500
+            for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
+                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] - self.JSONbpm * 15
                 self.JSONtype = data['notes'][section]['sectionNotes'][note][1]
                 self.JSONenemy = not data['notes'][section]['mustHitSection']
+                self.JSONsustain = data['notes'][section]['sectionNotes'][note][2]
                 if self.JSONtype == 0:
-                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 1:
-                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 2:
-                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 3:
-                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy))
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
 
         self.music.play()
 
