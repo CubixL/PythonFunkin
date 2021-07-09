@@ -3,7 +3,7 @@ from .ios_pygame import Rect
 from .ios_constants import *
 
 if os.name == 'nt':
-    from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path
+    from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path, sound
 else:
     from scene import run, Scene, SpriteNode, LabelNode, ShapeNode
     from ui import Path
