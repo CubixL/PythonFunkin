@@ -19,7 +19,7 @@ This is necessary because we need to run the script on Python 2.7 in order for i
 8. A new window next to the console should have appeared, titled StaSh. Type this into the command line:
 ```
 rm -r PythonFunkin/
-git clone https://YourUsename:YourPassword@github.com/CubixL/PythonFunkin
+git clone https://YourUsername:YourPassword@github.com/CubixL/PythonFunkin
 ```
 **Make sure that `YourUsername` is changed to your GitHub username, as well as `YourPassword` changed to your actual password.**
 
