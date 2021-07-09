@@ -27,11 +27,15 @@ class Menu():
             currentButton = self.Buttons[index]
             if index == self.highlighted:
                 currentButton['imgSelected'].render()
+                # for future usage when using GameButton class, 
+                # currentButton.imgSelected.render()
+
             else:
                 currentButton['imgNormal'].render()
+                # for future usage when using GameButton class, 
+                # currentButton.imgNormal.render()
 
-
-            
+         
 
         
 
