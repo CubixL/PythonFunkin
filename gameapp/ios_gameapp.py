@@ -245,13 +245,13 @@ class GameApp():
     
     def start(self):
         
-        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (5,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (7,1)))
-        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (6,0)))
-        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (6,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_r, (1,2)))
-        self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (1,0)))
-        self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (9,2)))    
+        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (2,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (4,1)))
+        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (3,0)))
+        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (3,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', K_r, (0,2)))
+        self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (0,0)))
+        self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (6,2)))    
 
         self.on_start()
         run(self.scene)
