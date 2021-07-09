@@ -43,14 +43,15 @@ class MainMenu(Menu):
         })        
 
     def doAction(self, isDown, key, mod):
-        if key == K_RETURN:
-            self.parent.section = self.Buttons[self.highlighted]['section']
-            # if using the GameButton class, we need to acces the values with . instead of []
-            # self.parent.section = self.Buttons[self.highlighted].section
+        if isDown:
+            if key == K_RETURN:
+                self.parent.section = self.Buttons[self.highlighted]['section']
+                # if using the GameButton class, we need to acces the values with . instead of []
+                # self.parent.section = self.Buttons[self.highlighted].section
 
-            if self.highlighted == 0:
-                self.parent.level.loadFile()
-        
-        if key == K_ESCAPE:
-            self.parent.quit()
+                if self.highlighted == 0:
+                    self.parent.level.loadFile()
+            
+            if key == K_ESCAPE:
+                self.parent.quit()
 
