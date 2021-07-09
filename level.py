@@ -113,6 +113,7 @@ class Level():
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
         self.TargetList.clear()
+        self.Combo = 0
 
         self.music.load(f'song\\{songName}_Inst.ogg')
 
