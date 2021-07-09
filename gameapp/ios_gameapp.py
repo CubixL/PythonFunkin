@@ -1,6 +1,7 @@
 import os
 from .ios_pygame import Rect
 from .ios_constants import *
+import platform
 
 if os.name == 'nt':
     from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path, sound
@@ -200,8 +201,11 @@ class GameAudio():
         
 class GameApp():
     def __init__(self, width=640, height=480, display=0, scale=1.0):
-        self.platform = 'ios'
+        self.plat = 'ios'
         self.scale = scale
+        if platform.machine()[:6] == 'iPhone':
+          self.scale = 1.7
+
         self.isRunning = True
         self.surface = None
         self.width = width
