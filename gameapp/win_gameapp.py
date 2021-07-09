@@ -223,6 +223,8 @@ class GameApp:
             self._milliseconds_since_start += self.clock.get_time()
             self.clock.tick(self.fps)
  
+    def quit(self):
+        self.isRunning = False
 
 if __name__ == "__main__" :
     
