@@ -8,7 +8,7 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
         self.isPressed = False
         self.key = None
         self.altkey = None
-        self.scale = parent.scale
+        
 
         # Set up sprites + Y position
         self.img_default = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Default.png')

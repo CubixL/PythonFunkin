@@ -3,7 +3,7 @@ from gameapp import *
 class Menu():
     def __init__(self, parent):
         self.parent = parent
-        self.scale = parent.scale
+        
         self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
         self.TestText = GameText(self, self.GUIFont)
 

@@ -3,6 +3,7 @@ from pygame import Rect
 from pygame.locals import *
 import typing
 
+gblScale = 4.0
 
 class GameImage():
     def __init__(self, parent, fileName = None, position = (0,0)):
@@ -10,13 +11,13 @@ class GameImage():
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
-        self.scale = parent.scale
 
         if self.fileName and not self.image:
             self.image = pygame.image.load(self.fileName)#.convert()
             # pygame.image.set_alpha(128)
             size = self.image.get_size()
-            newsize = (int(size[0] * self.scale), int(size[1] * self.scale))
+            global gblScale
+            newsize = (int(size[0] * gblScale), int(size[1] * gblScale))
             self.image = pygame.transform.scale(self.image, newsize)
 
     def render(self, position = None):
@@ -28,9 +29,10 @@ class GameImage():
                 self.position.y = position[1]
 
 
+        global gblScale
         scaledposition = self.position.copy()
-        scaledposition.x *= self.scale
-        scaledposition.y *= self.scale
+        scaledposition.x *= gblScale
+        scaledposition.y *= gblScale
         pygame.display.get_surface().blit(self.image, scaledposition)
 
         
@@ -38,17 +40,18 @@ class GameImage():
 class GameFont():
     def __init__(self, parent, name = 'Verdana', size = 20, isSys = True):
         self.parent = parent
-        self.scale = parent.scale
         self.name = name
         self.size = size
         self.font = None
         self.isSys = isSys
 
+        global gblScale
+
         if not self.font:
             if self.isSys:
-                self.font = pygame.font.SysFont(self.name, int(self.size * self.scale))
+                self.font = pygame.font.SysFont(self.name, int(self.size * gblScale))
             else:
-                self.font = pygame.font.Font(self.name, int(self.size * self.scale))
+                self.font = pygame.font.Font(self.name, int(self.size * gblScale))
 
 
 class GameText(GameImage):
@@ -56,7 +59,6 @@ class GameText(GameImage):
         super().__init__(parent, fileName=None, position=position)
         self.font = font
         self.text = text
-        self.scale = parent.scale
         self.color = pygame.Color(RGB[0],RGB[1],RGB[2])
 
     def renderText(self, text, position = None):
@@ -75,9 +77,10 @@ class GameText(GameImage):
         if self.text != '':
             self.image = self.font.font.render(self.text, True, self.color)
 
+            global gblScale
             scaledposition = self.position.copy()
-            scaledposition.x *= self.scale
-            scaledposition.y *= self.scale
+            scaledposition.x *= gblScale
+            scaledposition.y *= gblScale
 
             pygame.display.get_surface().blit(self.image, scaledposition)
 
@@ -102,7 +105,6 @@ class GameAudio():
 class VirtualKey():
     def __init__(self, parent, label, key, colrow):
         self.parent = parent
-        self.scale = 1
         self.label = label
         self.key = key
         self.diameter = 20
@@ -127,7 +129,6 @@ class GameApp:
     def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
         self.hasVK = hasVK
         self.platform = 'win'
-        self.scale = scale
         self.isRunning = True
         self.surface = None
         self.width = width
@@ -153,7 +154,8 @@ class GameApp:
             vk = VirtualKey(None, None, None, None)
             vkspace = vk.distance * 3
 
-        self.surface = pygame.display.set_mode((int(self.width * self.scale), int(self.height * self.scale + vkspace)), display=displayNumber)
+        global gblScale
+        self.surface = pygame.display.set_mode((int(self.width * gblScale), int(self.height * gblScale + vkspace)), display=displayNumber)
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
@@ -222,8 +224,9 @@ class GameApp:
                            pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
                             self.on_key(event.type == MOUSEBUTTONDOWN, vk.key, None)
 
+                global gblScale
                 if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP):
-                    self.on_mouse(event.type == MOUSEBUTTONDOWN, event.button, pos[0] / self.scale, pos[1] / self.scale)
+                    self.on_mouse(event.type == MOUSEBUTTONDOWN, event.button, pos[0] / gblScale, pos[1] / gblScale)
                     
             self.on_loop()
             self.on_render()

@@ -6,7 +6,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.type = type
         self.parent = parent
         self.milliseconds = milliseconds
-        self.scale = parent.scale
+        
         self.isEnemy = isEnemy
         self.sustainLength = sustainLength
 

@@ -10,11 +10,11 @@ else:
     from ui import Path
     import sound
     
-screen_size = (1024,768)
+gblScale = 1
+gblScene = None
 renderImages = []
 
-def convertY(y):
-    return screen_size[1] - y
+
 
 class GameImage():
     def __init__(self, parent, fileName = None, position = (0,0)):
@@ -24,11 +24,12 @@ class GameImage():
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
-        self.scale = parent.scale
+        
 
         if self.fileName and not self.image:
             self.image = SpriteNode(self.fileName)
-            self.image.scale = parent.scale
+            global gblScale
+            self.image.scale = gblScale
             self.image.anchor_point = (0,0)
             
 
@@ -40,8 +41,12 @@ class GameImage():
             else:
                 self.position.x = position[0]
                 self.position.y = position[1]
-
-        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1] * self.image.scale))
+        #screen_height = screen_size[1] 
+        global gblScene
+        global gblScale
+        screen_height = gblScene.size[1] 
+        self.image.position = (self.position.x * gblScale, screen_height - (self.position.y * gblScale)  - (self.image.size[1] * self.image.scale))
+        global renderImages
         renderImages.append(self)
        
         
@@ -49,7 +54,6 @@ class GameImage():
 class GameFont():
     def __init__(self, parent, name = 'Helvetica', size = 20, isSys = True):
         self.parent = parent
-        self.scale = parent.scale
         self.name = name
         self.size = size
         self.font = None
@@ -59,7 +63,6 @@ class GameFont():
 class GameText():
     def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
         self.parent = parent
-        self.scale = parent.scale
         self.image = None
         self.position = Rect(position[0], position[1], 0, 0)      
         self.font = font
@@ -67,7 +70,7 @@ class GameText():
         self.color = RGB
 
         if not self.image:
-            self.image = LabelNode(self.text, font = (self.font.name, self.font.size*self.scale), position=(0,0))
+            self.image = LabelNode(self.text, font = (self.font.name, self.font.size*gblScale), position=(0,0))
             self.image.color = RGB
             #self.image.stroke_color = 'black'
             self.image.anchor_point = (0,0)
@@ -84,17 +87,17 @@ class GameText():
                 self.position.x  = position[0]
                 self.position.y  = position[1]
 
-
-        self.image.position = (self.position.x * self.scale, screen_size[1] - (self.position.y * self.scale)  - (self.image.size[1]))
+        global gblScene
+        self.image.position = (self.position.x * gblScale, gblScene.size[1] - (self.position.y * gblScale)  - (self.image.size[1]))
         self.image.text = str(self.text)
         #self.image.color = 'black'
+        global renderImages
         renderImages.append(self)
 
 
 class VirtualKey():
     def __init__(self, parent, label, key, colrow):
         self.parent = parent
-        self.scale = 1
         self.label = label
         self.key = key
         self.diameter = 50
@@ -104,16 +107,18 @@ class VirtualKey():
 
         if parent and colrow:
             xpos = self.diameter + self.spacing
-            ypos  = screen_size[1] - (self.distance * 3) + self.spacing
+            global gblScene
+            ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
             self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
 
             self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
-            self.circle.position = (self.position.x, screen_size[1] - self.position.y)
+            self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)
             self.text = GameText(self, GameFont(self), label, (self.position.x,self.position.y-self.spacing), (0,0,0))
             self.text.image.anchor_point = (0.5,0)
 
 
     def render(self):
+        global renderImages
         renderImages.append(self.text)
         
 
@@ -123,7 +128,7 @@ class MyScene(Scene):
         self.isShift = False
     def update(self):
         self.gameapp._milliseconds_since_start += 16.66666666666666666666
-        screen_size = self.size
+        global renderImages
         for image in renderImages:
             image.image.remove_from_parent()
         for vk in self.gameapp.virtualKeys:
@@ -164,7 +169,10 @@ class MyScene(Scene):
 
     def touch_ended(self, touch):
         self.process_touch(touch, False)
-
+        
+    def did_change_size(self):
+        global gblScale
+        gblScale = min(self.size[0] / 240, self.size[1] / 135)        
 
         
 
@@ -201,12 +209,17 @@ class GameAudio():
                     
         
 class GameApp():
-    def __init__(self, width=640, height=480, display=0, scale=1.0):
+    def __init__(self, width=640, height=480, display=0):
         self.plat = 'ios'
-        self.scale = scale
-        if platform.machine()[:6] == 'iPhone':
-          self.scale = 1.7
+        self.scene = MyScene()
+        global gblScale
 
+        # if os.name == 'nt':
+        #     gblScale = 4.0
+
+        # if platform.machine()[:6] == 'iPhone':
+        gblScale = min(self.scene.size[0] / 240, self.scene.size[1] / 135)        
+        
         self.isRunning = True
         self.surface = None
         self.width = width
@@ -216,7 +229,7 @@ class GameApp():
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self._milliseconds_since_start = 0.0
-        self.scene = MyScene()
+
         self.scene.gameapp = self
         self.virtualKeys = []
 
@@ -250,6 +263,11 @@ class GameApp():
     
     def start(self):
         
+       
+        self.on_start()
+        global gblScene
+        gblScene = self.scene
+        
         self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (2,1)))
         self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (4,1)))
         self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (3,0)))
@@ -257,8 +275,9 @@ class GameApp():
         self.virtualKeys.append(VirtualKey(self, 'R', K_r, (0,2)))
         self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (0,0)))
         self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (6,2)))    
-
-        self.on_start()
+        
+     
+        
         run(self.scene)
         
     def quit(self):

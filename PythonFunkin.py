@@ -14,7 +14,7 @@ from funkeditor import Editor
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
         # GameApp variables
-        super().__init__(240, 135, 1, scale=4.0) # Screen size + number of the display
+        super().__init__(240, 135, 1) # Screen size + number of the display
         self.fps = 66.666
         self.currentSection = 'menu'
         self.sections = {

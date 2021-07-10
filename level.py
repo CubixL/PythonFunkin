@@ -9,7 +9,7 @@ import json
 class Level():
     def __init__(self, parent):
         self.parent = parent
-        self.scale = parent.scale        
+        
         self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')

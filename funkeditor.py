@@ -4,7 +4,7 @@ from editorarrow import EditorArrow
 class Editor():
     def __init__(self, parent):
         self.parent = parent
-        self.scale = parent.scale
+        
         self.EditorBackground = GameImage(self, 'images/background/EditBackground.gif')
         self.mousePos = (0, 0)
         self.EditorFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
