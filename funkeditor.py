@@ -1,17 +1,15 @@
 from gameapp import *
+from editorarrow import EditorArrow
 
 class Editor():
     def __init__(self, parent):
         self.parent = parent
         self.scale = parent.scale
         self.EditorBackground = GameImage(self, 'images/background/EditBackground.gif')
-        self.LeftArrow = GameImage(self, 'images/funkeditor/ArrowLeftEditor.gif')
-        self.DownArrow = GameImage(self, 'images/funkeditor/ArrowDownEditor.gif')
-        self.UpArrow = GameImage(self, 'images/funkeditor/ArrowUpEditor.gif')
-        self.RightArrow = GameImage(self, 'images/funkeditor/ArrowRightEditor.gif')
         self.mousePos = (0, 0)
         self.EditorFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
         self.MouseText = GameText(self, self.EditorFont)
+        self.ArrowList = []
         
 
     def on_loop(self):
@@ -19,17 +17,20 @@ class Editor():
 
     def on_render(self):
         self.EditorBackground.render()
-        self.LeftArrow.render((8, 15))
-        self.DownArrow.render((16, 15))
-        self.UpArrow.render((24, 15))
-        self.RightArrow.render((32, 15))
+        for arrow in self.ArrowList:
+            arrow.render()
+    
         self.MouseText.renderText(f'{self.mousePos}')
 
     def on_key(self, isDown, key, mod):
-        if isDown and key == K_ESCAPE:
-            self.parent.currentSection = 'menu'
+        if isDown:
+            if key == K_ESCAPE:
+                self.parent.currentSection = 'menu'
+            if key == K_r:
+                self.ArrowList.clear()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
         if isDown:
             if key == 1:
                 self.mousePos = (xcoord, ycoord)
+                self.ArrowList.append(EditorArrow(self, 'Left'))
