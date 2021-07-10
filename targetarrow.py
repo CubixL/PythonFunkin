@@ -11,9 +11,9 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.sustainLength = sustainLength
 
         # Set up sprites + starting Y position
-        self.img = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Target.png') 
-        self.img_sustain = GameImage(self, f'images\\arrows\\GUI_Arrow{type}TargetHeld.png')
-        self.img_sustainend = GameImage(self, f'images\\arrows\\GUI_Arrow{type}TargetHeldEnd.png')
+        self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
+        self.img_sustain = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeld.png')
+        self.img_sustainend = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeldEnd.png')
         self.img.position.y = 110 
         self.img_sustain.position.y = 116
         

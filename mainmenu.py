@@ -15,34 +15,34 @@ from gameapp import *
 class MainMenu(Menu):   
     def __init__(self, parent):
         super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images\\background\\BGE_MenuBackground.png')
+        self.MenuBackground = GameImage(self, 'images/background/BGE_MenuBackground.png')
 
 
         # for future usage example on how to use the GameButton class instead of a dictionary
         # self.Buttons.append(GameButton(
         #                         'level',
-        #                         GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
-        #                         GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17))
+        #                         GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
+        #                         GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17))
         #                     )
         # )
 
 
         self.Buttons.append( { 
             'section' : 'level',
-            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
-            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17)),
+            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
+            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17)),
         })
 
         self.Buttons.append( { 
             'section' : 'load',
-            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonLoad.png', (17, 58)),
-            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonLoadSelected.png', (17, 56)),
+            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonLoad.png', (17, 58)),
+            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonLoadSelected.png', (17, 56)),
         })
 
         self.Buttons.append( { 
             'section' : 'editor',
-            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonEdit.png', (17, 99)),
-            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonEditSelected.png', (17, 97)),
+            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonEdit.png', (17, 99)),
+            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonEditSelected.png', (17, 97)),
         })        
 
     def doAction(self, isDown, key, mod):

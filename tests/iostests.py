@@ -3,7 +3,7 @@ from gameapp import *
 class MyGame(GameApp):
     def __init__(self):
         super().__init__()
-        self.image = GameImage('gameapp\\images/redcar.png', (200,200))
+        self.image = GameImage('gameapp/images/redcar.png', (200,200))
         self.image2 = GameImage('gameapp/images/redcar.png', (400,200))
 
     def on_render(self):

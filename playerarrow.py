@@ -11,12 +11,12 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
         
 
         # Set up sprites + Y position
-        self.img_default = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Default.png')
+        self.img_default = GameImage(self, f'images/arrows/GUI_Arrow{type}Default.png')
         self.img_default.position.y = 10 
-        self.img_pressed = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Pressed.png')
+        self.img_pressed = GameImage(self, f'images/arrows/GUI_Arrow{type}Pressed.png')
         self.img_pressed.position.y = 10 
 
-        self.img_enemy = GameImage(self, f'images\\arrows\\GUI_Arrow{type}Default.png')
+        self.img_enemy = GameImage(self, f'images/arrows/GUI_Arrow{type}Default.png')
         self.img_enemy.position.y = 10
         
         # Determine position

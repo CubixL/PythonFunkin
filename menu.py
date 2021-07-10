@@ -4,7 +4,7 @@ class Menu():
     def __init__(self, parent):
         self.parent = parent
         
-        self.GUIFont = GameFont(self, 'fonts\\vcr.ttf', 6, False)
+        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
         self.TestText = GameText(self, self.GUIFont)
 
         self.Buttons = []
