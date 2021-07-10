@@ -29,6 +29,10 @@ class GameImage():
         if self.fileName and not self.image:
             self.image = SpriteNode(self.fileName)
             global gblScale
+            print(f'glbS {gblScale}')
+            
+            global renderImages  
+            #print(f'renderIm {renderImages}')
             self.image.scale = gblScale
             self.image.anchor_point = (0,0)
             
@@ -47,6 +51,8 @@ class GameImage():
         screen_height = gblScene.size[1] 
         self.image.position = (self.position.x * gblScale, screen_height - (self.position.y * gblScale)  - (self.image.size[1] * self.image.scale))
         global renderImages
+
+        print(f'renderIm {renderImages}')
         renderImages.append(self)
        
         
@@ -129,6 +135,8 @@ class MyScene(Scene):
     def update(self):
         self.gameapp._milliseconds_since_start += 16.66666666666666666666
         global renderImages
+        print(f'render im sc {renderImages}')
+
         for image in renderImages:
             image.image.remove_from_parent()
         for vk in self.gameapp.virtualKeys:
