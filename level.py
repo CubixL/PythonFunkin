@@ -76,7 +76,7 @@ class Level():
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
             self.music.stop()
-            self.parent.section = 'menu'
+            self.parent.currentSection = 'menu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
             self.PlayerArrowD.on_key(isDown, key)

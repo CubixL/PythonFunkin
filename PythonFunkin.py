@@ -16,44 +16,12 @@ class PythonFunkin(GameApp):               # Main app
         # GameApp variables
         super().__init__(240, 135, 1, scale=4.0) # Screen size + number of the display
         self.fps = 66.666
-        self.section = 'menu'
-        self.level = Level(self)
-
-
-        self.menu = MainMenu(self)
-        self.editor = Editor(self)
-
-    def on_loop(self): # Main loop
-        if self.section == 'level':
-            self.level.on_loop()
-        elif self.section == 'menu':
-            self.menu.on_loop()
-        elif self.section == 'editor':
-            self.editor.on_loop()
-
-    def on_render(self):  # Blit stuff
-        if self.section == 'level':
-            self.level.on_render()
-        elif self.section == 'menu':
-            self.menu.on_render()
-        elif self.section == 'editor':
-            self.editor.on_render()
-
-    def on_key(self, isDown, key, mod):         # Check inputs
-        if self.section == 'level':
-            self.level.on_key(isDown, key, mod)
-        elif self.section == 'menu':
-            self.menu.on_key(isDown, key, mod)
-        elif self.section == 'editor':
-            self.editor.on_key(isDown, key, mod)
-
-    def on_mouse(self, isDown, key, xcoord, ycoord):
-        if self.section == 'level':
-            self.level.on_mouse(isDown, key, xcoord, ycoord)
-        elif self.section == 'menu':
-            self.menu.on_mouse(isDown, key, xcoord, ycoord)
-        elif self.section == 'editor':
-            self.editor.on_mouse(isDown, key, xcoord, ycoord)
+        self.currentSection = 'menu'
+        self.sections = {
+            'level' : Level(self), 
+            'menu' : MainMenu(self), 
+            'editor' : Editor(self)
+        }
 
 if __name__ == '__main__':
 

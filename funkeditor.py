@@ -27,7 +27,7 @@ class Editor():
 
     def on_key(self, isDown, key, mod):
         if isDown and key == K_ESCAPE:
-            self.parent.section = 'menu'
+            self.parent.currentSection = 'menu'
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
         if isDown:

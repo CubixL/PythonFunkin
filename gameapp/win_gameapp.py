@@ -139,6 +139,8 @@ class GameApp:
         self.clock = None
         self._milliseconds_since_start = 0.0
 
+        self.currentSection = None
+        self.sections = {}
         self.virtualKeys = []
 
 
@@ -161,17 +163,21 @@ class GameApp:
 
     def on_start(self):
         pass
-    def on_loop(self):
-        pass
-    def on_render(self):
-        pass
     def on_event(self, eventId):
         pass
+    def on_loop(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_loop()
+    def on_render(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_render()
     def on_key(self, isDown, key, mod):
-        pass
-
+        if self.currentSection:
+            self.sections[self.currentSection].on_key(isDown, key, mod)
     def on_mouse(self, isDown, key, xcoord, ycoord):
-        pass
+        if self.currentSection:    
+            self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
+
 
 
     def cleanup(self):

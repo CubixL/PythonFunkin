@@ -5,7 +5,7 @@ from gameapp import *
 # class GameButton():
 #     def __init__(self, section, imgNormal, imgSelected):
 #         self.type = 'text' 'image'
-#         self.section = section
+#         self.currentSection = section
 #         self.imgNormal = imgNormal
 #         self.imgSelected = imgSelected
 
@@ -16,11 +16,7 @@ class MainMenu(Menu):
     def __init__(self, parent):
         super().__init__(parent)
         self.MenuBackground = GameImage(self, 'images\\background\\BGE_MenuBackground.png')
-        self.Buttons.append( { 
-            'section' : 'level',
-            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
-            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17)),
-        })
+
 
         # for future usage example on how to use the GameButton class instead of a dictionary
         # self.Buttons.append(GameButton(
@@ -29,6 +25,13 @@ class MainMenu(Menu):
         #                         GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17))
         #                     )
         # )
+
+
+        self.Buttons.append( { 
+            'section' : 'level',
+            'imgNormal' : GameImage(self, 'images\\gui\\GUI_ButtonPlay.png', (17, 20)),
+            'imgSelected' : GameImage(self, 'images\\gui\\GUI_ButtonPlaySelected.png', (17, 17)),
+        })
 
         self.Buttons.append( { 
             'section' : 'load',
@@ -45,12 +48,13 @@ class MainMenu(Menu):
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == K_RETURN:
-                self.parent.section = self.Buttons[self.highlighted]['section']
                 # if using the GameButton class, we need to acces the values with . instead of []
-                # self.parent.section = self.Buttons[self.highlighted].section
+                # self.parent.currentSection = self.Buttons[self.highlighted].currentSection
+                self.parent.currentSection = self.Buttons[self.highlighted]['section']
+
 
                 if self.highlighted == 0:
-                    self.parent.level.loadFile()
+                    self.parent.sections['level'].loadFile()
             
             if key == K_ESCAPE:
                 self.parent.quit()
