@@ -162,6 +162,8 @@ class GameApp:
     def getMillisecondsSinceStart(self):
         return self._milliseconds_since_start
 
+    def GetMillisecondsSinceLastFrame(self):
+        return self._milliseconds_since_last_frame 
 
     def on_start(self):
         pass
@@ -236,7 +238,8 @@ class GameApp:
                 vk.render()
 
             pygame.display.update()
-            self._milliseconds_since_start += self.clock.get_time()
+            self._milliseconds_since_last_frame = self.clock.get_time()
+            self._milliseconds_since_start += self._milliseconds_since_last_frame
             self.clock.tick(self.fps)
  
     def quit(self):
