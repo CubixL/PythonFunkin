@@ -139,6 +139,7 @@ class GameApp:
         self.curUserEventId = USEREVENT 
         self.clock = None
         self._milliseconds_since_start = 0.0
+        self._milliseconds_since_last_frame = 0.0
 
         self.currentSection = None
         self.sections = {}

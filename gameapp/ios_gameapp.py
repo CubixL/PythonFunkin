@@ -1,4 +1,4 @@
-import os
+import os, time
 from .ios_pygame import Rect
 from .ios_constants import *
 import platform
@@ -136,7 +136,10 @@ class MyScene(Scene):
     def setup(self):
         self.isShift = False
     def update(self):
-        self.gameapp._milliseconds_since_start += 16.66666666666666666666
+
+        curTime = time.process_time()
+        self.gameapp._milliseconds_since_last_frame = curTime - self.gameapp._milliseconds_since_start
+        self.gameapp._milliseconds_since_start =  curTime
         global renderImages
       #  print(f'render im sc {renderImages}')
 
@@ -240,6 +243,7 @@ class GameApp():
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
         self._milliseconds_since_start = 0.0
+        self._milliseconds_since_last_frame = 0.0
 
         self.scene.gameapp = self
         self.virtualKeys = []
@@ -253,6 +257,9 @@ class GameApp():
  
     def getMillisecondsSinceStart(self):
         return self._milliseconds_since_start
+
+    def GetMillisecondsSinceLastFrame(self):
+        return self._milliseconds_since_last_frame         
 
     def on_start(self):
         pass
