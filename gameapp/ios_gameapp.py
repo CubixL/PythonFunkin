@@ -29,16 +29,19 @@ class GameImage():
         if self.fileName and not self.image:
             self.image = SpriteNode(self.fileName)
             global gblScale
-            print(f'glbS {gblScale}')
+           # print(f'glbS {gblScale}')
             
             global renderImages  
             #print(f'renderIm {renderImages}')
-            self.image.scale = gblScale
+
             self.image.anchor_point = (0,0)
             
 
 
     def render(self, position = None):
+        global gblScale
+        self.image.scale = gblScale
+       # print('render')
         if position:
             if type(position) == Rect:
                 self.position = position.copy()
@@ -47,12 +50,12 @@ class GameImage():
                 self.position.y = position[1]
         #screen_height = screen_size[1] 
         global gblScene
-        global gblScale
+        #global gblScale
         screen_height = gblScene.size[1] 
         self.image.position = (self.position.x * gblScale, screen_height - (self.position.y * gblScale)  - (self.image.size[1] * self.image.scale))
         global renderImages
 
-        print(f'renderIm {renderImages}')
+      #  print(f'renderIm {renderImages}')
         renderImages.append(self)
        
         
@@ -135,7 +138,7 @@ class MyScene(Scene):
     def update(self):
         self.gameapp._milliseconds_since_start += 16.66666666666666666666
         global renderImages
-        print(f'render im sc {renderImages}')
+      #  print(f'render im sc {renderImages}')
 
         for image in renderImages:
             image.image.remove_from_parent()
@@ -253,14 +256,22 @@ class GameApp():
 
     def on_start(self):
         pass
-    def on_loop(self):
-        pass
-    def on_render(self):
-        pass
+    
     def on_event(self, eventId):
         pass
+        
+    def on_loop(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_loop()
+    def on_render(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_render()
     def on_key(self, isDown, key, mod):
-        pass
+        if self.currentSection:
+            self.sections[self.currentSection].on_key(isDown, key, mod)
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        if self.currentSection:    
+            self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
 
 
     def addTimer(self, mili, runOnce = False):
