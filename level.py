@@ -84,7 +84,7 @@ class Level():
         if isDown == True and key == K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
-            self.parent.currentSection = 'menu'
+            self.parent.currentSection = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
             self.PlayerArrowD.on_key(isDown, key)
@@ -140,6 +140,7 @@ class Level():
         # Song variables
         self.JSONsections = data['sections']
         self.JSONspeed = data['song']['speed']
+        print(self.JSONspeed)
         self.JSONbpm = data['bpm']
 
         # for section in range (0, self.JSONsections):

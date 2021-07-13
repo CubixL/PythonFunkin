@@ -10,17 +10,19 @@ from gameapp import *
 from level import Level
 from mainmenu import MainMenu
 from funkeditor import Editor
+from loadmenu import LoadMenu
    
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
         # GameApp variables
         super().__init__(240, 135, 1) # Screen size + number of the display
         self.fps = 60
-        self.currentSection = 'menu'
+        self.currentSection = 'mainmenu'
         self.sections = {
             'level' : Level(self), 
-            'menu' : MainMenu(self), 
-            'editor' : Editor(self)
+            'mainmenu' : MainMenu(self), 
+            'editor' : Editor(self),
+            'loadmenu' : LoadMenu(self)
         }
 
 if __name__ == '__main__':

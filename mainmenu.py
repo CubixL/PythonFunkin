@@ -17,7 +17,6 @@ class MainMenu(Menu):
         super().__init__(parent)
         self.MenuBackground = GameImage(self, 'images/background/BGE_MenuBackground.png')
 
-
         # for future usage example on how to use the GameButton class instead of a dictionary
         # self.Buttons.append(GameButton(
         #                         'level',
@@ -25,8 +24,7 @@ class MainMenu(Menu):
         #                         GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17))
         #                     )
         # )
-
-
+    
         self.Buttons.append( { 
             'section' : 'level',
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
@@ -34,7 +32,7 @@ class MainMenu(Menu):
         })
 
         self.Buttons.append( { 
-            'section' : 'load',
+            'section' : 'loadmenu',
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonLoad.png', (17, 58)),
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonLoadSelected.png', (17, 56)),
         })
