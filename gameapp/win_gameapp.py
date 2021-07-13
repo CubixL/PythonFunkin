@@ -85,8 +85,11 @@ class GameText(GameImage):
             pygame.display.get_surface().blit(self.image, scaledposition)
 
 class GameAudio():
-    def __init__(self):
+    def __init__(self, fileName = None, volume = 1):
         self.mySound = None 
+        if fileName:
+            self.load(fileName)
+            self.set_volume(volume)
     
     def load(self, fileName):
         if self.mySound:

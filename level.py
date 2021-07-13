@@ -4,7 +4,7 @@ from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
 
-import json
+import json, random
 
 class Level():
     def __init__(self, parent):
@@ -21,7 +21,13 @@ class Level():
         self.TargetList = []
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMillisecondsSinceStart()
-        self.music = GameAudio()
+        self.music_inst = GameAudio()
+        self.music_voices = GameAudio()
+        self.sound_missList = [
+            GameAudio('sounds/missnote1', 0.2), 
+            GameAudio('sounds/missnote2', 0.2), 
+            GameAudio('sounds/missnote3', 0.2)
+        ]
 
         # font & text
         self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
@@ -75,7 +81,7 @@ class Level():
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
-            self.music.stop()
+            self.music_inst.stop()
             self.parent.currentSection = 'menu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -93,12 +99,17 @@ class Level():
                         currentscore += target.calcScore()
                         # Add 1 to combo
                         self.Combo += 1
+                        self.music_voices.set_volume(1)
             
             # If score is still 0, the bad key was pressed
             if currentscore == 0 and key in (K_DOWN, K_UP, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d) and isDown:
                 currentscore = -10
                 # reset combo
                 self.Combo = 0
+                # miss sound
+                soundNumber = random.randrange(len(self.sound_missList))
+                self.sound_missList[soundNumber].play()
+                self.music_voices.set_volume(0)
             self.PlayerScore += currentscore
 
             # R resets the chart
@@ -119,7 +130,8 @@ class Level():
         self.Combo = 0
 
 
-        self.music.load(f'song/{songName}_Inst')
+        self.music_inst.load(f'song/{songName}_Inst')
+        self.music_voices.load(f'song/{songName}_Voices')
 
         
         chart = open(str('song') + '//' + f'{songName}.json')
@@ -149,7 +161,8 @@ class Level():
                 if self.JSONtype == 3:
                     self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
 
-        self.music.play()
+        self.music_inst.play()
+        self.music_voices.play()
 
 
         # 1. 'notes': the entire list of all the notes

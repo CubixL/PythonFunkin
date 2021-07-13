@@ -9,7 +9,7 @@ class Menu():
 
         self.Buttons = []
         self.MenuBackground = None
-
+        self.mousePos = (0, 0)
         self.highlighted = 0
 
 
@@ -57,7 +57,10 @@ class Menu():
         self.doAction(isDown, key, mod)
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
-        pass
+        self.mousePos = (xcoord, ycoord)
+        if isDown:
+            if key == 1:
+                pass
 
 
     def doAction(self):
