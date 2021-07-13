@@ -138,9 +138,9 @@ class Level():
         data = json.load(chart)
 
         # Song variables
-        self.JSONsections = data['sections']
+        self.JSONsections = len(data['song']['notes'])
+        print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
-        print(self.JSONspeed)
         self.JSONbpm = data['bpm']
 
         # for section in range (0, self.JSONsections):
@@ -148,12 +148,12 @@ class Level():
 
         # The big complicated note stuff
         for section in range (0, self.JSONsections): # Find the number of notes in every single section
-            self.JSONnotenumber = len(data['notes'][section]['sectionNotes'])
+            self.JSONnotenumber = len(data['song']['notes'][section]['sectionNotes'])
             for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
-                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
-                self.JSONtype = data['notes'][section]['sectionNotes'][note][1]
-                self.JSONenemy = not data['notes'][section]['mustHitSection']
-                self.JSONsustain = data['notes'][section]['sectionNotes'][note][2]
+                self.JSONmilliseconds = data['song']['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
+                self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
+                self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
+                self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
                 if self.JSONtype == 0:
                     self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 1:
@@ -166,12 +166,12 @@ class Level():
         self.music_inst.play()
         self.music_voices.play()
 
-
-        # 1. 'notes': the entire list of all the notes
-        # 2. int: section number
-        # 3. 'sectionNotes': notes in the section
-        # 4. int: number of the note in the section
-        # 5. int: desired variable of a specific note
+        # 1. 'song': The main folder, contains everything
+        # 2. 'notes': the entire list of all the notes
+        # 3. int: section number
+        # 4. 'sectionNotes': notes in the section
+        # 5. int: number of the note in the section
+        # 6. int: desired variable of a specific note
                 # 0 is number in milliseconds when it appears
                 # 1 is note type (0 - left, 1 - down, 2 - up, 3 - right)
                 # 2 is sustain duration (how much time you have to hold it)
