@@ -166,7 +166,7 @@ class GameApp:
     def getMillisecondsSinceStart(self):
         return self._milliseconds_since_start
 
-    def GetMillisecondsSinceLastFrame(self):
+    def getMillisecondsSinceLastFrame(self):
         return self._milliseconds_since_last_frame 
 
     def on_start(self):

@@ -14,8 +14,8 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
         self.img_sustain = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeld.png')
         self.img_sustainend = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeldEnd.png')
-        self.img.position.y = 110 
-        self.img_sustain.position.y = 116
+        self.img.position.y = 140
+        self.img_sustain.position.y = 146
         
         # Note characteristics
         self.state = 'hidden'
@@ -63,9 +63,19 @@ class TargetArrow():                       # Arrows that rise up and hitting the
                 self.altkey = K_d
     
     def move(self): # Move up the screen every frame
+
+        # Total number of pixels to move from bottom to top
+        totalMoveDist = 130
+        # Total time for a note to move from bottom to top. If speed is default then it's 2500
+        totalMoveTime = 2500
+        # Time since last frame
+        lastFrameTime = self.parent.parent.getMillisecondsSinceLastFrame()
+        # Number of pixels to move in this frame
+        moveDist = totalMoveDist * lastFrameTime / totalMoveTime
+
         if self.state == 'active':
-            self.img.position.y -= 1
-            self.img_sustain.position.y -= 1 
+            self.img.position.y -= moveDist
+            self.img_sustain.position.y -= moveDist
 
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
         score = 0
