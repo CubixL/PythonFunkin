@@ -9,7 +9,6 @@ import json, random
 class Level():
     def __init__(self, parent):
         self.parent = parent
-        
         self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
@@ -17,6 +16,9 @@ class Level():
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.Rating = Rating(self)
         self.Combo = 0
+
+        self.JSONspeed = 1
+        self.totalMoveTime = 2000 / self.JSONspeed
 
         self.TargetList = []
         self.PlayerScore = 0
@@ -62,7 +64,6 @@ class Level():
 
         self.PlayerScore += currentscore
 
-
     def on_render(self):
         self.LevelBackground.render()                                           # 1. Background
         self.PlayerArrowL.render()                                              # 2. Player arrows
@@ -82,6 +83,7 @@ class Level():
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == K_ESCAPE:
             self.music_inst.stop()
+            self.music_voices.stop()
             self.parent.currentSection = 'menu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -129,26 +131,25 @@ class Level():
         self.TargetList.clear()
         self.Combo = 0
 
-
         self.music_inst.load(f'song/{songName}_Inst')
         self.music_voices.load(f'song/{songName}_Voices')
 
-        
         chart = open(str('song') + '//' + f'{songName}.json')
         data = json.load(chart)
 
         # Song variables
-        
-        self.JSONbpm = data['song']['bpm']
         self.JSONsections = data['sections']
-        #for section in range (0, self.JSONsections):
-            #print (data['notes'][section]['sectionNotes'])
+        self.JSONspeed = data['song']['speed']
+        self.JSONbpm = data['bpm']
+
+        # for section in range (0, self.JSONsections):
+        #     print (data['notes'][section]['sectionNotes'])
 
         # The big complicated note stuff
         for section in range (0, self.JSONsections): # Find the number of notes in every single section
             self.JSONnotenumber = len(data['notes'][section]['sectionNotes'])
             for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
-                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] - self.JSONbpm * 15
+                self.JSONmilliseconds = data['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
                 self.JSONtype = data['notes'][section]['sectionNotes'][note][1]
                 self.JSONenemy = not data['notes'][section]['mustHitSection']
                 self.JSONsustain = data['notes'][section]['sectionNotes'][note][2]

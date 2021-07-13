@@ -67,11 +67,11 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         # Total number of pixels to move from bottom to top
         totalMoveDist = 130
         # Total time for a note to move from bottom to top. If speed is default then it's 2500
-        totalMoveTime = 2500
+        # totalMoveTime = 2000 / self.parent.JSONspeed
         # Time since last frame
         lastFrameTime = self.parent.parent.getMillisecondsSinceLastFrame()
         # Number of pixels to move in this frame
-        moveDist = totalMoveDist * lastFrameTime / totalMoveTime
+        moveDist = totalMoveDist * lastFrameTime / self.parent.totalMoveTime
 
         if self.state == 'active':
             self.img.position.y -= moveDist
