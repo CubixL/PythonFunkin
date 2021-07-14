@@ -14,6 +14,7 @@ class Menu():
         self.mousePos = (0, 0)
         self.highlighted = 0
         self.highlightedOverlay = 0
+        self.menuTabs = 0
 
 
     def on_loop(self):
@@ -29,15 +30,16 @@ class Menu():
         # buttons
         for index in range(0, len(self.Buttons)):
             currentButton = self.Buttons[index]
-            if index == self.highlighted:
-                currentButton['imgSelected'].render()
-                # for future usage when using GameButton class, 
-                # currentButton.imgSelected.render()
+            if currentButton['menuTab'] == self.highlightedOverlay:
+                if index == self.highlighted:
+                    currentButton['imgSelected'].render()
+                    # for future usage when using GameButton class, 
+                    # currentButton.imgSelected.render()
 
-            else:
-                currentButton['imgNormal'].render()
-                # for future usage when using GameButton class, 
-                # currentButton.imgNormal.render()
+                else:
+                    currentButton['imgNormal'].render()
+                    # for future usage when using GameButton class, 
+                    # currentButton.imgNormal.render()
 
          
 
@@ -59,17 +61,18 @@ class Menu():
                     self.highlighted = numItems
 
             # overlay nav
-            menuTabs = 1
             if key == k.K_RIGHT or key == k.K_d:
-                if self.highlightedOverlay < menuTabs:
+                self.highlighted = 0
+                if self.highlightedOverlay < self.menuTabs:
                     self.highlightedOverlay += 1
                 else:
-                    self.highlightedOverlay = 0
+                    pass
             if key == k.K_LEFT or key == k.K_a:
+                self.highlighted = 0
                 if self.highlightedOverlay > 0:
                     self.highlightedOverlay -= 1
                 else:
-                    self.highlightedOverlay = menuTabs
+                    pass
             
         self.doAction(isDown, key, mod)
 

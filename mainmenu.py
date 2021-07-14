@@ -35,18 +35,21 @@ class MainMenu(Menu):
         # })
         self.Buttons.append( { 
             'section' : 'level',
+            'menuTab' : 0,
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17)),
         })
 
         self.Buttons.append( { 
             'section' : 'loadmenu',
+            'menuTab' : 0,
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonLoad.png', (17, 58)),
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonLoadSelected.png', (17, 56)),
         })
 
         self.Buttons.append( { 
             'section' : 'editor',
+            'menuTab' : 0,
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonEdit.png', (17, 99)),
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonEditSelected.png', (17, 97)),
         })        

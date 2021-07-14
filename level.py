@@ -53,7 +53,7 @@ class Level():
             score = target.calcScore()
             ms = self.getMilli()
             # Check for targets that need to become active
-            if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime):
+            if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
                 target.state = 'active'
             # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
             if target.isEnemy == False:
@@ -136,10 +136,10 @@ class Level():
         self.TargetList.clear()
         self.Combo = 0
 
-        self.music_inst.load(f'loadedsong/{songName}_Inst')
-        self.music_voices.load(f'loadedsong/{songName}_Voices')
+        self.music_inst.load(f'song/{songName}_Inst')
+        self.music_voices.load(f'song/{songName}_Voices')
 
-        chart = open(str('loadedsong') + '/' + f'{songName}.json')
+        chart = open(str('song') + '/' + f'{songName}.json')
         data = json.load(chart)
 
         # Song variables
