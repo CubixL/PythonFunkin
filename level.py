@@ -1,14 +1,15 @@
-
+from __future__ import annotations
 from gameapp import *
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
+import typing
 
 import json, random
-
+# import PythonFunkin
 class Level():
     def __init__(self, parent):
-        self.parent = parent
+        self.parent:'PythonFunkin' = parent
         self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
@@ -16,9 +17,10 @@ class Level():
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.Rating = Rating(self)
         self.Combo = 0
+         
 
         self.JSONspeed = 1
-        self.totalMoveTime = 2000 / self.JSONspeed
+        self.totalMoveTime = 2000 #/ self.JSONspeed
 
         self.TargetList = []
         self.PlayerScore = 0
@@ -41,6 +43,7 @@ class Level():
 
     def getMilli(self):
         return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
+        
 
     def on_loop(self):
         currentscore = 0
@@ -48,7 +51,7 @@ class Level():
         for target in self.TargetList:
             score = target.calcScore()
             # Check for targets that need to become active
-            if target.state == 'hidden' and self.getMilli() >= target.milliseconds:
+            if target.state == 'hidden' and self.getMilli() >= (target.milliseconds - self.totalMoveTime):
                 target.state = 'active'
             # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
             if target.isEnemy == False:
@@ -74,7 +77,7 @@ class Level():
             target.render()
            
         self.MSText.renderText(f'Game time: {self.getMilli()}')                 # 4. GUI (Text)
-        self.FPSText.renderText(f'FPS: {self.parent.fps}', position = (0, 4))
+        self.FPSText.renderText(f'FPS: {1000.0/self.parent.getMillisecondsSinceLastFrame()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'{self.Combo}', position = (120, 114))
 
@@ -165,6 +168,7 @@ class Level():
 
         self.music_inst.play()
         self.music_voices.play()
+        self.milliAtStart = self.parent.getMillisecondsSinceStart()
 
 
         # 1. 'notes': the entire list of all the notes

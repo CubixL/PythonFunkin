@@ -50,9 +50,9 @@ class TestGame(GameApp):
         self.redcar.render()
         self.myText.position.x = 100
         self.myText.position.y = 50
-        self.myText.text = str(self.milliseconds_since_start)
+        # self.myText.text = str(self.milliseconds_since_start)
         self.myText.render()
-        self.myText2.renderText(self.scene.size)
+        # self.myText2.renderText(self.scene.size)
 
 
 

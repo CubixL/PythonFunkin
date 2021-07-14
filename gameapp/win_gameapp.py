@@ -2,6 +2,7 @@ import pygame
 from pygame import Rect
 from pygame.locals import *
 import typing
+import time
 
 gblScale = 4.0
 
@@ -86,7 +87,7 @@ class GameText(GameImage):
 
 class GameAudio():
     def __init__(self, fileName = None, volume = 1):
-        self.mySound = None 
+        self.mySound:pygame.mixer.Sound = None 
         if fileName:
             self.load(fileName)
             self.set_volume(volume)
@@ -140,7 +141,7 @@ class GameApp:
         self.fps = 5
         self.keysPressed = []
         self.curUserEventId = USEREVENT 
-        self.clock = None
+
         self._milliseconds_since_start = 0.0
         self._milliseconds_since_last_frame = 0.0
 
@@ -211,6 +212,15 @@ class GameApp:
         self.on_start()
 
         while( self.isRunning ):
+
+            curTime = time.time() * 1000
+            self._milliseconds_since_last_frame = curTime - self._milliseconds_since_start
+            self._milliseconds_since_start =  curTime
+
+            # self._milliseconds_since_last_frame = self.clock.get_time()
+            # self._milliseconds_since_start += self._milliseconds_since_last_frame
+
+
             self.keysPressed = pygame.key.get_pressed()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -242,8 +252,6 @@ class GameApp:
                 vk.render()
 
             pygame.display.update()
-            self._milliseconds_since_last_frame = self.clock.get_time()
-            self._milliseconds_since_start += self._milliseconds_since_last_frame
             self.clock.tick(self.fps)
  
     def quit(self):
