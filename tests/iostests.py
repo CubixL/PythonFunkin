@@ -1,4 +1,4 @@
-from gameapp import *
+from gameapp import GameImage, GameApp
 
 class MyGame(GameApp):
     def __init__(self):

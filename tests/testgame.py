@@ -1,5 +1,5 @@
 
-from gameapp import *
+from gameapp import GameImage, Rect, GameApp, GameFont, GameText
 
 class MyRedCar(GameImage):
     def __init__(self):
@@ -10,9 +10,9 @@ class MyRedCar(GameImage):
     def move(self):
         
         if self.bRightSide:
-            self.position.move_ip(3, 0)
+            self.position.x += 3
         else:
-            self.position.move_ip(-3, 0)
+            self.position.x -= 3
 
         if self.position.x < 0:
             self.position.x = 200
@@ -30,7 +30,7 @@ class TestGame(GameApp):
         self.fps = 50
         self.bluecar = GameImage('gameapp/images/bluecar.png', (10,500))
         # self.redcar = 
-        self.fontVerdana = GameFont()
+        self.fontVerdana = GameFont(self)
         self.myText = GameText(self.fontVerdana, 'mart is great', (125, 300), (255, 255, 125))
         self.myText2 = GameText(self.fontVerdana, 'test')
 
@@ -38,7 +38,7 @@ class TestGame(GameApp):
     def on_loop(self):
         pass
         #self.bluecar.position.x = 200
-        self.bluecar.position.move_ip(0, -5)
+        self.bluecar.position.y -= 5
         if self.bluecar.position.y < 5:
             self.bluecar.position.y  = 500
 
@@ -50,9 +50,9 @@ class TestGame(GameApp):
         self.redcar.render()
         self.myText.position.x = 100
         self.myText.position.y = 50
-        self.myText.text = str(self.milliseconds_since_start)
+        # self.myText.text = str(self.milliseconds_since_start)
         self.myText.render()
-        self.myText2.renderText(self.scene.size)
+        # self.myText2.renderText(self.scene.size)
 
 
 
@@ -60,10 +60,10 @@ class TestGame(GameApp):
         pass
 
     def on_key(self, isDown, key, mod):
-        if isDown == True and key == K_LEFT:
+        if isDown == True and key == key.K_LEFT:
             self.isRunning = False
 
-        if isDown == True and key == K_RIGHT:
+        if isDown == True and key == key.K_RIGHT:
 
             self.redcar.toggle()
 

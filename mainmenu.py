@@ -1,5 +1,6 @@
 from menu import Menu
-from gameapp import *
+from gameapp import GameImage, k
+
 
 #  for future usage when we need a more intelligent button, like adding visual effect 
 # class GameButton():
@@ -8,6 +9,7 @@ from gameapp import *
 #         self.currentSection = section
 #         self.imgNormal = imgNormal
 #         self.imgSelected = imgSelected
+#         self.isActive = False
 
 
 
@@ -24,7 +26,13 @@ class MainMenu(Menu):
         #                         GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17))
         #                     )
         # )
-    
+
+
+        # self.Buttons.append( { 
+        #     'section' : 'level2',
+        #     'imgNormal' : GameText(self, GameFont(self), 'play', (17, 5)),
+        #     'imgSelected' : GameText(self, GameFont(self), 'play', (17, 5), RGB=(255,1,1)),
+        # })
         self.Buttons.append( { 
             'section' : 'level',
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
@@ -45,7 +53,7 @@ class MainMenu(Menu):
 
     def doAction(self, isDown, key, mod):
         if isDown:
-            if key == K_RETURN:
+            if key == k.K_RETURN:
                 # if using the GameButton class, we need to acces the values with . instead of []
                 # self.parent.currentSection = self.Buttons[self.highlighted].currentSection
                 self.parent.currentSection = self.Buttons[self.highlighted]['section']
@@ -54,6 +62,6 @@ class MainMenu(Menu):
                 if self.highlighted == 0:
                     self.parent.sections['level'].loadFile()
             
-            if key == K_ESCAPE:
+            if key == k.K_ESCAPE:
                 self.parent.quit()
 

@@ -1,4 +1,4 @@
-from gameapp import *
+from gameapp import GameImage
 
 class Rating():
     def __init__(self, parent):

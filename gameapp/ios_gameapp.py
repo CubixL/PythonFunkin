@@ -1,6 +1,7 @@
+# type: ignore
 import os, time
-from .ios_pygame import Rect
-from .ios_constants import *
+from gameapp import Rect
+import .ios_constants as k
 import platform
 
 if os.name == 'nt':
@@ -44,10 +45,10 @@ class GameImage():
        # print('render')
         if position:
             if type(position) == Rect:
-                self.position = position.copy()
+                self.position = Rect(position.x, position.y)
             else:
-                self.position.x = position[0]
-                self.position.y = position[1]
+                self.position.moveTo(position[0], position[1])
+
         #screen_height = screen_size[1] 
         global gblScene
         #global gblScale
@@ -90,11 +91,10 @@ class GameText():
 
     def render(self, position = None):
         if position:
-            if type(position) == Rect:
-                self.position = position.copy()
-            else:
-                self.position.x  = position[0]
-                self.position.y  = position[1]
+            # if type(position) == Rect:
+            #     self.position = position.copy()
+            # else:
+                self.position.moveTo(position[0], position[1], 0, 0)
 
         global gblScene
         self.image.position = (self.position.x * gblScale, gblScene.size[1] - (self.position.y * gblScale)  - (self.image.size[1]))

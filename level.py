@@ -1,11 +1,12 @@
-
-from gameapp import *
+from __future__ import annotations
+from gameapp import GameImage, GameAudio, GameFont, GameText, k
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
+import typing
 
 import json, random
-
+# import PythonFunkin
 class Level():
     def __init__(self, parent):
         self.parent = parent
@@ -16,9 +17,10 @@ class Level():
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.Rating = Rating(self)
         self.Combo = 0
+         
 
         self.JSONspeed = 1
-        self.totalMoveTime = 2000 / self.JSONspeed
+        self.totalMoveTime = 1500 / self.JSONspeed
 
         self.TargetList = []
         self.PlayerScore = 0
@@ -40,15 +42,18 @@ class Level():
         self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
 
     def getMilli(self):
+        """return the number of millisecons since start of level"""
         return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
+        
 
     def on_loop(self):
         currentscore = 0
         
         for target in self.TargetList:
             score = target.calcScore()
+            ms = self.getMilli()
             # Check for targets that need to become active
-            if target.state == 'hidden' and self.getMilli() >= target.milliseconds:
+            if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime):
                 target.state = 'active'
             # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
             if target.isEnemy == False:
@@ -74,14 +79,14 @@ class Level():
             target.render()
            
         self.MSText.renderText(f'Game time: {self.getMilli()}')                 # 4. GUI (Text)
-        self.FPSText.renderText(f'FPS: {self.parent.fps}', position = (0, 4))
+        self.FPSText.renderText(f'FPS: {1000.0/self.parent.getMillisecondsSinceLastFrame()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'{self.Combo}', position = (120, 114))
 
         self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
-        if isDown == True and key == K_ESCAPE:
+        if isDown == True and key == k.K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
             self.parent.currentSection = 'mainmenu'
@@ -104,7 +109,7 @@ class Level():
                         self.music_voices.set_volume(1)
             
             # If score is still 0, the bad key was pressed
-            if currentscore == 0 and key in (K_DOWN, K_UP, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d) and isDown:
+            if currentscore == 0 and key in (k.K_DOWN, k.K_UP, k.K_LEFT, k.K_RIGHT, k.K_w, k.K_a, k.K_s, k.K_d) and isDown:
                 currentscore = -10
                 # reset combo
                 self.Combo = 0
@@ -115,7 +120,7 @@ class Level():
             self.PlayerScore += currentscore
 
             # R resets the chart
-            if isDown == True and key == K_r:
+            if isDown == True and key == k.K_r:
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -171,8 +176,15 @@ class Level():
                 if self.JSONtype == 7:
                     self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
 
+
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 30000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 40000, isEnemy = True, sustainLength = 0))
+
+
         self.music_inst.play()
         self.music_voices.play()
+        self.milliAtStart = self.parent.getMillisecondsSinceStart()
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes

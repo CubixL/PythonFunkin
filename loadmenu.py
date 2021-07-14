@@ -1,4 +1,4 @@
-from gameapp import *
+from gameapp import GameImage
 from menu import Menu
 
 class LoadMenu(Menu):
@@ -9,5 +9,5 @@ class LoadMenu(Menu):
 
     def doAction(self, isDown, key, mod):
         if isDown:
-            if key == K_ESCAPE:
+            if key == key.K_ESCAPE:
                 self.parent.currentSection = 'mainmenu'

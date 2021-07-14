@@ -6,7 +6,7 @@
 # Made by CubixL
 # YouTube channel: https://www.youtube.com/channel/UCNNHpyTeYJqK9bfFeub3uNw
 
-from gameapp import *
+from gameapp import GameApp
 from level import Level
 from mainmenu import MainMenu
 from funkeditor import Editor
@@ -16,7 +16,7 @@ class PythonFunkin(GameApp):               # Main app
     def __init__(self):
         # GameApp variables
         super().__init__(240, 135, 1) # Screen size + number of the display
-        self.fps = 60
+        self.fps = 150
         self.currentSection = 'mainmenu'
         self.sections = {
             'level' : Level(self), 
