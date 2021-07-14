@@ -63,10 +63,11 @@ class Level():
                     # reset combo
                     self.Combo = 0
             elif target.isEnemy == True:
-                if target.state == 'active' and target.img.position.y < 11:
+                if target.state == 'active' and target.img.position.y < 10:
                     target.state = 'played'
+                if target.state == 'played' and target.img.position.y < 10:
+                    self.music_voices.set_volume(1)
             target.move() # Move targets up
-
         self.PlayerScore += currentscore
 
     def on_render(self):
