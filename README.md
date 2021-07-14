@@ -3,7 +3,7 @@ Friday Night Funkin', but recreated in Python language.
 This serves as my first ever Python project, and mostly uses the Pygame 2.0 library.
 It is also currently not fully complete - expect bug fixes and new features in the near future.
 ## Features
-- The original game recreated using our own scoring system. (It currently really is only able to play songs at 100 BPM).
+- The original game recreated using our own scoring system. (However, we have really bad syncing issues as of right now).
 - Importing your own OGG and JSON files to be able to play your own songs & charts!
 - A much better version of the Friday Night Funkin' editor that lets you create your own charts. (Not much done yet, though.)
 - Cross-compability -- It should be able to run both on Visual Studio Code using Pygame and on the iOS app Pythonista. (To build the game on either of those, see the sections below.)
@@ -45,3 +45,12 @@ git pull
 ```
 Before confirming the last command, the system might give you a warning. This means that your local changes to the project will be overwritten by the new version, so be careful!
 
+# Running the game on Visual Studio Code
+You can download Python [here.](https://www.python.org/downloads/)
+
+You can download Visual Studio Code [here.](https://code.visualstudio.com/)
+
+To install Pygame, you can type this into a command prompt:
+```
+python3 -m pip install -U pygame --user
+```
