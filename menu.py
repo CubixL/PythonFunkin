@@ -62,15 +62,15 @@ class Menu():
 
             # overlay nav
             if key == k.K_RIGHT or key == k.K_d:
-                self.highlighted = 0
                 if self.highlightedOverlay < self.menuTabs:
                     self.highlightedOverlay += 1
+                    self.highlighted = 0
                 else:
                     pass
             if key == k.K_LEFT or key == k.K_a:
-                self.highlighted = 0
                 if self.highlightedOverlay > 0:
                     self.highlightedOverlay -= 1
+                    self.highlighted = 0
                 else:
                     pass
             

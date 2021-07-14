@@ -17,6 +17,7 @@ class Level():
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
         self.Rating = Rating(self)
         self.Combo = 0
+        self.loadedSong = None
          
 
         self.JSONspeed = 1
@@ -127,20 +128,22 @@ class Level():
     def on_mouse(self, isDown, key, xcoord, ycoord):
         pass
 
-    def loadFile(self, songName = None): # Load the entire song chart (JSON file stuff)
+    def loadFile(self): # Load the entire song chart (JSON file stuff)
         # When called, reset score, timer and note list to 0 before loading
-        if songName == None:
-            songName = 'Tutorial'
+        if self.loadedSong == None:
+            self.loadedSong = 'Tutorial'
 
+        songName = self.loadedSong
+        
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMS()
         self.TargetList.clear()
         self.Combo = 0
 
-        self.music_inst.load(f'song/{songName}_Inst')
-        self.music_voices.load(f'song/{songName}_Voices')
+        self.music_inst.load(f'songlibrary/{songName}/{songName}_Inst')
+        self.music_voices.load(f'songlibrary/{songName}/{songName}_Voices')
 
-        chart = open(str('song') + '/' + f'{songName}.json')
+        chart = open(f'songlibrary/{songName}/{songName}.json')
         data = json.load(chart)
 
         # Song variables
