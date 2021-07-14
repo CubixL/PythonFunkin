@@ -20,7 +20,7 @@ class Level():
          
 
         self.JSONspeed = 1
-        self.totalMoveTime = 10000 #/ self.JSONspeed
+        self.totalMoveTime = 1500 / self.JSONspeed
 
         self.TargetList = []
         self.PlayerScore = 0
@@ -42,6 +42,7 @@ class Level():
         self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
 
     def getMilli(self):
+        """return the number of millisecons since start of level"""
         return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
         
 
@@ -151,27 +152,26 @@ class Level():
         #     print (data['notes'][section]['sectionNotes'])
 
         # The big complicated note stuff
-        if False:
-            for section in range (0, self.JSONsections): # Find the number of notes in every single section
-                self.JSONnotenumber = len(data['song']['notes'][section]['sectionNotes'])
-                for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
-                    self.JSONmilliseconds = data['song']['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
-                    self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
-                    self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
-                    self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
-                    if self.JSONtype == 0:
-                        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                    if self.JSONtype == 1:
-                        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                    if self.JSONtype == 2:
-                        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                    if self.JSONtype == 3:
-                        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+        for section in range (0, self.JSONsections): # Find the number of notes in every single section
+            self.JSONnotenumber = len(data['song']['notes'][section]['sectionNotes'])
+            for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
+                self.JSONmilliseconds = data['song']['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
+                self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
+                self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
+                self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
+                if self.JSONtype == 0:
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 1:
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 2:
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 3:
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
 
 
-        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
-        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 30000, isEnemy = True, sustainLength = 0))
-        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 40000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 30000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 40000, isEnemy = True, sustainLength = 0))
 
 
         self.music_inst.play()

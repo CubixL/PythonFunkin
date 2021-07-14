@@ -14,7 +14,8 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
         self.img_sustain = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeld.png')
         self.img_sustainend = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeldEnd.png')
-        self.initialypos = 85
+        self.initialypos = 140
+        self.perfectypos = 10
         self.img.position.y = self.initialypos
         self.img_sustain.position.y = 146
 
@@ -66,7 +67,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
     def move(self): # Move up the screen every frame
 
         # Total number of pixels to move from bottom to top
-        totalMoveDist = self.initialypos - 10
+        totalMoveDist = self.initialypos - self.perfectypos
         # Total time for a note to move from bottom to top. If speed is default then it's 2500
         # totalMoveTime = 2000 / self.parent.JSONspeed
         # Time since last frame

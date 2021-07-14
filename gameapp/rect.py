@@ -3,7 +3,6 @@ from typing import Tuple
 
 
 class Rect():
-    # pylint: disable=E0102
     x: float
     y: float
     top: float
@@ -28,7 +27,7 @@ class Rect():
     h: float
 
     # noqa
-    def __init__(self, left: float, top: float, width: float = 0.0, height: float = 0.0): # noqa
+    def __init__(self, left: float, top: float, width: float = 0, height: float = 0): # noqa
         self._left = float(left)
         self._top = float(top)
         self._width = float(width)
@@ -168,6 +167,7 @@ class Rect():
 
     #######
     def copy(self):
+   
         return Rect(self.left, self.top, self.width, self.height)
 
     def __getitem__(self, i):
@@ -178,3 +178,7 @@ class Rect():
 
     def __deepcopy__(self):
         return Rect(self.left, self.top, self.width, self.height)
+        self.copy()
+
+
+

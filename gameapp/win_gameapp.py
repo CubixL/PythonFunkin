@@ -1,10 +1,11 @@
 
-import pygame, pygame.constants as k
+import pygame
+import pygame.constants as k
 from gameapp import Rect
 # import typing
 import time
 
-gblScale = 4.0
+gblScale = 5.0
 
 class GameImage():
     def __init__(self, parent, fileName = None, position = (0,0)):
@@ -194,10 +195,10 @@ class GameApp:
     def cleanup(self):
         pygame.quit()
  
-    def addTimer(self, mili, runOnce = False):
-        self.curUserEventId += 1
-        pygame.time.set_timer(self.curUserEventId, mili, runOnce)
-        return self.curUserEventId
+    # def addTimer(self, mili, runOnce = False):
+    #     self.curUserEventId += 1
+    #     pygame.time.set_timer(self.curUserEventId, mili, runOnce)
+    #     return self.curUserEventId
     
     def start(self):
 
