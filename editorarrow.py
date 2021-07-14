@@ -1,4 +1,4 @@
-from gameapp import *
+from gameapp import GameImage
 
 # params to add: milliseconds, isEnemy, sustainLength
 class EditorArrow():

@@ -1,4 +1,4 @@
-from gameapp import *
+from gameapp import GameImage, GameFont, GameText, k
 from editorarrow import EditorArrow
 
 class Editor():
@@ -24,9 +24,9 @@ class Editor():
 
     def on_key(self, isDown, key, mod):
         if isDown:
-            if key == K_ESCAPE:
+            if key == k.K_ESCAPE:
                 self.parent.currentSection = 'mainmenu'
-            if key == K_r:
+            if key == k.K_r:
                 self.ArrowList.clear()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):

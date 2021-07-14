@@ -1,5 +1,5 @@
 #import typing
-# from .apprect import AppRect
+# from gameapp import Rect
 
         
 

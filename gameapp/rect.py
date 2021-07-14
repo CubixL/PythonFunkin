@@ -1,7 +1,8 @@
+# type: ignore
 from typing import Tuple
 
 
-class AppRect():
+class Rect():
     # pylint: disable=E0102
     x: float
     y: float
@@ -165,6 +166,15 @@ class AppRect():
         self.height = value[1]
 
 
+    #######
+    def copy(self):
+        return Rect(self.left, self.top, self.width, self.height)
 
+    def __getitem__(self, i):
+        return self.topleft[i]
 
-     
+    def __copy__(self):
+        return Rect(self.left, self.top, self.width, self.height)
+
+    def __deepcopy__(self):
+        return Rect(self.left, self.top, self.width, self.height)
