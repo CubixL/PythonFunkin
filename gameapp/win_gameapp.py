@@ -1,5 +1,5 @@
 import pygame
-from pygame import Rect
+from .apprect import AppRect
 from pygame.locals import *
 import typing
 import time
@@ -11,7 +11,7 @@ class GameImage():
         self.parent = parent
         self.image = None
         self.fileName = fileName
-        self.position = Rect(position[0], position[1], 0, 0)
+        self.position = AppRect(position[0], position[1], 0, 0)
 
         if self.fileName and not self.image:
             self.image = pygame.image.load(self.fileName)#.convert()
@@ -23,18 +23,17 @@ class GameImage():
 
     def render(self, position = None):
         if position:
-            if type(position) == Rect:
-                self.position = position.copy()
-            else:
-                self.position.x = position[0]
-                self.position.y = position[1]
+            # if type(position) == AppRect:
+            #     self.position = position.copy()
+            # else:
+                self.position = AppRect(position[0], position[1])
 
 
         global gblScale
-        scaledposition = self.position.copy()
-        scaledposition.x *= gblScale
+        scaledposition = AppRect(self.position.x, self.position.y)
+        scaledposition.x *= gblScale        
         scaledposition.y *= gblScale
-        pygame.display.get_surface().blit(self.image, scaledposition)
+        pygame.display.get_surface().blit(self.image, (scaledposition.x, scaledposition.y))
 
         
 
@@ -68,22 +67,21 @@ class GameText(GameImage):
 
     def render(self, position = None):
         if position:
-            if type(position) == Rect:
-                self.position = position.copy()
-            else:
-                self.position.x  = position[0]
-                self.position.y  = position[1]
+            # if type(position) == Rect:
+            #     self.position = position.copy()
+            # else:
+                self.position = AppRect(position[0], position[1])
 
 
         if self.text != '':
             self.image = self.font.font.render(self.text, True, self.color)
 
             global gblScale
-            scaledposition = self.position.copy()
+            scaledposition = AppRect(self.position.x, self.position.y)
             scaledposition.x *= gblScale
             scaledposition.y *= gblScale
 
-            pygame.display.get_surface().blit(self.image, scaledposition)
+            pygame.display.get_surface().blit(self.image, (scaledposition.x, scaledposition.y))
 
 class GameAudio():
     def __init__(self, fileName = None, volume = 1):
@@ -99,9 +97,11 @@ class GameAudio():
         self.mySound = pygame.mixer.Sound(fileName + '.ogg')
 
     def play(self, numRepeat = 0):
-        self.mySound.play(loops = numRepeat)     
+        self.mySound.play(loops = numRepeat)    
+
     def stop(self):
         self.mySound.stop()
+
     def set_volume(self, volume = 1):
         self.mySound.set_volume(volume)
 
@@ -118,7 +118,7 @@ class VirtualKey():
         if parent and colrow:
             xpos = self.diameter + self.spacing
             ypos  = self.parent.surface.get_height() - (self.distance * 3) + self.diameter + self.spacing
-            self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
+            self.position = AppRect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
             self.text = GameText(self, GameFont(self, 'Calibri', 20), label, (self.position.x-10, self.position.y-10))
         
         
@@ -172,8 +172,10 @@ class GameApp:
 
     def on_start(self):
         pass
+
     def on_event(self, eventId):
         pass
+    
     def on_loop(self):
         if self.currentSection:
             self.sections[self.currentSection].on_loop()

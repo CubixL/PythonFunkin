@@ -8,6 +8,7 @@ from gameapp import *
 #         self.currentSection = section
 #         self.imgNormal = imgNormal
 #         self.imgSelected = imgSelected
+#         self.isActive = False
 
 
 
@@ -24,7 +25,13 @@ class MainMenu(Menu):
         #                         GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17))
         #                     )
         # )
-    
+
+
+        # self.Buttons.append( { 
+        #     'section' : 'level2',
+        #     'imgNormal' : GameText(self, GameFont(self), 'play', (17, 5)),
+        #     'imgSelected' : GameText(self, GameFont(self), 'play', (17, 5), RGB=(255,1,1)),
+        # })
         self.Buttons.append( { 
             'section' : 'level',
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
