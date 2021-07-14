@@ -131,17 +131,17 @@ class Level():
         self.TargetList.clear()
         self.Combo = 0
 
-        self.music_inst.load(f'song/{songName}_Inst')
-        self.music_voices.load(f'song/{songName}_Voices')
+        self.music_inst.load(f'loadedsong/{songName}_Inst')
+        self.music_voices.load(f'loadedsong/{songName}_Voices')
 
-        chart = open(str('song') + '//' + f'{songName}.json')
+        chart = open(str('loadedsong') + '/' + f'{songName}.json')
         data = json.load(chart)
 
         # Song variables
         self.JSONsections = len(data['song']['notes'])
         print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
-        self.JSONbpm = data['bpm']
+        self.JSONbpm = data['song']['bpm']
 
         # for section in range (0, self.JSONsections):
         #     print (data['notes'][section]['sectionNotes'])
@@ -162,6 +162,14 @@ class Level():
                     self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 3:
                     self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 4:
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 5:
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 6:
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                if self.JSONtype == 7:
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
 
         self.music_inst.play()
         self.music_voices.play()
