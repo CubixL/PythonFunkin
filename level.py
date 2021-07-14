@@ -24,7 +24,7 @@ class Level():
 
         self.TargetList = []
         self.PlayerScore = 0
-        self.milliAtStart = self.parent.getMillisecondsSinceStart()
+        self.milliAtStart = self.parent.getMS()
         self.music_inst = GameAudio()
         self.music_voices = GameAudio()
         self.sound_missList = [
@@ -41,9 +41,9 @@ class Level():
         self.ScoreText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
         self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
 
-    def getMilli(self):
+    def getMS(self):
         """return the number of millisecons since start of level"""
-        return self.parent.getMillisecondsSinceStart()  - self.milliAtStart
+        return self.parent.getMS()  - self.milliAtStart
         
 
     def on_loop(self):
@@ -51,7 +51,7 @@ class Level():
         
         for target in self.TargetList:
             score = target.calcScore()
-            ms = self.getMilli()
+            ms = self.getMS()
             # Check for targets that need to become active
             if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
                 target.state = 'active'
@@ -78,8 +78,8 @@ class Level():
         for target in self.TargetList:                                          # 3. Target arrows (Note, then sustain line, then sustain end)
             target.render()
            
-        self.MSText.renderText(f'Game time: {self.getMilli()}')                 # 4. GUI (Text)
-        self.FPSText.renderText(f'FPS: {1000.0/self.parent.getMillisecondsSinceLastFrame()}', position = (0, 4))
+        self.MSText.renderText(f'Game time: {self.getMS()}')                 # 4. GUI (Text)
+        self.FPSText.renderText(f'FPS: {1000.0/self.parent.getLastFrameMS()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'{self.Combo}', position = (120, 114))
 
@@ -132,7 +132,7 @@ class Level():
             songName = 'Tutorial'
 
         self.PlayerScore = 0
-        self.milliAtStart = self.parent.getMillisecondsSinceStart()
+        self.milliAtStart = self.parent.getMS()
         self.TargetList.clear()
         self.Combo = 0
 
@@ -184,7 +184,7 @@ class Level():
 
         self.music_inst.play()
         self.music_voices.play()
-        self.milliAtStart = self.parent.getMillisecondsSinceStart()
+        self.milliAtStart = self.parent.getMS()
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes

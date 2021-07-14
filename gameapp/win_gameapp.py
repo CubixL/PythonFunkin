@@ -165,10 +165,10 @@ class GameApp:
         if self.isFullScreen == True:
             pygame.display.toggle_fullscreen()
       
-    def getMillisecondsSinceStart(self):
+    def getMS(self):
         return self._milliseconds_since_start
 
-    def getMillisecondsSinceLastFrame(self):
+    def getLastFrameMS(self):
         return self._milliseconds_since_last_frame 
 
     def on_start(self):
