@@ -8,7 +8,7 @@ class LoadMenu(Menu):
         super().__init__(parent)
         self.MenuBackground = GameImage(self, 'images/background/BGE_LoadBackground.png')
         self.MenuOverlay = GameImage(self, 'images/background/BGE_LoadOverlay.png')
-        self.menuTabs = 1
+        self.menuTabs = 0
         self.songList = os.listdir('songlibrary')
         topY = 20
         for myfoldername in self.songList:
@@ -31,6 +31,8 @@ class LoadMenu(Menu):
             
             if key == k.K_RETURN and self.highlightedOverlay == 0:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
+                self.parent.currentSection = 'level'
+                self.parent.sections['level'].loadFile()
                 # self.songList[self.highlighted]
                     # pass
                 # self.parent.sections['level'].

@@ -33,25 +33,19 @@ class MainMenu(Menu):
         #     'imgNormal' : GameText(self, GameFont(self), 'play', (17, 5)),
         #     'imgSelected' : GameText(self, GameFont(self), 'play', (17, 5), RGB=(255,1,1)),
         # })
+
         self.Buttons.append( { 
-            'section' : 'level',
+            'section' : 'loadmenu',
             'menuTab' : 0,
             'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonPlay.png', (17, 20)),
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', (17, 17)),
         })
 
         self.Buttons.append( { 
-            'section' : 'loadmenu',
+            'section' : 'quit',
             'menuTab' : 0,
-            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonLoad.png', (17, 58)),
-            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonLoadSelected.png', (17, 56)),
-        })
-
-        self.Buttons.append( { 
-            'section' : 'editor',
-            'menuTab' : 0,
-            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonEdit.png', (17, 99)),
-            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonEditSelected.png', (17, 97)),
+            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonQuit.png', (17, 99)),
+            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonQuitSelected.png', (17, 97)),
         })        
 
     def doAction(self, isDown, key, mod):
@@ -59,11 +53,10 @@ class MainMenu(Menu):
             if key == k.K_RETURN:
                 # if using the GameButton class, we need to acces the values with . instead of []
                 # self.parent.currentSection = self.Buttons[self.highlighted].currentSection
-                self.parent.currentSection = self.Buttons[self.highlighted]['section']
-
-
-                if self.highlighted == 0:
-                    self.parent.sections['level'].loadFile()
+                if self.Buttons[self.highlighted]['section'] == 'quit':
+                    self.parent.quit()
+                else:
+                    self.parent.currentSection = self.Buttons[self.highlighted]['section']
             
             if key == k.K_ESCAPE:
                 self.parent.quit()
