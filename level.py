@@ -54,7 +54,8 @@ class Level(GameSection):
             score = target.calcScore()
             ms = self.getMS()
             # Check for targets that need to become active
-            if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
+            # if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
+            if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime):
                 target.state = 'active'
             # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
             if target.isEnemy == False:
@@ -135,8 +136,10 @@ class Level(GameSection):
 
         songName = self.loadedSong
         
+
+        
         self.PlayerScore = 0
-        self.milliAtStart = self.parent.getMS()
+        # self.milliAtStart = self.parent.getMS()
         self.TargetList.clear()
         self.Combo = 0
 
@@ -148,7 +151,7 @@ class Level(GameSection):
 
         # Song variables
         self.JSONsections = len(data['song']['notes'])
-        print(self.JSONsections)
+        # print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
         self.totalMoveTime = 1500 / self.JSONspeed
         self.JSONbpm = data['song']['bpm']
@@ -180,16 +183,18 @@ class Level(GameSection):
                     self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 7:
                     self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
-
-
+       
+       
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 10000, isEnemy = True, sustainLength = 0))
+        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 15000, isEnemy = True, sustainLength = 0))
         # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
-        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 30000, isEnemy = True, sustainLength = 0))
-        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 40000, isEnemy = True, sustainLength = 0))
 
 
-        self.music_inst.play()
-        self.music_voices.play()
         self.milliAtStart = self.parent.getMS()
+        # print(f'ms after load: {self.parent.getMS()}')
+        # self.music_inst.play()
+        # self.music_voices.play()
+
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes
@@ -200,3 +205,12 @@ class Level(GameSection):
                 # 0 is number in milliseconds when it appears
                 # 1 is note type (0 - left, 1 - down, 2 - up, 3 - right)
                 # 2 is sustain duration (how much time you have to hold it)
+
+    def on_after_render(self):
+        if not self.music_voices.played:
+            # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
+            self.music_inst.play()
+            self.music_voices.play()
+            self.milliAtStart = self.parent.getMS() + 350
+
+        
