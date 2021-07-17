@@ -1,7 +1,7 @@
-from gameapp import GameImage, GameFont, GameText, k
+from gameapp import GameImage, GameFont, GameText, k, GameSection
 from editorarrow import EditorArrow
 
-class Editor():
+class Editor(GameSection):
     def __init__(self, parent):
         self.parent = parent
         

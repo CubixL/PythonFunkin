@@ -2,7 +2,7 @@
 import pygame
 import pygame.constants as k
 from gameapp import Rect
-# import typing
+from typing import List, Dict
 import time
 
 gblScale = 5.0
@@ -129,7 +129,42 @@ class VirtualKey():
         pygame.draw.circle(surf, (255,255,255), (self.position[0], self.position[1]), self.diameter)
         self.text.render()
         
+class GameSection:
+    def __init__(self):
+        pass
+
+    def on_start(self):
+        pass
+
+    def on_event(self, eventId):
+        pass
+    
+    def on_loop(self):
+        pass
+
+    def on_render(self):
+        pass
+
+    def on_key(self, isDown, key, mod):
+        pass
+
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        pass
+
+    def on_timer(self, name):
+        pass
+
+
+class GameTimer():
+    def __init__(self, parent, name:str, id:int, milliseconds:int, numRepeats:int):
+        self.active: bool = True
+        self.parent = parent
+        self.name:str = name
+        self.id:int = id
+        self.milliseconds:int = milliseconds
+        self.numRepeats:int = numRepeats
         
+
 class GameApp:
     def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
         self.hasVK = hasVK
@@ -147,8 +182,10 @@ class GameApp:
         self._milliseconds_since_last_frame = 0.0
 
         self.currentSection = None
-        self.sections = {}
-        self.virtualKeys = []
+        self.sections: Dict[str, GameSection] = {}
+        self.virtualKeys: List[VirtualKey] = []
+        self.timersById: Dict[int, GameTimer] = {}
+        self.timersByName: Dict[str, GameTimer] = {}
 
 
         pygame.init()
@@ -180,26 +217,44 @@ class GameApp:
     def on_loop(self):
         if self.currentSection:
             self.sections[self.currentSection].on_loop()
+
     def on_render(self):
         if self.currentSection:
             self.sections[self.currentSection].on_render()
+
     def on_key(self, isDown, key, mod):
         if self.currentSection:
             self.sections[self.currentSection].on_key(isDown, key, mod)
+
     def on_mouse(self, isDown, key, xcoord, ycoord):
         if self.currentSection:    
             self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
+
+    def on_timer(self, name):
+        if self.currentSection:    
+            self.sections[self.currentSection].on_timer(name)
 
 
 
     def cleanup(self):
         pygame.quit()
  
-    # def addTimer(self, mili, runOnce = False):
-    #     self.curUserEventId += 1
-    #     pygame.time.set_timer(self.curUserEventId, mili, runOnce)
-    #     return self.curUserEventId
-    
+    def addTimer(self, name, milliseconds, numRepeats = 0):
+        if name not in self.timersByName:
+            self.curUserEventId += 1
+            pygame.time.set_timer(self.curUserEventId, milliseconds, numRepeats == 0)
+            timer = GameTimer(self, name, self.curUserEventId, milliseconds, numRepeats)
+            self.timersById[self.curUserEventId]  = timer
+            self.timersByName[name]  = timer
+        else:
+            pygame.time.set_timer(self.timersByName[name].id, milliseconds, numRepeats == 0)
+            
+
+    def stopTimer(self, name):
+        pygame.time.set_timer(self.timersByName[name].id, 0, True)
+
+
+
     def start(self):
 
         if self.hasVK:
@@ -236,6 +291,7 @@ class GameApp:
                     self.on_key(True, event.key, event.mod)
                 if event.type == k.KEYUP:
                     self.on_key(False, event.key, event.mod)
+
                 if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
                     for vk in self.virtualKeys:
                         vk: VirtualKey 
@@ -246,6 +302,16 @@ class GameApp:
                 global gblScale
                 if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
                     self.on_mouse(event.type == k.MOUSEBUTTONDOWN, event.button, pos[0] / gblScale, pos[1] / gblScale)
+
+                if event.type in self.timersById:
+                    timer = self.timersById[event.type]
+                    if timer.active:
+                        if timer.numRepeats == 0:
+                            timer.active = False
+                        else:
+                            timer.numRepeats-=1
+
+                        self.on_timer(timer.name)
                     
             self.on_loop()
             self.on_render()
