@@ -110,7 +110,6 @@ class GameAudio():
     def set_volume(self, volume = 1):
         self.mySound.set_volume(volume)
 
-
 class VirtualKey():
     def __init__(self, parent, label, key, colrow):
         self.parent = parent

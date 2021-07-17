@@ -18,6 +18,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.perfectypos = 10
         self.img.position.y = self.initialypos
         self.img_sustain.position.y = 146
+        self.img_sustainend.position.y = 146
 
         # Note characteristics
         self.state = 'hidden'
@@ -26,41 +27,49 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.isEnemy == False:
             self.img.position.x = 144
             self.img_sustain.position.x = 150
+            self.img_sustainend.position.x = 150
             self.key = k.K_LEFT
             self.altkey = k.K_a
             if self.type == 'Down':
                 self.img.position.x = 165
                 self.img_sustain.position.x = 171
+                self.img_sustainend.position.x = 171
                 self.key = k.K_DOWN
                 self.altkey = k.K_s
             if self.type == 'Up':
                 self.img.position.x = 186
                 self.img_sustain.position.x = 191
+                self.img_sustainend.position.x = 191
                 self.key = k.K_UP
                 self.altkey = k.K_w
             if self.type == 'Right':
                 self.img.position.x = 207
                 self.img_sustain.position.x = 213
+                self.img_sustainend.position.x = 213
                 self.key = k.K_RIGHT
                 self.altkey = k.K_d
         else:
             self.img.position.x = 17
             self.img_sustain.position.x = 23
+            self.img_sustainend.position.x = 23
             self.key = k.K_LEFT
             self.altkey = k.K_a
             if self.type == 'Down':
                 self.img.position.x = 38
                 self.img_sustain.position.x = 44
+                self.img_sustainend.position.x = 44
                 self.key = k.K_DOWN
                 self.altkey = k.K_s
             if self.type == 'Up':
                 self.img.position.x = 59
                 self.img_sustain.position.x = 65
+                self.img_sustainend.position.x = 65
                 self.key = k.K_UP
                 self.altkey = k.K_w
             if self.type == 'Right':
                 self.img.position.x = 80
                 self.img_sustain.position.x = 86
+                self.img_sustainend.position.x = 86
                 self.key = k.K_RIGHT
                 self.altkey = k.K_d
     
@@ -78,6 +87,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.state == 'active':
             self.img.position.y -= moveDist
             self.img_sustain.position.y -= moveDist
+            self.img_sustainend.position.y -= moveDist + self.sustainLength
 
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
         score = 0
@@ -105,5 +115,6 @@ class TargetArrow():                       # Arrows that rise up and hitting the
 
     def render(self): # Render only if is currently on the screen.
         if self.state == 'active':
+            self.img_sustainend.render()
             self.img_sustain.render()
             self.img.render()
