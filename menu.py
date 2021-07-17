@@ -5,8 +5,8 @@ class Menu(GameSection):
         self.parent = parent
         
         self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
-        self.TestText = GameText(self, self.GUIFont, RGB = (255, 0, 0))
-        self.TestText2 = GameText(self, self.GUIFont, position = (12, 0), RGB = (255, 0, 0))
+        # self.TestText = GameText(self, self.GUIFont, RGB = (255, 0, 0))
+        # self.TestText2 = GameText(self, self.GUIFont, position = (12, 0), RGB = (255, 0, 0))
 
         self.Buttons = []
         self.MenuBackground = GameImage(self)
@@ -24,8 +24,8 @@ class Menu(GameSection):
         self.MenuBackground.render()
         if self.MenuOverlay:
             self.MenuOverlay.render()
-        self.TestText.renderText(f'{self.highlighted}')
-        self.TestText2.renderText(f'{self.highlightedOverlay}')
+        # self.TestText.renderText(f'{self.highlighted}')
+        # self.TestText2.renderText(f'{self.highlightedOverlay}')
 
         # buttons
         for index in range(0, len(self.Buttons)):
