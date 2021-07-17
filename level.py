@@ -83,7 +83,7 @@ class Level(GameSection):
         self.MSText.renderText(f'Game time: {self.getMS()}')                 # 4. GUI (Text)
         self.FPSText.renderText(f'FPS: {1000.0/self.parent.getLastFrameMS()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
-        self.ComboText.renderText(f'{self.Combo}', position = (120, 114))
+        self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
 
         self.Rating.render()
 
