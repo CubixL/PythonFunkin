@@ -191,9 +191,10 @@ class MyScene(Scene):
         
 
 class GameAudio():
-    def __init__(self):
+    def __init__(self, fileName = None, volume = 1):
         self.effect = None
         self.fileName = None
+        self.played = False
         
     def play(self, loop = 0):
     
@@ -220,7 +221,10 @@ class GameAudio():
     def stop(self):
         if self.effect:
            self.effect.stop()
-                    
+
+    def set_volume(self, volume = 1):
+        self.mySound.set_volume(volume)
+
 class GameSection:
     def __init__(self):
         pass
