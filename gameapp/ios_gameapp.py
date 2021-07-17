@@ -221,7 +221,41 @@ class GameAudio():
         if self.effect:
            self.effect.stop()
                     
-        
+class GameSection:
+    def __init__(self):
+        pass
+
+    def on_start(self):
+        pass
+
+    def on_event(self, eventId):
+        pass
+    
+    def on_loop(self):
+        pass
+
+    def on_render(self):
+        pass
+
+    def on_key(self, isDown, key, mod):
+        pass
+
+    def on_mouse(self, isDown, key, xcoord, ycoord):
+        pass
+
+    def on_timer(self, name):
+        pass
+
+
+class GameTimer():
+    def __init__(self, parent, name:str, id:int, milliseconds:int, numRepeats:int):
+        self.active: bool = True
+        self.parent = parent
+        self.name:str = name
+        self.id:int = id
+        self.milliseconds:int = milliseconds
+        self.numRepeats:int = numRepeats
+
 class GameApp():
     def __init__(self, width=640, height=480, display=0):
         self.plat = 'ios'
@@ -248,6 +282,11 @@ class GameApp():
         self.scene.gameapp = self
         self.virtualKeys = []
 
+        self.currentSection = None
+        self.sections: Dict[str, GameSection] = {}
+        self.virtualKeys: List[VirtualKey] = []
+        #self.timersById: Dict[int, GameTimer] = {}
+        self.timersByName: Dict[str, GameTimer] = {}
 
         # self.clock = pygame.time.Clock()
         # self.surface = pygame.display.set_mode((self.width, self.height))
@@ -280,13 +319,16 @@ class GameApp():
         if self.currentSection:    
             self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
 
+    def on_timer(self, name):
+        if self.currentSection:    
+            self.sections[self.currentSection].on_timer(name)
 
-    def addTimer(self, mili, runOnce = False):
+    def addTimer(self, name, milliseconds, numRepeats = 0):
         pass
-        # self.curUserEventId += 1
-        # pygame.time.set_timer(self.curUserEventId, mili, runOnce)
-        # return self.curUserEventId
-    
+
+    def stopTimer(self, name):
+        pass
+
     def start(self):
         
        

@@ -18,12 +18,12 @@ class PythonFunkin(GameApp):               # Main app
         super().__init__(240, 135, 1) # Screen size + number of the display
         self.fps = 150
         self.currentSection = 'mainmenu'
-        self.sections = {
-            'level' : Level(self), 
-            'mainmenu' : MainMenu(self), 
-            'editor' : Editor(self),
-            'loadmenu' : LoadMenu(self)
-        }
+        self.sections['level'] = Level(self)
+        self.sections['mainmenu'] = MainMenu(self)
+        self.sections['editor'] = Editor(self)
+        self.sections['loadmenu'] = LoadMenu(self)
+
+
 
 if __name__ == '__main__':
 

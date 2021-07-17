@@ -1,6 +1,6 @@
-from gameapp import GameFont, GameText, GameImage, k
+from gameapp import GameFont, GameText, GameImage, k, GameSection
 
-class Menu():
+class Menu(GameSection):
     def __init__(self, parent):
         self.parent = parent
         
