@@ -87,6 +87,7 @@ class GameText(GameImage):
 class GameAudio():
     def __init__(self, fileName = None, volume = 1):
         self.mySound:pygame.mixer.Sound = None 
+        self.played = False
         if fileName:
             self.load(fileName)
             self.set_volume(volume)
@@ -98,10 +99,13 @@ class GameAudio():
         self.mySound = pygame.mixer.Sound(fileName + '.ogg')
 
     def play(self, numRepeat = 0):
-        self.mySound.play(loops = numRepeat)    
+        if not self.played:
+            self.mySound.play(loops = numRepeat)    
+            self.played = True
 
     def stop(self):
         self.mySound.stop()
+        self.played = False
 
     def set_volume(self, volume = 1):
         self.mySound.set_volume(volume)
@@ -143,6 +147,9 @@ class GameSection:
         pass
 
     def on_render(self):
+        pass
+
+    def on_after_render(self):
         pass
 
     def on_key(self, isDown, key, mod):
@@ -221,6 +228,10 @@ class GameApp:
     def on_render(self):
         if self.currentSection:
             self.sections[self.currentSection].on_render()
+
+    def on_after_render(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_after_render()
 
     def on_key(self, isDown, key, mod):
         if self.currentSection:
@@ -312,6 +323,8 @@ class GameApp:
                             timer.numRepeats-=1
 
                         self.on_timer(timer.name)
+
+
                     
             self.on_loop()
             self.on_render()
@@ -320,7 +333,10 @@ class GameApp:
             for vk in self.virtualKeys:
                 vk.render()
 
-            pygame.display.update()
+            pygame.display.flip()
+
+            self.on_after_render()
+
             self.clock.tick(self.fps)
  
     def quit(self):
