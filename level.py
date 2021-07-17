@@ -1,4 +1,4 @@
-from __future__ import annotations
+#from __future__ import annotations
 from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow

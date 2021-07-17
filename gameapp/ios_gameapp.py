@@ -1,7 +1,7 @@
 # type: ignore
 import os, time
-from gameapp import Rect
-import .ios_constants as k
+from gameapp.rect import Rect
+import gameapp.ios_constants as k
 import platform
 
 if os.name == 'nt':
@@ -191,9 +191,10 @@ class MyScene(Scene):
         
 
 class GameAudio():
-    def __init__(self):
+    def __init__(self, fileName = None, volume = 1):
         self.effect = None
         self.fileName = None
+        self.played = False
         
     def play(self, loop = 0):
     
@@ -220,7 +221,10 @@ class GameAudio():
     def stop(self):
         if self.effect:
            self.effect.stop()
-                    
+
+    def set_volume(self, volume = 1):
+        self.mySound.set_volume(volume)
+
 class GameSection:
     def __init__(self):
         pass
@@ -275,7 +279,7 @@ class GameApp():
         self.isFullScreen = False
         self.fps = 5
         self.keysPressed = []
-        self.curUserEventId = USEREVENT 
+        self.curUserEventId = k.USEREVENT 
         self._milliseconds_since_start = 0.0
         self._milliseconds_since_last_frame = 0.0
 
@@ -336,13 +340,13 @@ class GameApp():
         global gblScene
         gblScene = self.scene
         
-        self.virtualKeys.append(VirtualKey(self, 'L', K_LEFT, (2,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_RIGHT, (4,1)))
-        self.virtualKeys.append(VirtualKey(self, 'U', K_UP, (3,0)))
-        self.virtualKeys.append(VirtualKey(self, 'D', K_DOWN, (3,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', K_r, (0,2)))
-        self.virtualKeys.append(VirtualKey(self, 'ESC', K_ESCAPE, (0,0)))
-        self.virtualKeys.append(VirtualKey(self, 'OK', K_RETURN, (6,2)))    
+        self.virtualKeys.append(VirtualKey(self, 'L', k.K_LEFT, (2,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', k.K_RIGHT, (4,1)))
+        self.virtualKeys.append(VirtualKey(self, 'U', k.K_UP, (3,0)))
+        self.virtualKeys.append(VirtualKey(self, 'D', k.K_DOWN, (3,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', k.K_r, (0,2)))
+        self.virtualKeys.append(VirtualKey(self, 'ESC', k.K_ESCAPE, (0,0)))
+        self.virtualKeys.append(VirtualKey(self, 'OK', k.K_RETURN, (6,2)))    
         
      
         
