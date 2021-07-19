@@ -182,7 +182,7 @@ class MyScene(Scene):
             self.add_child(vk.circle)
             self.add_child(vk.text.image)
             
-
+        self.gameapp.on_after_render()
         self.gameapp.on_loop()
 
     def process_touch(self, touch, isDown):
@@ -262,6 +262,9 @@ class GameSection:
     def on_render(self):
         pass
 
+    def on_after_render(self):
+        pass
+
     def on_key(self, isDown, key, mod):
         pass
 
@@ -337,6 +340,11 @@ class GameApp():
     def on_render(self):
         if self.currentSection:
             self.sections[self.currentSection].on_render()
+
+    def on_after_render(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_after_render()
+
     def on_key(self, isDown, key, mod):
         if self.currentSection:
             self.sections[self.currentSection].on_key(isDown, key, mod)
