@@ -157,7 +157,7 @@ class MyScene(Scene):
         self.isShift = False
     def update(self):
 
-        curTime = time.process_time()
+        curTime = time.time() * 1000
         self.gameapp._milliseconds_since_last_frame = curTime - self.gameapp._milliseconds_since_start
         self.gameapp._milliseconds_since_start =  curTime
         global renderImages
@@ -244,7 +244,7 @@ class GameAudio():
            self.effect.stop()
 
     def set_volume(self, volume = 1):
-        self.mySound.set_volume(volume)
+        self.effect.volume = volume
 
 class GameSection:
     def __init__(self):
