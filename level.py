@@ -92,7 +92,7 @@ class Level(GameSection):
         if isDown == True and key == k.K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
-            self.parent.stopTimer('BPMTimer')
+            self.parent.stopTimer('BPM')
             self.parent.currentSectionName = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -130,7 +130,7 @@ class Level(GameSection):
             if isDown == True and key == k.K_r:
                 self.music_inst.stop()
                 self.music_voices.stop()
-                self.parent.stopTimer('BPMTimer')
+                self.parent.stopTimer('BPM')
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
