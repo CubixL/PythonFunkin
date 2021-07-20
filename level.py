@@ -18,6 +18,7 @@ class Level(GameSection):
         self.Rating = Rating(self)
         self.Combo = 0
         self.loadedSong = None
+        self.isStarted = False
          
 
         self.JSONspeed = 1
@@ -194,6 +195,7 @@ class Level(GameSection):
         # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
 
 
+        self.isStarted = False
         self.milliAtStart = self.parent.getMS()
         # print(f'ms after load: {self.parent.getMS()}')
         # self.music_inst.play()
@@ -207,12 +209,14 @@ class Level(GameSection):
         # 5. int: number of the note in the section
         # 6. int: desired variable of a specific note
                 # 0 is number in milliseconds when it appears
-                # 1 is note type (0 - left, 1 - down, 2 - up, 3 - right)
+
+                # 1 is note type (0 - left, 1 - down, 2 - up, 3 - right)time.sleep
                 # 2 is sustain duration (how much time you have to hold it)
 
     def on_after_render(self):
-        if not self.music_voices.played:
+        if not self.isStarted:
             # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
+            self.isStarted = True
             self.music_inst.play()
             self.music_voices.play()
             self.milliAtStart = self.parent.getMS() + 350

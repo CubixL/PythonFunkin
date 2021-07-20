@@ -39,6 +39,8 @@ class GameImage():
             
 
 
+
+
     def render(self, position = None):
         global gblScale
         self.image.scale = gblScale
@@ -81,8 +83,8 @@ class GameText():
 
         if not self.image:
             self.image = LabelNode(self.text, font = (self.font.name, self.font.size*gblScale), position=(0,0))
-            self.image.color = RGB
-            #self.image.stroke_color = 'black'
+            #self.image.color =  RGB
+            self.image.color = (RGB[0]/255, RGB[1]/255, RGB[2]/255)
             self.image.anchor_point = (0,0)
 
     def renderText(self, text, position = None):
@@ -94,7 +96,7 @@ class GameText():
             # if type(position) == Rect:
             #     self.position = position.copy()
             # else:
-                self.position.moveTo(position[0], position[1], 0, 0)
+                self.position = Rect(position[0], position[1], 0, 0)
 
         global gblScene
         self.image.position = (self.position.x * gblScale, gblScene.size[1] - (self.position.y * gblScale)  - (self.image.size[1]))
@@ -111,25 +113,43 @@ class VirtualKey():
         self.key = key
         self.diameter = 50
         self.spacing = 5
-        self.distance = (self.diameter) + (self.spacing)       
+        self.distance = (self.diameter) + (self.spacing)     
+        self.colrow = colrow  
+
+        global gblScale
 
 
-        if parent and colrow:
-            xpos = self.diameter + self.spacing
-            global gblScene
-            ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
-            self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
-
-            self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
-            self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)
-            self.text = GameText(self, GameFont(self), label, (self.position.x,self.position.y-self.spacing), (0,0,0))
-            self.text.image.anchor_point = (0.5,0)
-
-
-    def render(self):
-        global renderImages
-        renderImages.append(self.text)
+        xpos = self.diameter + self.spacing
+        global gblScene
+        ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
         
+        self.position = Rect(xpos + (colrow[0]*self.distance), ypos + (colrow[1]*self.distance), 0, 0)
+
+        self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
+        self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)
+        
+
+        self.text = GameText(self, GameFont(self, size=10), label)
+        
+        self.text.image.anchor_point = (0.5,0)
+
+  
+
+    def setPos(self):
+        global  gblScale
+
+        xpos = self.diameter + self.spacing
+        global gblScene
+        ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
+        
+        self.position = Rect(xpos + (self.colrow[0]*self.distance), ypos + (self.colrow[1]*self.distance), 0, 0)
+
+        self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
+        self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)
+        
+            
+        self.text.position.x = self.position.x/gblScale
+        self.text.position.y = (self.position.y-self.spacing)/gblScale       
 
         
 class MyScene(Scene):
@@ -137,7 +157,7 @@ class MyScene(Scene):
         self.isShift = False
     def update(self):
 
-        curTime = time.process_time()
+        curTime = time.time() * 1000
         self.gameapp._milliseconds_since_last_frame = curTime - self.gameapp._milliseconds_since_start
         self.gameapp._milliseconds_since_start =  curTime
         global renderImages
@@ -157,11 +177,12 @@ class MyScene(Scene):
             self.add_child(image.image)
             
         for vk in self.gameapp.virtualKeys:
+            vk.setPos()
             vk.text.render()
             self.add_child(vk.circle)
             self.add_child(vk.text.image)
             
-
+        self.gameapp.on_after_render()
         self.gameapp.on_loop()
 
     def process_touch(self, touch, isDown):
@@ -186,7 +207,7 @@ class MyScene(Scene):
         
     def did_change_size(self):
         global gblScale
-        gblScale = min(self.size[0] / 240, self.size[1] / 135)        
+        gblScale = min(self.size[0] / self.gameapp.width, self.size[1] / self.gameapp.height)        
 
         
 
@@ -223,7 +244,7 @@ class GameAudio():
            self.effect.stop()
 
     def set_volume(self, volume = 1):
-        self.mySound.set_volume(volume)
+        self.effect.volume = volume
 
 class GameSection:
     def __init__(self):
@@ -239,6 +260,9 @@ class GameSection:
         pass
 
     def on_render(self):
+        pass
+
+    def on_after_render(self):
         pass
 
     def on_key(self, isDown, key, mod):
@@ -316,6 +340,11 @@ class GameApp():
     def on_render(self):
         if self.currentSection:
             self.sections[self.currentSection].on_render()
+
+    def on_after_render(self):
+        if self.currentSection:
+            self.sections[self.currentSection].on_after_render()
+
     def on_key(self, isDown, key, mod):
         if self.currentSection:
             self.sections[self.currentSection].on_key(isDown, key, mod)
