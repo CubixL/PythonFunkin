@@ -1,5 +1,5 @@
 #from __future__ import annotations
-from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection
+from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection, GameApp
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
@@ -85,7 +85,7 @@ class Level(GameSection):
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
 
-        self.Rating.render()
+        # self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == k.K_ESCAPE:
@@ -116,6 +116,9 @@ class Level(GameSection):
                 # reset combo
                 self.Combo = 0
                 # miss sound
+                self.sound_missList[0].stop()
+                self.sound_missList[1].stop()
+                self.sound_missList[2].stop()
                 soundNumber = random.randrange(len(self.sound_missList))
                 self.sound_missList[soundNumber].play()
                 self.music_voices.set_volume(0)
@@ -123,6 +126,8 @@ class Level(GameSection):
 
             # R resets the chart
             if isDown == True and key == k.K_r:
+                self.music_inst.stop()
+                self.music_voices.stop()
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -134,8 +139,6 @@ class Level(GameSection):
             self.loadedSong = 'Tutorial'
 
         songName = self.loadedSong
-        
-
         
         self.PlayerScore = 0
         # self.milliAtStart = self.parent.getMS()
@@ -152,8 +155,10 @@ class Level(GameSection):
         self.JSONsections = len(data['song']['notes'])
         # print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
-        self.totalMoveTime = 1500 / self.JSONspeed
+        self.totalMoveTime = 1800 / self.JSONspeed
         self.JSONbpm = data['song']['bpm']
+
+        self.addTimer('BPMTimer', self.JSONbpm, -1)
 
         # for section in range (0, self.JSONsections):
         #     print (data['notes'][section]['sectionNotes'])
