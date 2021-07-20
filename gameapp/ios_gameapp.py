@@ -1,6 +1,6 @@
 # type: ignore
 import os, time
-from gameapp.rect import Rect
+from gameapp.rect import Rect, Position
 import gameapp.ios_constants as k
 import platform
 import math
@@ -25,10 +25,11 @@ class GameImage():
            fileName = fileName.replace('\\', '/')
         self.image = None
         self.fileName = fileName
-        self.position = Rect(position[0], position[1], 0, 0)
+        self.position = Position(position[0], position[1])
         self.anchor_point = anchor_point
         self.rotation = rotation
         self.scale = scale
+        # self.rect = Rect(position[0], position[1], 0, 0)
         
 
         if self.fileName and not self.image:
@@ -47,8 +48,8 @@ class GameImage():
         self.image.scale = self.scale * gblScale
        # print('render')
         if position:
-            if type(position) == Rect:
-                self.position = Rect(position.x, position.y)
+            if type(position) == Position:
+                self.position = Position(position.x, position.y)
             else:
                 self.position.moveTo(position[0], position[1])
 
@@ -98,7 +99,7 @@ class GameText():
     def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
         self.parent = parent
         self.image = None
-        self.position = Rect(position[0], position[1], 0, 0)      
+        self.position = Position(position[0], position[1])
         self.font = font
         self.text = text
         self.color = RGB
@@ -118,7 +119,7 @@ class GameText():
             # if type(position) == Rect:
             #     self.position = position.copy()
             # else:
-                self.position = Rect(position[0], position[1], 0, 0)
+                self.position = Position(position[0], position[1])
 
         global gblScene
         self.image.position = (self.position.x * gblScale, gblScene.size[1] - (self.position.y * gblScale)  - (self.image.size[1]))
@@ -164,7 +165,7 @@ class VirtualKey():
         global gblScene
         ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
         
-        self.position = Rect(xpos + (self.colrow[0]*self.distance), ypos + (self.colrow[1]*self.distance), 0, 0)
+        self.position = Position(xpos + (self.colrow[0]*self.distance), ypos + (self.colrow[1]*self.distance))
 
         self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
         self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)

@@ -1,10 +1,11 @@
 
 import pygame
 import pygame.constants as k
-from gameapp import Rect
+from gameapp import Rect, Position
 from typing import List, Dict, Tuple
 import time
 import math
+
 
 gblScale = 5.0
 
@@ -28,11 +29,11 @@ class GameImage():
         self.parent = parent
         self.image = None
         self.fileName = fileName
-        self.position = Rect(position[0], position[1], 0, 0)
+        self.position = Position(position[0], position[1])
         self.anchor_point = anchor_point
         self.rotation = rotation
         self.scale = scale
-        # self.transformation = Transformation()
+        # self.rect = Rect(position[0], position[1], 0, 0)
 
 
         if self.fileName and not self.image:
@@ -48,14 +49,14 @@ class GameImage():
 
     def render(self, position = None):
         if position:
-            # if type(position) == Rect:
-            #     self.position = position.copy()
+            # if type(position) == Position:
+            #     self.position =  copy.copy(position)
             # else:
-                self.position = Rect(position[0], position[1],0,0)
+                self.position = Position(position[0], position[1])
 
 
         global gblScale
-        scaledposition = self.position.copy() #Rect(self.position.x, self.position.y)
+        scaledposition = Position(self.position.left, self.position.top)
         scaledposition.x *= gblScale        
         scaledposition.y *= gblScale
 
@@ -121,14 +122,14 @@ class GameText(GameImage):
             # if type(position) == Rect:
             #     self.position = position.copy()
             # else:
-                self.position = Rect(position[0], position[1],0,0)
+                self.position = Position(position[0], position[1])
 
 
         if self.text != '' and self.font:
             self.image = self.font.font.render(self.text, True, self.color)
 
             global gblScale
-            scaledposition = Rect(self.position.x, self.position.y, 0,0)
+            scaledposition = Position(self.position.x, self.position.y)
             scaledposition.x *= gblScale
             scaledposition.y *= gblScale
 

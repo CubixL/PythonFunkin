@@ -2,6 +2,68 @@
 from typing import Tuple
 
 
+class Position():
+    x: float
+    y: float
+    top: float
+    left: float
+    topleft: Tuple[float, float]
+
+    def __init__(self, left: float, top: float, width: float = 0, height: float = 0): # noqa
+        self._left = float(left)
+        self._top = float(top)
+
+    @property
+    def left(self)->float:  
+        return self._left
+
+    @left.setter
+    def left(self, value: float):
+        self._left = float(value)
+
+    @property
+    def top(self)->float: 
+        return self._top
+
+    @top.setter
+    def top(self, value: float):
+        self._top = float(value)
+
+    @property
+    def x(self)->float: 
+        return self.left
+
+    @x.setter
+    def x(self, value: float):
+        self.left = value
+
+    @property
+    def y(self)->float: 
+        return self.top
+
+    @y.setter
+    def y(self, value: float):
+        self.top = value
+
+    @property
+    def topleft(self)->Tuple[float,float]:
+        return (self.left, self.top)
+
+    @topleft.setter
+    def topleft(self, value:Tuple[float,float]):
+        self.left = value[0]
+        self.top = value[1]
+
+    def __getitem__(self, i):
+        return self.topleft[i]
+
+    def __copy__(self):
+        return Position(self.left, self.top)
+
+    def __deepcopy__(self):
+        return Position(self.left, self.top)
+
+
 class Rect():
     x: float
     y: float
