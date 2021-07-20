@@ -1,5 +1,5 @@
 #from __future__ import annotations
-from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection
+from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection, GameApp
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
@@ -9,7 +9,7 @@ import json, random
 # import PythonFunkin
 class Level(GameSection):
     def __init__(self, parent):
-        self.parent = parent
+        self.parent: GameApp = parent
         self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
