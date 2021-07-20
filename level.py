@@ -3,14 +3,14 @@ from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection, Ga
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
-import typing
+import typing, time
 
 import json, random
 # import PythonFunkin
 class Level(GameSection):
     def __init__(self, parent):
         self.parent: GameApp = parent
-        self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif', (0, 0))
+        self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif')
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
@@ -93,7 +93,7 @@ class Level(GameSection):
             self.music_inst.stop()
             self.music_voices.stop()
             self.parent.stopTimer('BPMTimer')
-            self.parent.currentSection = 'mainmenu'
+            self.parent.currentSectionName = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
             self.PlayerArrowD.on_key(isDown, key)
@@ -219,11 +219,13 @@ class Level(GameSection):
             self.isStarted = True
             self.music_inst.play()
             self.music_voices.play()
-            self.parent.addTimer('BPMTimer', int(60000 / self.JSONbpm), -1)
-            self.milliAtStart = self.parent.getMS() + 350
+            self.parent.addTimer('BPM', 60000.0 / self.JSONbpm, delayMS=350)
+            self.milliAtStart = self.parent.getMS() 
+            if self.parent.platform == 'win':
+                self.milliAtStart += 350
 
     def on_timer(self, name):
-        if name == 'BPMTimer':
+        if name == 'BPM':
             self.sound_tempo.stop()
             self.sound_tempo.play()
 

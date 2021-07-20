@@ -2,20 +2,44 @@
 import pygame
 import pygame.constants as k
 from gameapp import Rect
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import time
+import math
 
 gblScale = 5.0
 
+# class GameShape(GameImage):
+#     def __init__(self, parent, type, left, top, right, bottom)
+#         super().__init__(parent)
+#         self.type = type
+
+#         def render(self)
+#         self.surf = pygame.display.get_surface()
+
+#         if self.type == 'circle':
+#             pygame.draw.circle(surf, (255,255,255), (self.position[0], self.position[1]), self.diameter)
+#         elif self.type == 'rect'
+#         pass
+#     #circle, rect
+#     pass
+
 class GameImage():
-    def __init__(self, parent, fileName = None, position = (0,0)):
+    def __init__(self, parent = None, fileName = None, *, position = (0,0), anchor_point = (0,0), rotation = 0.0, scale = 1.0):
         self.parent = parent
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
+        self.anchor_point = anchor_point
+        self.rotation = rotation
+        self.scale = scale
+        # self.transformation = Transformation()
+
 
         if self.fileName and not self.image:
-            self.image = pygame.image.load(self.fileName)#.convert()
+            self.load(self.fileName)
+    
+    def load(self, fileName):
+            self.image = pygame.image.load(fileName)#.convert()
             # pygame.image.set_alpha(128)
             size = self.image.get_size()
             global gblScale
@@ -34,12 +58,38 @@ class GameImage():
         scaledposition = self.position.copy() #Rect(self.position.x, self.position.y)
         scaledposition.x *= gblScale        
         scaledposition.y *= gblScale
-        pygame.display.get_surface().blit(self.image, (scaledposition.x, scaledposition.y))
 
+        # img = self.image
+        img  = pygame.transform.rotozoom(self.image, self.rotation, self.scale) 
+        # self.image = img
+
+        pygame.display.get_surface().blit(img, (scaledposition.x-(img.get_size()[0]*self.anchor_point[0]), scaledposition.y-(img.get_size()[1]*self.anchor_point[1])))
+
+    def rotoZoom(self, angle=0, scale=0):
+        self.image = pygame.transform.rotozoom(self.image, angle, scale)
+
+    def moveAngle(self, dist, angle):
+        ang = math.radians(angle)
+        dx = dist * math.cos(ang)
+        dy = dist * math.sin(ang)
+
+        self.position.x += dx
+        self.position.y -= dy
+
+    def moveTo(self, dist, position):
+        dx = (position[0] - self.position.x)
+        dy = -(position[1] - self.position.y)
         
+        ang = math.degrees(math.atan(dy/dx))
+
+        if dx < 0:
+            ang += 180
+
+        self.moveAngle(dist, ang)
+
 
 class GameFont():
-    def __init__(self, parent, name = 'Verdana', size = 20, isSys = True):
+    def __init__(self, parent = None, name = 'Verdana', size = 20, isSys = True):
         self.parent = parent
         self.name = name
         self.size = size
@@ -56,7 +106,7 @@ class GameFont():
 
 
 class GameText(GameImage):
-    def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
+    def __init__(self, parent = None, font = None, text = '', position = (0,0), RGB = (0,0,0)):
         super().__init__(parent, fileName=None, position=position)
         self.font = font
         self.text = text
@@ -74,7 +124,7 @@ class GameText(GameImage):
                 self.position = Rect(position[0], position[1],0,0)
 
 
-        if self.text != '':
+        if self.text != '' and self.font:
             self.image = self.font.font.render(self.text, True, self.color)
 
             global gblScale
@@ -162,17 +212,24 @@ class GameSection:
 
 
 class GameTimer():
-    def __init__(self, parent, name:str, id:int, milliseconds:int, numRepeats:int):
+    def __init__(self, parent, name:str, id:int, milliseconds:float, numRepeats:int, delayMS:float=0.0):
         self.active: bool = True
         self.parent = parent
         self.name:str = name
         self.id:int = id
-        self.milliseconds:int = milliseconds
+        self.milliseconds:float = milliseconds
         self.numRepeats:int = numRepeats
+        self.msAtStart:float = 0.0
+        self.numLoopsPerformed:int = 0
+        self.delayMS:float = delayMS
+
+    def getNextRunMS(self):
+        return self.msAtStart + self.delayMS + ((self.numLoopsPerformed + 1) * self.milliseconds)
+
         
 
 class GameApp:
-    def __init__(self, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False):
+    def __init__(self, *, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False, fps = 60):
         self.hasVK = hasVK
         self.platform = 'win'
         self.isRunning = True
@@ -180,18 +237,22 @@ class GameApp:
         self.width = width
         self.height = height
         self.isFullScreen = False
-        self.fps = 5
-        self.keysPressed = []
+        self.fps = fps
+        # self.keysPressed = []
+        self.pressedKeys = []
         self.curUserEventId = k.USEREVENT 
 
-        self._milliseconds_since_start = 0.0
+
+        self._milliseconds_since_start =  time.time() * 1000
         self._milliseconds_since_last_frame = 0.0
 
-        self.currentSection = None
+        self.currentSectionName:str = ''
         self.sections: Dict[str, GameSection] = {}
         self.virtualKeys: List[VirtualKey] = []
-        self.timersById: Dict[int, GameTimer] = {}
-        self.timersByName: Dict[str, GameTimer] = {}
+        # self.timersById: Dict[int, GameTimer] = {}
+        self.timers: Dict[str, GameTimer] = {}
+        # self.timers: List[GameTimer] = []
+
 
 
         pygame.init()
@@ -221,47 +282,52 @@ class GameApp:
         pass
     
     def on_loop(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_loop()
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_loop()
 
     def on_render(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_render()
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_render()
 
     def on_after_render(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_after_render()
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_after_render()
 
     def on_key(self, isDown, key, mod):
-        if self.currentSection:
-            self.sections[self.currentSection].on_key(isDown, key, mod)
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_key(isDown, key, mod)
+
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
-        if self.currentSection:    
-            self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_mouse(isDown, key, xcoord, ycoord)
 
     def on_timer(self, name):
-        if self.currentSection:    
-            self.sections[self.currentSection].on_timer(name)
+        if self.currentSectionName != '':
+            self.sections[self.currentSectionName].on_timer(name)
 
 
 
     def cleanup(self):
         pygame.quit()
  
-    def addTimer(self, name, milliseconds, numRepeats = 0):
-        if name not in self.timersByName:
+    def addTimer(self, name, milliseconds:float, numRepeats:int=-1, delayMS=0.0):
+        if name not in self.timers:
             self.curUserEventId += 1
-            pygame.time.set_timer(self.curUserEventId, milliseconds, numRepeats == 0)
-            timer = GameTimer(self, name, self.curUserEventId, milliseconds, numRepeats)
-            self.timersById[self.curUserEventId]  = timer
-            self.timersByName[name]  = timer
+            timer = GameTimer(self, name, self.curUserEventId, milliseconds, numRepeats, delayMS)
+            timer.msAtStart = self.getMS()
+            self.timers[name]  = timer
         else:
-            pygame.time.set_timer(self.timersByName[name].id, milliseconds, numRepeats == 0)
-            
+            timer = self.timers[name]
+            timer.msAtStart = self.getMS()
+            timer.milliseconds = milliseconds
+            timer.numRepeats = numRepeats
+            timer.numLoopsPerformed = 0
+            timer.active = True
 
     def stopTimer(self, name):
-        pygame.time.set_timer(self.timersByName[name].id, 0, True)
+        self.timers[name].active = False
+
 
 
 
@@ -289,7 +355,8 @@ class GameApp:
             # self._milliseconds_since_start += self._milliseconds_since_last_frame
 
 
-            self.keysPressed = pygame.key.get_pressed()
+            # self.keysPressed = pygame.key.get_pressed()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
@@ -299,8 +366,10 @@ class GameApp:
                 pos = pygame.mouse.get_pos()
                 if event.type == k.KEYDOWN:
                     self.on_key(True, event.key, event.mod)
+                    self.pressedKeys.append(event.key)
                 if event.type == k.KEYUP:
                     self.on_key(False, event.key, event.mod)
+                    self.pressedKeys.remove(event.key)
 
                 if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
                     for vk in self.virtualKeys:
@@ -308,20 +377,24 @@ class GameApp:
                         if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
                            pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
                             self.on_key(event.type == k.MOUSEBUTTONDOWN, vk.key, None)
+                            if event.type == k.MOUSEBUTTONDOWN:
+                                self.pressedKeys.append(vk.key)
+                            else:
+                                self.pressedKeys.remove(vk.key)
 
                 global gblScale
                 if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
                     self.on_mouse(event.type == k.MOUSEBUTTONDOWN, event.button, pos[0] / gblScale, pos[1] / gblScale)
 
-                if event.type in self.timersById:
-                    timer = self.timersById[event.type]
-                    if timer.active:
-                        if timer.numRepeats == 0:
-                            timer.active = False
-                        else:
-                            timer.numRepeats-=1
 
-                        self.on_timer(timer.name)
+            for timer in self.timers.values():
+                if timer.active and self._milliseconds_since_start > timer.getNextRunMS():
+                    timer.numLoopsPerformed += 1
+                    self.on_timer(timer.name)
+                    #check if last loop
+                    #if not infinite timer
+                    if timer.numRepeats >= 0 and timer.numLoopsPerformed > timer.numRepeats:
+                        timer.active = False
 
 
                     
@@ -340,6 +413,9 @@ class GameApp:
  
     def quit(self):
         self.isRunning = False
+
+    def fill(self, color= (0,0,0)):
+        pygame.display.get_surface().fill(color)
 
 if __name__ == "__main__" :
     

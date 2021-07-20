@@ -25,7 +25,7 @@ class MyRedCar(GameImage):
 
 class TestGame(GameApp):
     def __init__(self):
-        super().__init__(500, 500) 
+        super().__init__(width=500, height=500) 
         self.redcar = MyRedCar()
         self.fps = 50
         self.bluecar = GameImage('gameapp/images/bluecar.png', (10,500))

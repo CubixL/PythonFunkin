@@ -3,6 +3,7 @@ import os, time
 from gameapp.rect import Rect
 import gameapp.ios_constants as k
 import platform
+import math
 
 if os.name == 'nt':
     from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path, sound
@@ -18,32 +19,32 @@ renderImages = []
 
 
 class GameImage():
-    def __init__(self, parent, fileName = None, position = (0,0)):
+    def __init__(self, parent, fileName = None, *, position = (0,0), anchor_point = (0,0), rotation = 0.0, scale = 1.0):
         self.parent = parent
         if fileName:
            fileName = fileName.replace('\\', '/')
         self.image = None
         self.fileName = fileName
         self.position = Rect(position[0], position[1], 0, 0)
+        self.anchor_point = anchor_point
+        self.rotation = rotation
+        self.scale = scale
         
 
         if self.fileName and not self.image:
+            self.load(self.fileName)
+
+    def load(self, fileName):
             self.image = SpriteNode(self.fileName)
-            global gblScale
-           # print(f'glbS {gblScale}')
+            # global gblScale
+            # global renderImages  
+            self.image.anchor_point = self.anchor_point
             
-            global renderImages  
-            #print(f'renderIm {renderImages}')
-
-            self.image.anchor_point = (0,0)
-            
-
-
 
 
     def render(self, position = None):
         global gblScale
-        self.image.scale = gblScale
+        self.image.scale = self.scale * gblScale
        # print('render')
         if position:
             if type(position) == Rect:
@@ -53,15 +54,36 @@ class GameImage():
 
         #screen_height = screen_size[1] 
         global gblScene
-        #global gblScale
         screen_height = gblScene.size[1] 
         self.image.position = (self.position.x * gblScale, screen_height - (self.position.y * gblScale)  - (self.image.size[1] * self.image.scale))
+        self.image.rotation = self.rotation
         global renderImages
-
       #  print(f'renderIm {renderImages}')
         renderImages.append(self)
        
+    def rotoZoom(self, angle=0, scale=0):
+        pass
+        # self.image = pygame.transform.rotozoom(self.image, angle, scale)
+
+    def moveAngle(self, dist, angle):
+        ang = math.radians(angle)
+        dx = dist * math.cos(ang)
+        dy = dist * math.sin(ang)
+
+        self.position.x += dx
+        self.position.y -= dy
+
+    def moveTo(self, dist, position):
+        dx = (position[0] - self.position.x)
+        dy = -(position[1] - self.position.y)
         
+        ang = math.degrees(math.atan(dy/dx))
+
+        if dx < 0:
+            ang += 180
+
+        self.moveAngle(dist, ang)
+
 
 class GameFont():
     def __init__(self, parent, name = 'Helvetica', size = 20, isSys = True):
@@ -156,6 +178,16 @@ class MyScene(Scene):
     def setup(self):
         self.isShift = False
     def update(self):
+        for timer in self.gameapp.timers.values():
+            if timer.active and self.gameapp._milliseconds_since_start > timer.getNextRunMS():
+                timer.numLoopsPerformed += 1
+                self.gameapp.on_timer(timer.name)
+                #check if last loop
+                #if not infinite timer
+                if timer.numRepeats >= 0 and timer.numLoopsPerformed > timer.numRepeats:
+                    timer.active = False
+
+
 
         curTime = time.time() * 1000
         self.gameapp._milliseconds_since_last_frame = curTime - self.gameapp._milliseconds_since_start
@@ -276,17 +308,23 @@ class GameSection:
 
 
 class GameTimer():
-    def __init__(self, parent, name:str, id:int, milliseconds:int, numRepeats:int):
+    def __init__(self, parent, name:str, id:int, milliseconds:float, numRepeats:int, delayMS:float=0.0):
         self.active: bool = True
         self.parent = parent
         self.name:str = name
         self.id:int = id
-        self.milliseconds:int = milliseconds
+        self.milliseconds:float = milliseconds
         self.numRepeats:int = numRepeats
+        self.msAtStart:float = 0.0
+        self.numLoopsPerformed:int = 0
+        self.delayMS:float = delayMS
+
+    def getNextRunMS(self):
+        return self.msAtStart + self.delayMS + ((self.numLoopsPerformed + 1) * self.milliseconds)
 
 class GameApp():
-    def __init__(self, width=640, height=480, display=0):
-        self.plat = 'ios'
+    def __init__(self, width=640, height=480, displayNumber=0):
+        self.platform = 'ios'
         self.scene = MyScene()
         global gblScale
 
@@ -310,17 +348,11 @@ class GameApp():
         self.scene.gameapp = self
         self.virtualKeys = []
 
-        self.currentSection = None
+        self.currentSectionName = ''
         self.sections: Dict[str, GameSection] = {}
         self.virtualKeys: List[VirtualKey] = []
-        #self.timersById: Dict[int, GameTimer] = {}
-        self.timersByName: Dict[str, GameTimer] = {}
+        self.timers: Dict[str, GameTimer] = {}
 
-        # self.clock = pygame.time.Clock()
-        # self.surface = pygame.display.set_mode((self.width, self.height))
-        # if self.isFullScreen == True:
-        #     pygame.display.toggle_fullscreen()
-      
  
     def getMS(self):
         return self._milliseconds_since_start
@@ -335,32 +367,44 @@ class GameApp():
         pass
         
     def on_loop(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_loop()
+        if self.currentSectionName:
+            self.sections[self.currentSectionName].on_loop()
     def on_render(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_render()
+        if self.currentSectionName:
+            self.sections[self.currentSectionName].on_render()
 
     def on_after_render(self):
-        if self.currentSection:
-            self.sections[self.currentSection].on_after_render()
+        if self.currentSectionName:
+            self.sections[self.currentSectionName].on_after_render()
 
     def on_key(self, isDown, key, mod):
-        if self.currentSection:
-            self.sections[self.currentSection].on_key(isDown, key, mod)
+        if self.currentSectionName:
+            self.sections[self.currentSectionName].on_key(isDown, key, mod)
     def on_mouse(self, isDown, key, xcoord, ycoord):
-        if self.currentSection:    
-            self.sections[self.currentSection].on_mouse(isDown, key, xcoord, ycoord)
+        if self.currentSectionName:    
+            self.sections[self.currentSectionName].on_mouse(isDown, key, xcoord, ycoord)
 
     def on_timer(self, name):
-        if self.currentSection:    
-            self.sections[self.currentSection].on_timer(name)
+        if self.currentSectionName:    
+            self.sections[self.currentSectionName].on_timer(name)
 
-    def addTimer(self, name, milliseconds, numRepeats = 0):
-        pass
+    def addTimer(self, name, milliseconds:float, numRepeats:int=-1, delayMS=0.0):
+        if name not in self.timers:
+            self.curUserEventId += 1
+            timer = GameTimer(self, name, self.curUserEventId, milliseconds, numRepeats, delayMS)
+            timer.msAtStart = self.getMS()
+            # self.timers.append(timer)
+            self.timers[name]  = timer
+        else:
+            timer = self.timers[name]
+            timer.msAtStart = self.getMS()
+            timer.milliseconds = milliseconds
+            timer.numRepeats = numRepeats
+            timer.numLoopsPerformed = 0
+            timer.active = True
 
     def stopTimer(self, name):
-        pass
+        self.timers[name].active = False
 
     def start(self):
         

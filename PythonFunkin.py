@@ -15,9 +15,9 @@ from loadmenu import LoadMenu
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
         # GameApp variables
-        super().__init__(240, 135, 1) # Screen size + number of the display
+        super().__init__(width=240, height=135, displayNumber=1) # Screen size + number of the display
         self.fps = 150
-        self.currentSection = 'mainmenu'
+        self.currentSectionName = 'mainmenu'
         self.sections['level'] = Level(self)
         self.sections['mainmenu'] = MainMenu(self)
         self.sections['editor'] = Editor(self)

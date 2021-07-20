@@ -1,7 +1,7 @@
 import os
 
 # load pythonsta libraries
-if os.name == 'posix':
+if os.name == 'posix': 
 
     import gameapp.ios_constants as k
     from gameapp.ios_gameapp import GameApp, GameText, GameFont, GameImage, GameAudio, GameSection

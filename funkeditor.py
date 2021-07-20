@@ -25,7 +25,7 @@ class Editor(GameSection):
     def on_key(self, isDown, key, mod):
         if isDown:
             if key == k.K_ESCAPE:
-                self.parent.currentSection = 'mainmenu'
+                self.parent.currentSectionName = 'mainmenu'
             if key == k.K_r:
                 self.ArrowList.clear()
 

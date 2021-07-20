@@ -23,7 +23,7 @@ class LoadMenu(Menu):
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == k.K_ESCAPE:
-                self.parent.currentSection = 'mainmenu'
+                self.parent.currentSectionNAme = 'mainmenu'
             if key == k.K_LEFT and self.highlightedOverlay == 0:
                 self.MenuOverlay.render((0, 0))
             if key == k.K_RIGHT and self.highlightedOverlay == 1:
@@ -31,7 +31,7 @@ class LoadMenu(Menu):
             
             if key == k.K_RETURN and self.highlightedOverlay == 0:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
-                self.parent.currentSection = 'level'
+                self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()
                 # self.songList[self.highlighted]
                     # pass
