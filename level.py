@@ -19,8 +19,7 @@ class Level(GameSection):
         self.Combo = 0
         self.loadedSong = None
         self.isStarted = False
-         
-
+        
         self.JSONspeed = 1
         self.totalMoveTime = 1500
 
@@ -34,6 +33,7 @@ class Level(GameSection):
             GameAudio('sounds/missnote2', 0.2), 
             GameAudio('sounds/missnote3', 0.2)
         ]
+        self.sound_tempo = GameAudio('sounds/tempo', 1)
 
         # font & text
         self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
@@ -86,12 +86,13 @@ class Level(GameSection):
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
 
-        self.Rating.render()
+        # self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == k.K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
+            self.parent.stopTimer('BPMTimer')
             self.parent.currentSection = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -117,6 +118,9 @@ class Level(GameSection):
                 # reset combo
                 self.Combo = 0
                 # miss sound
+                self.sound_missList[0].stop()
+                self.sound_missList[1].stop()
+                self.sound_missList[2].stop()
                 soundNumber = random.randrange(len(self.sound_missList))
                 self.sound_missList[soundNumber].play()
                 self.music_voices.set_volume(0)
@@ -124,6 +128,9 @@ class Level(GameSection):
 
             # R resets the chart
             if isDown == True and key == k.K_r:
+                self.music_inst.stop()
+                self.music_voices.stop()
+                self.parent.stopTimer('BPMTimer')
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -135,8 +142,6 @@ class Level(GameSection):
             self.loadedSong = 'Tutorial'
 
         songName = self.loadedSong
-        
-
         
         self.PlayerScore = 0
         # self.milliAtStart = self.parent.getMS()
@@ -153,7 +158,7 @@ class Level(GameSection):
         self.JSONsections = len(data['song']['notes'])
         # print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
-        self.totalMoveTime = 1500 / self.JSONspeed
+        self.totalMoveTime = 1800 / self.JSONspeed
         self.JSONbpm = data['song']['bpm']
 
         # for section in range (0, self.JSONsections):
@@ -214,6 +219,11 @@ class Level(GameSection):
             self.isStarted = True
             self.music_inst.play()
             self.music_voices.play()
+            self.parent.addTimer('BPMTimer', int(60000 / self.JSONbpm), -1)
             self.milliAtStart = self.parent.getMS() + 350
 
-        
+    def on_timer(self, name):
+        if name == 'BPMTimer':
+            self.sound_tempo.stop()
+            self.sound_tempo.play()
+
