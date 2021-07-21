@@ -226,12 +226,7 @@ class Rect():
         self.width = value[0]
         self.height = value[1]
 
-
     #######
-    def copy(self):
-   
-        return Rect(self.left, self.top, self.width, self.height)
-
     def __getitem__(self, i):
         return self.topleft[i]
 
@@ -240,7 +235,6 @@ class Rect():
 
     def __deepcopy__(self):
         return Rect(self.left, self.top, self.width, self.height)
-        self.copy()
 
 
 
