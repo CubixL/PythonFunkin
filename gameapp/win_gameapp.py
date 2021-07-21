@@ -1,7 +1,7 @@
 
 import pygame
-import pygame.constants as k
-from gameapp import Rect, Position
+import pygame.constants as kb
+from gameapp import Rect, Point
 from typing import List, Dict, Tuple
 import time
 import math
@@ -29,7 +29,7 @@ class GameImage():
         self.parent = parent
         self.image = None
         self.fileName = fileName
-        self.position = Position(position[0], position[1])
+        self.position = Point(position[0], position[1])
         self.anchor_point = anchor_point
         self.rotation = rotation
         self.scale = scale
@@ -52,11 +52,11 @@ class GameImage():
             # if type(position) == Position:
             #     self.position =  copy.copy(position)
             # else:
-                self.position = Position(position[0], position[1])
+                self.position = Point(position[0], position[1])
 
 
         global gblScale
-        scaledposition = Position(self.position.left, self.position.top)
+        scaledposition = Point(self.position.left, self.position.top)
         scaledposition.x *= gblScale        
         scaledposition.y *= gblScale
 
@@ -122,14 +122,14 @@ class GameText(GameImage):
             # if type(position) == Rect:
             #     self.position = position.copy()
             # else:
-                self.position = Position(position[0], position[1])
+                self.position = Point(position[0], position[1])
 
 
         if self.text != '' and self.font:
             self.image = self.font.font.render(self.text, True, self.color)
 
             global gblScale
-            scaledposition = Position(self.position.x, self.position.y)
+            scaledposition = Point(self.position.x, self.position.y)
             scaledposition.x *= gblScale
             scaledposition.y *= gblScale
 
@@ -241,7 +241,7 @@ class GameApp:
         self.fps = fps
         # self.keysPressed = []
         self.pressedKeys = []
-        self.curUserEventId = k.USEREVENT 
+        self.curUserEventId = kb.USEREVENT 
 
 
         self._milliseconds_since_start =  time.time() * 1000
@@ -335,13 +335,13 @@ class GameApp:
     def start(self):
 
         if self.hasVK:
-            self.virtualKeys.append(VirtualKey(self, 'L', k.K_LEFT, (5,1)))
-            self.virtualKeys.append(VirtualKey(self, 'R', k.K_RIGHT, (7,1)))
-            self.virtualKeys.append(VirtualKey(self, 'U', k.K_UP, (6,0)))
-            self.virtualKeys.append(VirtualKey(self, 'D', k.K_DOWN, (6,1)))
-            self.virtualKeys.append(VirtualKey(self, 'R', k.K_r, (1,2)))
-            self.virtualKeys.append(VirtualKey(self, 'ESC', k.K_ESCAPE, (1,0)))
-            self.virtualKeys.append(VirtualKey(self, 'OK', k.K_RETURN, (9,2)))
+            self.virtualKeys.append(VirtualKey(self, 'L', kb.K_LEFT, (5,1)))
+            self.virtualKeys.append(VirtualKey(self, 'R', kb.K_RIGHT, (7,1)))
+            self.virtualKeys.append(VirtualKey(self, 'U', kb.K_UP, (6,0)))
+            self.virtualKeys.append(VirtualKey(self, 'D', kb.K_DOWN, (6,1)))
+            self.virtualKeys.append(VirtualKey(self, 'R', kb.K_r, (1,2)))
+            self.virtualKeys.append(VirtualKey(self, 'ESC', kb.K_ESCAPE, (1,0)))
+            self.virtualKeys.append(VirtualKey(self, 'OK', kb.K_RETURN, (9,2)))
 
 
         self.on_start()
@@ -352,7 +352,7 @@ class GameApp:
             self._milliseconds_since_last_frame = curTime - self._milliseconds_since_start
             self._milliseconds_since_start =  curTime
 
-            # self._milliseconds_since_last_frame = self.clock.get_time()
+            # self._milliseconds_since_last_frame = self.clockb.get_time()
             # self._milliseconds_since_start += self._milliseconds_since_last_frame
 
 
@@ -365,27 +365,27 @@ class GameApp:
                 self.on_event(event.type)
 
                 pos = pygame.mouse.get_pos()
-                if event.type == k.KEYDOWN:
+                if event.type == kb.KEYDOWN:
                     self.on_key(True, event.key, event.mod)
                     self.pressedKeys.append(event.key)
-                if event.type == k.KEYUP:
+                if event.type == kb.KEYUP:
                     self.on_key(False, event.key, event.mod)
                     self.pressedKeys.remove(event.key)
 
-                if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
+                if event.type in (kb.MOUSEBUTTONDOWN, kb.MOUSEBUTTONUP):
                     for vk in self.virtualKeys:
                         vk: VirtualKey 
                         if pos[0] > vk.position.x - vk.diameter and pos[0] < vk.position.x + vk.diameter and \
                            pos[1] > vk.position.y - vk.diameter and pos[1] < vk.position.y + vk.diameter:
-                            self.on_key(event.type == k.MOUSEBUTTONDOWN, vk.key, None)
-                            if event.type == k.MOUSEBUTTONDOWN:
+                            self.on_key(event.type == kb.MOUSEBUTTONDOWN, vk.key, None)
+                            if event.type == kb.MOUSEBUTTONDOWN:
                                 self.pressedKeys.append(vk.key)
                             else:
                                 self.pressedKeys.remove(vk.key)
 
                 global gblScale
-                if event.type in (k.MOUSEBUTTONDOWN, k.MOUSEBUTTONUP):
-                    self.on_mouse(event.type == k.MOUSEBUTTONDOWN, event.button, pos[0] / gblScale, pos[1] / gblScale)
+                if event.type in (kb.MOUSEBUTTONDOWN, kb.MOUSEBUTTONUP):
+                    self.on_mouse(event.type == kb.MOUSEBUTTONDOWN, event.button, pos[0] / gblScale, pos[1] / gblScale)
 
 
             for timer in self.timers.values():

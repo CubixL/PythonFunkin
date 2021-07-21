@@ -2,7 +2,7 @@
 from typing import Tuple
 
 
-class Position():
+class Point():
     x: float
     y: float
     top: float
@@ -58,10 +58,10 @@ class Position():
         return self.topleft[i]
 
     def __copy__(self):
-        return Position(self.left, self.top)
+        return Point(self.left, self.top)
 
     def __deepcopy__(self):
-        return Position(self.left, self.top)
+        return Point(self.left, self.top)
 
 
 class Rect():

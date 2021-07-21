@@ -1,9 +1,10 @@
 # type: ignore
 import os, time
-from gameapp.rect import Rect, Position
-import gameapp.ios_constants as k
+from gameapp.rect import Rect, Point
+import gameapp.ios_constants as kb
 import platform
 import math
+from typing import Optional
 
 if os.name == 'nt':
     from win_pythonista import run, Scene, SpriteNode, LabelNode, ShapeNode, Path, sound
@@ -23,9 +24,9 @@ class GameImage():
         self.parent = parent
         if fileName:
            fileName = fileName.replace('\\', '/')
-        self.image = None
+        self.image:SpriteNode
         self.fileName = fileName
-        self.position = Position(position[0], position[1])
+        self.position = Point(position[0], position[1])
         self.anchor_point = anchor_point
         self.rotation = rotation
         self.scale = scale
@@ -48,8 +49,8 @@ class GameImage():
         self.image.scale = self.scale * gblScale
        # print('render')
         if position:
-            if type(position) == Position:
-                self.position = Position(position.x, position.y)
+            if type(position) == Point:
+                self.position = Point(position.x, position.y)
             else:
                 self.position.moveTo(position[0], position[1])
 
@@ -99,7 +100,7 @@ class GameText():
     def __init__(self, parent, font, text = '', position = (0,0), RGB = (0,0,0)):
         self.parent = parent
         self.image = None
-        self.position = Position(position[0], position[1])
+        self.position = Point(position[0], position[1])
         self.font = font
         self.text = text
         self.color = RGB
@@ -119,7 +120,7 @@ class GameText():
             # if type(position) == Rect:
             #     self.position = position.copy()
             # else:
-                self.position = Position(position[0], position[1])
+                self.position = Point(position[0], position[1])
 
         global gblScene
         self.image.position = (self.position.x * gblScale, gblScene.size[1] - (self.position.y * gblScale)  - (self.image.size[1]))
@@ -165,7 +166,7 @@ class VirtualKey():
         global gblScene
         ypos  = gblScene.size[1] - (self.distance * 3) + self.spacing
         
-        self.position = Position(xpos + (self.colrow[0]*self.distance), ypos + (self.colrow[1]*self.distance))
+        self.position = Point(xpos + (self.colrow[0]*self.distance), ypos + (self.colrow[1]*self.distance))
 
         self.circle =  ShapeNode(Path.oval(0,0, self.diameter, self.diameter))
         self.circle.position = (self.position.x, gblScene.size[1] - self.position.y)
@@ -342,7 +343,7 @@ class GameApp():
         self.isFullScreen = False
         self.fps = 5
         self.keysPressed = []
-        self.curUserEventId = k.USEREVENT 
+        self.curUserEventId = kb.USEREVENT 
         self._milliseconds_since_start = 0.0
         self._milliseconds_since_last_frame = 0.0
 
@@ -414,13 +415,13 @@ class GameApp():
         global gblScene
         gblScene = self.scene
         
-        self.virtualKeys.append(VirtualKey(self, 'L', k.K_LEFT, (2,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', k.K_RIGHT, (4,1)))
-        self.virtualKeys.append(VirtualKey(self, 'U', k.K_UP, (3,0)))
-        self.virtualKeys.append(VirtualKey(self, 'D', k.K_DOWN, (3,1)))
-        self.virtualKeys.append(VirtualKey(self, 'R', k.K_r, (0,2)))
-        self.virtualKeys.append(VirtualKey(self, 'ESC', k.K_ESCAPE, (0,0)))
-        self.virtualKeys.append(VirtualKey(self, 'OK', k.K_RETURN, (6,2)))    
+        self.virtualKeys.append(VirtualKey(self, 'L', kb.K_LEFT, (2,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', kb.K_RIGHT, (4,1)))
+        self.virtualKeys.append(VirtualKey(self, 'U', kb.K_UP, (3,0)))
+        self.virtualKeys.append(VirtualKey(self, 'D', kb.K_DOWN, (3,1)))
+        self.virtualKeys.append(VirtualKey(self, 'R', kb.K_r, (0,2)))
+        self.virtualKeys.append(VirtualKey(self, 'ESC', kb.K_ESCAPE, (0,0)))
+        self.virtualKeys.append(VirtualKey(self, 'OK', kb.K_RETURN, (6,2)))    
         
      
         

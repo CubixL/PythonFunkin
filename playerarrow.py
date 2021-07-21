@@ -1,4 +1,4 @@
-from gameapp import GameImage, k
+from gameapp import GameImage, kb
 
 class PlayerArrow():                       # Arrows at the top, input by the player
     def __init__(self, parent, type):
@@ -24,26 +24,26 @@ class PlayerArrow():                       # Arrows at the top, input by the pla
             self.img_default.position.x = 144
             self.img_pressed.position.x = 144
             self.img_enemy.position.x = 17
-            self.key = k.K_LEFT
-            self.altkey = k.K_a
+            self.key = kb.K_LEFT
+            self.altkey = kb.K_a
         if self.type == 'Down':
             self.img_default.position.x = 165
             self.img_pressed.position.x = 165
             self.img_enemy.position.x = 38
-            self.key = k.K_DOWN
-            self.altkey = k.K_s
+            self.key = kb.K_DOWN
+            self.altkey = kb.K_s
         if self.type == 'Up':
             self.img_default.position.x = 186
             self.img_pressed.position.x = 186 
             self.img_enemy.position.x = 59
-            self.key = k.K_UP
-            self.altkey = k.K_w
+            self.key = kb.K_UP
+            self.altkey = kb.K_w
         if self.type == 'Right':
             self.img_default.position.x = 207
             self.img_pressed.position.x = 207
             self.img_enemy.position.x = 80
-            self.key =k.K_RIGHT
-            self.altkey =k.K_d
+            self.key =kb.K_RIGHT
+            self.altkey =kb.K_d
     
     def render(self):
         if self.isPressed == False:

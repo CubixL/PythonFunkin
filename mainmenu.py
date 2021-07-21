@@ -1,5 +1,5 @@
 from menu import Menu
-from gameapp import GameImage, k
+from gameapp import GameImage, kb
 
 
 #  for future usage when we need a more intelligent button, like adding visual effect 
@@ -50,7 +50,7 @@ class MainMenu(Menu):
 
     def doAction(self, isDown, key, mod):
         if isDown:
-            if key == k.K_RETURN:
+            if key == kb.K_RETURN:
                 # if using the GameButton class, we need to acces the values with . instead of []
                 # self.parent.currentSectionName = self.Buttons[self.highlighted].currentSection
                 if self.Buttons[self.highlighted]['section'] == 'quit':
@@ -58,6 +58,6 @@ class MainMenu(Menu):
                 else:
                     self.parent.currentSectionName = self.Buttons[self.highlighted]['section']
             
-            if key == k.K_ESCAPE:
+            if key == kb.K_ESCAPE:
                 self.parent.quit()
 

@@ -1,5 +1,5 @@
 #from __future__ import annotations
-from gameapp import GameImage, GameAudio, GameFont, GameText, k, GameSection, GameApp
+from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
 from rating import Rating
@@ -89,7 +89,7 @@ class Level(GameSection):
         # self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
-        if isDown == True and key == k.K_ESCAPE:
+        if isDown == True and key == kb.K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
             self.parent.stopTimer('BPM')
@@ -113,7 +113,7 @@ class Level(GameSection):
                         self.music_voices.set_volume(1)
             
             # If score is still 0, the bad key was pressed
-            if currentscore == 0 and key in (k.K_DOWN, k.K_UP, k.K_LEFT, k.K_RIGHT, k.K_w, k.K_a, k.K_s, k.K_d) and isDown:
+            if currentscore == 0 and key in (kb.K_DOWN, kb.K_UP, kb.K_LEFT, kb.K_RIGHT, kb.K_w, kb.K_a, kb.K_s, kb.K_d) and isDown:
                 currentscore = -10
                 # reset combo
                 self.Combo = 0
@@ -127,7 +127,7 @@ class Level(GameSection):
             self.PlayerScore += currentscore
 
             # R resets the chart
-            if isDown == True and key == k.K_r:
+            if isDown == True and key == kb.K_r:
                 self.music_inst.stop()
                 self.music_voices.stop()
                 self.parent.stopTimer('BPM')

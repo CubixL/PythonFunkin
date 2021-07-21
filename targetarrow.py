@@ -1,4 +1,4 @@
-from gameapp import GameImage, k
+from gameapp import GameImage, kb
 
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
     def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
@@ -28,50 +28,50 @@ class TargetArrow():                       # Arrows that rise up and hitting the
             self.img.position.x = 144
             self.img_sustain.position.x = 150
             self.img_sustainend.position.x = 150
-            self.key = k.K_LEFT
-            self.altkey = k.K_a
+            self.key = kb.K_LEFT
+            self.altkey = kb.K_a
             if self.type == 'Down':
                 self.img.position.x = 165
                 self.img_sustain.position.x = 171
                 self.img_sustainend.position.x = 171
-                self.key = k.K_DOWN
-                self.altkey = k.K_s
+                self.key = kb.K_DOWN
+                self.altkey = kb.K_s
             if self.type == 'Up':
                 self.img.position.x = 186
                 self.img_sustain.position.x = 191
                 self.img_sustainend.position.x = 191
-                self.key = k.K_UP
-                self.altkey = k.K_w
+                self.key = kb.K_UP
+                self.altkey = kb.K_w
             if self.type == 'Right':
                 self.img.position.x = 207
                 self.img_sustain.position.x = 213
                 self.img_sustainend.position.x = 213
-                self.key = k.K_RIGHT
-                self.altkey = k.K_d
+                self.key = kb.K_RIGHT
+                self.altkey = kb.K_d
         else:
             self.img.position.x = 17
             self.img_sustain.position.x = 23
             self.img_sustainend.position.x = 23
-            self.key = k.K_LEFT
-            self.altkey = k.K_a
+            self.key = kb.K_LEFT
+            self.altkey = kb.K_a
             if self.type == 'Down':
                 self.img.position.x = 38
                 self.img_sustain.position.x = 44
                 self.img_sustainend.position.x = 44
-                self.key = k.K_DOWN
-                self.altkey = k.K_s
+                self.key = kb.K_DOWN
+                self.altkey = kb.K_s
             if self.type == 'Up':
                 self.img.position.x = 59
                 self.img_sustain.position.x = 65
                 self.img_sustainend.position.x = 65
-                self.key = k.K_UP
-                self.altkey = k.K_w
+                self.key = kb.K_UP
+                self.altkey = kb.K_w
             if self.type == 'Right':
                 self.img.position.x = 80
                 self.img_sustain.position.x = 86
                 self.img_sustainend.position.x = 86
-                self.key = k.K_RIGHT
-                self.altkey = k.K_d
+                self.key = kb.K_RIGHT
+                self.altkey = kb.K_d
     
     def move(self): # Move up the screen every frame
 

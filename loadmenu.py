@@ -1,5 +1,5 @@
 import os
-from gameapp import GameImage, GameText, GameFont, k
+from gameapp import GameImage, GameText, GameFont, kb
 from menu import Menu
 
 
@@ -22,14 +22,14 @@ class LoadMenu(Menu):
 
     def doAction(self, isDown, key, mod):
         if isDown:
-            if key == k.K_ESCAPE:
+            if key == kb.K_ESCAPE:
                 self.parent.currentSectionNAme = 'mainmenu'
-            if key == k.K_LEFT and self.highlightedOverlay == 0:
+            if key == kb.K_LEFT and self.highlightedOverlay == 0:
                 self.MenuOverlay.render((0, 0))
-            if key == k.K_RIGHT and self.highlightedOverlay == 1:
+            if key == kb.K_RIGHT and self.highlightedOverlay == 1:
                 self.MenuOverlay.render((176, 0))
             
-            if key == k.K_RETURN and self.highlightedOverlay == 0:
+            if key == kb.K_RETURN and self.highlightedOverlay == 0:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
                 self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()

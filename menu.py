@@ -1,4 +1,4 @@
-from gameapp import GameFont, GameText, GameImage, k, GameSection
+from gameapp import GameFont, GameText, GameImage, kb, GameSection
 
 class Menu(GameSection):
     def __init__(self, parent):
@@ -49,25 +49,25 @@ class Menu(GameSection):
         if isDown:
             # menu navigating
             numItems = len(self.Buttons) - 1
-            if key == k.K_DOWN or key == k.K_s:
+            if key == kb.K_DOWN or key == kb.K_s:
                 if self.highlighted < numItems:
                     self.highlighted += 1
                 else:
                     self.highlighted = 0
-            if key == k.K_UP or key == k.K_w:
+            if key == kb.K_UP or key == kb.K_w:
                 if self.highlighted > 0:
                     self.highlighted -= 1
                 else:
                     self.highlighted = numItems
 
             # overlay nav
-            if key == k.K_RIGHT or key == k.K_d:
+            if key == kb.K_RIGHT or key == kb.K_d:
                 if self.highlightedOverlay < self.menuTabs:
                     self.highlightedOverlay += 1
                     self.highlighted = 0
                 else:
                     pass
-            if key == k.K_LEFT or key == k.K_a:
+            if key == kb.K_LEFT or key == kb.K_a:
                 if self.highlightedOverlay > 0:
                     self.highlightedOverlay -= 1
                     self.highlighted = 0

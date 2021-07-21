@@ -20,7 +20,8 @@ class Scene():
 class SpriteNode():
     def __init__(self, texture, position=(0, 0), z_position=0.0, scale=1.0, x_scale=1.0, y_scale=1.0, alpha=1.0, speed=1.0, parent=None, size=None, color='white', blend_mode=0):
         # self.image = Img()
-        pass
+        self.anchor_point = (0,0)
+        self.scale = 1.0
 
     def add_child(self, node):
         pass
