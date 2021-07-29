@@ -57,9 +57,9 @@ class Level(GameSection):
         self.RatingYpos = 10
         self.currentRating = None
         self.RatingSick = GameImage(self, 'images/level/sick-pixel.png', position = (100, 10))
-        self.RatingGood = GameImage(self, 'images/level/good-pixel.png', position = (100, 10))
-        self.RatingBad = GameImage(self, 'images/level/bad-pixel.png', position = (100, 10))
-        self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (100, 10))
+        self.RatingGood = GameImage(self, 'images/level/good-pixel.png', position = (108, 10))
+        self.RatingBad = GameImage(self, 'images/level/bad-pixel.png', position = (115, 10))
+        self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (110, 10))
         self.RatingTimer = None
 
     def getMS(self):
@@ -156,7 +156,7 @@ class Level(GameSection):
                         if target.calcScore() == 50:
                             self.currentRating = 'Shit'
                         self.RatingYpos = 10
-                        self.parent.addTimer('Rating', 15, numRepeats = 8)
+                        self.parent.addTimer('Rating', 20, numRepeats = 8)
                         self.RatingTimer = self.parent.timers['Rating']
             
             # If score is still 0, the bad key was pressed
