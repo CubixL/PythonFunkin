@@ -11,6 +11,9 @@ class Level(GameSection):
     def __init__(self, parent):
         self.parent: GameApp = parent
         self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif')
+        self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
+        self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
+        self.IntroGo = GameImage(self, 'images/level/go-pixel.png', position = (76, 40))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
@@ -19,6 +22,7 @@ class Level(GameSection):
         self.Combo = 0
         self.loadedSong = None
         self.isStarted = False
+        self.BPMTimer = None 
         
         self.JSONspeed = 1
         self.totalMoveTime = 1500
@@ -32,6 +36,12 @@ class Level(GameSection):
             GameAudio('sounds/missnote1', 0.2), 
             GameAudio('sounds/missnote2', 0.2), 
             GameAudio('sounds/missnote3', 0.2)
+        ]
+        self.sound_introList = [
+            GameAudio('sounds/intro3'),
+            GameAudio('sounds/intro2'),
+            GameAudio('sounds/intro1'),
+            GameAudio('sounds/introGo')
         ]
         self.sound_tempo = GameAudio('sounds/tempo', 1)
 
@@ -86,6 +96,13 @@ class Level(GameSection):
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
 
+        if self.BPMTimer: 
+            if self.BPMTimer.numLoopsPerformed == 2:
+                self.IntroReady.render()
+            if self.BPMTimer.numLoopsPerformed == 3:
+                self.IntroSet.render()
+            if self.BPMTimer.numLoopsPerformed == 4:
+                self.IntroGo.render()
         # self.Rating.render()
 
     def on_key(self, isDown, key, mod): 
@@ -172,28 +189,23 @@ class Level(GameSection):
                 self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
                 self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
                 self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
+                self.HitTime = self.JSONmilliseconds + ((60000.0 / self.JSONbpm) * 5)
                 if self.JSONtype == 0:
-                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 1:
-                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 2:
-                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 3:
-                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 4:
-                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 5:
-                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 6:
-                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
                 if self.JSONtype == 7:
-                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.JSONmilliseconds, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
-       
-       
-        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 10000, isEnemy = True, sustainLength = 0))
-        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 15000, isEnemy = True, sustainLength = 0))
-        # self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = 20000, isEnemy = True, sustainLength = 0))
-
+                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
 
         self.isStarted = False
         self.milliAtStart = self.parent.getMS()
@@ -217,15 +229,30 @@ class Level(GameSection):
         if not self.isStarted:
             # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
             self.isStarted = True
-            self.music_inst.play()
-            self.music_voices.play()
             self.parent.addTimer('BPM', 60000.0 / self.JSONbpm, delayMS=350)
+            self.BPMTimer = self.parent.timers['BPM']
             self.milliAtStart = self.parent.getMS() 
             if self.parent.platform == 'win':
                 self.milliAtStart += 350
 
     def on_timer(self, name):
+
         if name == 'BPM':
-            self.sound_tempo.stop()
-            self.sound_tempo.play()
+            if self.BPMTimer.numLoopsPerformed == 1:
+                self.sound_introList[0].stop()
+                self.sound_introList[0].play()
+            if self.BPMTimer.numLoopsPerformed == 2:
+                self.sound_introList[1].stop()
+                self.sound_introList[1].play()
+            if self.BPMTimer.numLoopsPerformed == 3:
+                self.sound_introList[2].stop()
+                self.sound_introList[2].play()
+                self.IntroSet.render()
+            if self.BPMTimer.numLoopsPerformed == 4:
+                self.sound_introList[3].stop()
+                self.sound_introList[3].play()
+                self.IntroGo.render()
+            if self.BPMTimer.numLoopsPerformed == 5:
+                self.music_inst.play()
+                self.music_voices.play()
 
