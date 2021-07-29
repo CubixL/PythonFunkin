@@ -2,7 +2,6 @@
 from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
-from rating import Rating
 import typing, time
 
 import json, random
@@ -18,7 +17,6 @@ class Level(GameSection):
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
         self.PlayerArrowR = PlayerArrow(self, type = 'Right')
-        self.Rating = Rating(self)
         self.Combo = 0
         self.loadedSong = None
         self.isStarted = False
@@ -30,6 +28,8 @@ class Level(GameSection):
         self.TargetList = []
         self.PlayerScore = 0
         self.milliAtStart = self.parent.getMS()
+
+        # Audio / sounds
         self.music_inst = GameAudio()
         self.music_voices = GameAudio()
         self.sound_missList = [
@@ -52,6 +52,15 @@ class Level(GameSection):
         self.FPSText = GameText(self, self.DebugFont)
         self.ScoreText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
         self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
+
+        # Rating
+        self.RatingYpos = 10
+        self.currentRating = None
+        self.RatingSick = GameImage(self, 'images/level/sick-pixel.png', position = (100, 10))
+        self.RatingGood = GameImage(self, 'images/level/good-pixel.png', position = (100, 10))
+        self.RatingBad = GameImage(self, 'images/level/bad-pixel.png', position = (100, 10))
+        self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (100, 10))
+        self.RatingTimer = None
 
     def getMS(self):
         """return the number of millisecons since start of level"""
@@ -103,8 +112,18 @@ class Level(GameSection):
                 self.IntroSet.render()
             if self.BPMTimer.numLoopsPerformed == 4:
                 self.IntroGo.render()
-        # self.Rating.render()
-
+        
+        if self.RatingTimer and self.currentRating:
+            if self.RatingTimer.active == True:
+                if self.currentRating == 'Sick':
+                    self.RatingSick.render((100, self.RatingYpos))
+                if self.currentRating == 'Good':
+                    self.RatingGood.render((100, self.RatingYpos))
+                if self.currentRating == 'Bad':
+                    self.RatingBad.render((100, self.RatingYpos))
+                if self.currentRating == 'Shit':
+                    self.RatingShit.render((100, self.RatingYpos))
+        
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == kb.K_ESCAPE:
             self.music_inst.stop()
@@ -125,9 +144,20 @@ class Level(GameSection):
                     if key == target.key or key == target.altkey:
                         target.state = 'played'
                         currentscore += target.calcScore()
-                        # Add 1 to combo
                         self.Combo += 1
                         self.music_voices.set_volume(1)
+
+                        if target.calcScore() == 350:
+                            self.currentRating = 'Sick'
+                        if target.calcScore() == 200:
+                            self.currentRating = 'Good'
+                        if target.calcScore() == 100:
+                            self.currentRating = 'Bad'
+                        if target.calcScore() == 50:
+                            self.currentRating = 'Shit'
+                        self.RatingYpos = 10
+                        self.parent.addTimer('Rating', 15, numRepeats = 8)
+                        self.RatingTimer = self.parent.timers['Rating']
             
             # If score is still 0, the bad key was pressed
             if currentscore == 0 and key in (kb.K_DOWN, kb.K_UP, kb.K_LEFT, kb.K_RIGHT, kb.K_w, kb.K_a, kb.K_s, kb.K_d) and isDown:
@@ -213,7 +243,6 @@ class Level(GameSection):
         # self.music_inst.play()
         # self.music_voices.play()
 
-
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes
         # 3. int: section number
@@ -236,7 +265,6 @@ class Level(GameSection):
                 self.milliAtStart += 350
 
     def on_timer(self, name):
-
         if name == 'BPM':
             if self.BPMTimer.numLoopsPerformed == 1:
                 self.sound_introList[0].stop()
@@ -256,3 +284,8 @@ class Level(GameSection):
                 self.music_inst.play()
                 self.music_voices.play()
 
+        if name == 'Rating':
+            if self.RatingTimer.numLoopsPerformed <= 3:
+                self.RatingYpos -= 1
+            else:
+                self.RatingYpos += 1

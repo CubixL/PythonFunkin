@@ -23,7 +23,6 @@ class PythonFunkin(GameApp):               # Main app
         self.sections['loadmenu'] = LoadMenu(self)
 
         # Timers
-        self.addTimer('AnimationTimer', 30, -1)
 
 if __name__ == '__main__':
 
