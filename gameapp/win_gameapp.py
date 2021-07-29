@@ -27,7 +27,7 @@ gblScale = 5.0
 class GameImage():
     def __init__(self, parent = None, fileName = None, *, position = (0,0), anchor_point = (0,0), rotation = 0.0, scale = 1.0):
         self.parent = parent
-        self.image = None
+        self.image = pygame.Surface((0,0))
         self.fileName = fileName
         self.position = Point(position[0], position[1])
         self.anchor_point = anchor_point
@@ -36,7 +36,7 @@ class GameImage():
         # self.rect = Rect(position[0], position[1], 0, 0)
 
 
-        if self.fileName and not self.image:
+        if self.fileName:
             self.load(self.fileName)
     
     def load(self, fileName):
@@ -60,9 +60,10 @@ class GameImage():
         scaledposition.x *= gblScale        
         scaledposition.y *= gblScale
 
-        # img = self.image
-        img  = pygame.transform.rotozoom(self.image, self.rotation, self.scale) 
-        # self.image = img
+        if self.rotation == 0.0 and self.scale == 1.0:
+            img = self.image
+        else:
+            img  = pygame.transform.rotozoom(self.image, self.rotation, self.scale) 
 
         pygame.display.get_surface().blit(img, (scaledposition.x-(img.get_size()[0]*self.anchor_point[0]), scaledposition.y-(img.get_size()[1]*self.anchor_point[1])))
 
@@ -327,7 +328,8 @@ class GameApp:
             timer.active = True
 
     def stopTimer(self, name):
-        self.timers[name].active = False
+        if name in self.timers:
+            self.timers[name].active = False
 
 
 
