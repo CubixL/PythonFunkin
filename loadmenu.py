@@ -23,7 +23,7 @@ class LoadMenu(Menu):
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == kb.K_ESCAPE:
-                self.parent.currentSectionNAme = 'mainmenu'
+                self.parent.currentSectionName = 'mainmenu'
             if key == kb.K_LEFT and self.highlightedOverlay == 0:
                 self.MenuOverlay.render((0, 0))
             if key == kb.K_RIGHT and self.highlightedOverlay == 1:
