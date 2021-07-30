@@ -1,7 +1,7 @@
 # type: ignore
 import os, time
 from gameapp.rect import Rect, Point
-import gameapp.ios_constants as kb
+import ios_constants as kb
 import platform
 import math
 from typing import Optional
@@ -24,7 +24,7 @@ class GameImage():
         self.parent = parent
         if fileName:
            fileName = fileName.replace('\\', '/')
-        self.image:SpriteNode
+        self.image = None
         self.fileName = fileName
         self.position = Point(position[0], position[1])
         self.anchor_point = anchor_point
@@ -49,10 +49,11 @@ class GameImage():
         self.image.scale = self.scale * gblScale
        # print('render')
         if position:
-            if type(position) == Point:
-                self.position = Point(position.x, position.y)
-            else:
-                self.position.moveTo(position[0], position[1])
+        	  self.position = Point(position[0], position[1])
+            #if type(position) == Point:
+            #    self.position = Point(position.x, position.y)
+            #else:
+            #    self.position.moveTo(position[0], position[1])
 
         #screen_height = screen_size[1] 
         global gblScene
@@ -248,8 +249,8 @@ class MyScene(Scene):
 class GameAudio():
     def __init__(self, fileName = None, volume = 1):
         self.effect = None
-        self.fileName = None
         self.played = False
+        self.load(fileName)
         
     def play(self, loop = 0):
     
@@ -278,6 +279,7 @@ class GameAudio():
            self.effect.stop()
 
     def set_volume(self, volume = 1):
+      if self.effect:
         self.effect.volume = volume
 
 class GameSection:
@@ -325,7 +327,9 @@ class GameTimer():
         return self.msAtStart + self.delayMS + ((self.numLoopsPerformed + 1) * self.milliseconds)
 
 class GameApp():
-    def __init__(self, width=640, height=480, displayNumber=0):
+    def __init__(self, *, width=640, height=480, displayNumber = 0, scale = 1.0, hasVK = False, fps = 60):
+    #def __init__(self, width=640, height=480, displayNumber=0):
+        self.hasVK = hasVK
         self.platform = 'ios'
         self.scene = MyScene()
         global gblScale
@@ -341,7 +345,7 @@ class GameApp():
         self.width = width
         self.height = height
         self.isFullScreen = False
-        self.fps = 5
+        self.fps = fps
         self.keysPressed = []
         self.curUserEventId = kb.USEREVENT 
         self._milliseconds_since_start = 0.0

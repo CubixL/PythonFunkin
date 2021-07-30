@@ -3,9 +3,9 @@ import os
 # load pythonsta libraries
 if os.name == 'posix': 
 
-    import gameapp.ios_constants as kb
-    from gameapp.ios_gameapp import GameApp, GameText, GameFont, GameImage, GameAudio, GameSection
-    from gameapp.rect import Rect, Position
+    import ios_constants as kb
+    from .ios_gameapp import GameApp, GameText, GameFont, GameImage, GameAudio, GameSection
+    from .rect import Rect, Point
     
 #load pygame libraries
 elif os.name == 'nt':
