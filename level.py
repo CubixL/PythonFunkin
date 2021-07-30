@@ -2,10 +2,8 @@
 from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
 from playerarrow import PlayerArrow
 from targetarrow import TargetArrow
-import typing, time
-
 import json, random
-# import PythonFunkin
+
 class Level(GameSection):
     def __init__(self, parent):
         self.parent: GameApp = parent
@@ -62,10 +60,16 @@ class Level(GameSection):
         self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (110, 10))
         self.RatingTimer = None
 
+        # Girlfriend
+        self.GFimgList = []
+        self.GFTimer = None
+        self.curGFframe = 0
+        for image in range(9):
+            self.GFimgList.append(GameImage(self, f'images/level/girlfriend/gf_frame{image}.png', position = (60, 6)))
+
     def getMS(self):
-        """return the number of millisecons since start of level"""
-        return self.parent.getMS()  - self.milliAtStart
-        
+        # return the number of milliseconds since start of level
+        return self.parent.getMS() - self.milliAtStart
 
     def on_loop(self):
         currentscore = 0
@@ -84,6 +88,7 @@ class Level(GameSection):
                     currentscore += score
                     # reset combo
                     self.Combo = 0
+                    self.music_voices.set_volume(0)
             elif target.isEnemy == True:
                 if target.state == 'active' and target.img.position.y < 10:
                     target.state = 'played'
@@ -97,6 +102,9 @@ class Level(GameSection):
         self.PlayerArrowD.render()
         self.PlayerArrowU.render()
         self.PlayerArrowR.render()
+        
+        self.GFimgList[self.curGFframe].render()
+        
         for target in self.TargetList:                                          # 3. Target arrows (Note, then sustain line, then sustain end)
             target.render()
            
@@ -104,14 +112,6 @@ class Level(GameSection):
         self.FPSText.renderText(f'FPS: {1000.0/self.parent.getLastFrameMS()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
-
-        if self.BPMTimer: 
-            if self.BPMTimer.numLoopsPerformed == 2:
-                self.IntroReady.render()
-            if self.BPMTimer.numLoopsPerformed == 3:
-                self.IntroSet.render()
-            if self.BPMTimer.numLoopsPerformed == 4:
-                self.IntroGo.render()
         
         if self.RatingTimer and self.currentRating:
             if self.RatingTimer.active == True:
@@ -123,12 +123,21 @@ class Level(GameSection):
                     self.RatingBad.render((100, self.RatingYpos))
                 if self.currentRating == 'Shit':
                     self.RatingShit.render((100, self.RatingYpos))
+
+        if self.BPMTimer: 
+            if self.BPMTimer.numLoopsPerformed == 2:
+                self.IntroReady.render()
+            if self.BPMTimer.numLoopsPerformed == 3:
+                self.IntroSet.render()
+            if self.BPMTimer.numLoopsPerformed == 4:
+                self.IntroGo.render()
         
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == kb.K_ESCAPE:
             self.music_inst.stop()
             self.music_voices.stop()
             self.parent.stopTimer('BPM')
+            self.parent.stopTimer('Girlfriend')
             self.parent.currentSectionName = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -178,6 +187,7 @@ class Level(GameSection):
                 self.music_inst.stop()
                 self.music_voices.stop()
                 self.parent.stopTimer('BPM')
+                self.parent.stopTimer('Girlfriend')
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -259,7 +269,9 @@ class Level(GameSection):
             # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
             self.isStarted = True
             self.parent.addTimer('BPM', 60000.0 / self.JSONbpm, delayMS=350)
+            self.parent.addTimer('Girlfriend', 120000.0 / self.JSONbpm / 9, delayMS = 350)
             self.BPMTimer = self.parent.timers['BPM']
+            self.GFTimer = self.parent.timers['Girlfriend']
             self.milliAtStart = self.parent.getMS() 
             if self.parent.platform == 'win':
                 self.milliAtStart += 350
@@ -289,3 +301,6 @@ class Level(GameSection):
                 self.RatingYpos -= 1
             else:
                 self.RatingYpos += 1
+
+        if name == 'Girlfriend':
+            self.curGFframe = self.GFTimer.numLoopsPerformed % 9
