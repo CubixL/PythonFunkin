@@ -36,10 +36,10 @@ class Level(GameSection):
             GameAudio('sounds/missnote3', 0.2)
         ]
         self.sound_introList = [
-            GameAudio('sounds/intro3'),
-            GameAudio('sounds/intro2'),
-            GameAudio('sounds/intro1'),
-            GameAudio('sounds/introGo')
+            GameAudio('sounds/intro3', 0.4),
+            GameAudio('sounds/intro2', 0.4),
+            GameAudio('sounds/intro1', 0.4),
+            GameAudio('sounds/introGo', 0.4)
         ]
         self.sound_tempo = GameAudio('sounds/tempo', 1)
 

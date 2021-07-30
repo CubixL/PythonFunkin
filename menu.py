@@ -1,4 +1,4 @@
-from gameapp import GameFont, GameText, GameImage, kb, GameSection
+from gameapp import GameFont, GameText, GameImage, kb, GameSection, GameAudio
 
 class Menu(GameSection):
     def __init__(self, parent):
@@ -15,7 +15,7 @@ class Menu(GameSection):
         self.highlighted = 0
         self.highlightedOverlay = 0
         self.menuTabs = 0
-
+        self.scrollAudio = GameAudio('sounds/menuselect')
 
     def on_loop(self):
         pass
@@ -54,11 +54,15 @@ class Menu(GameSection):
                     self.highlighted += 1
                 else:
                     self.highlighted = 0
+                self.scrollAudio.stop()
+                self.scrollAudio.play()
             if key == kb.K_UP or key == kb.K_w:
                 if self.highlighted > 0:
                     self.highlighted -= 1
                 else:
                     self.highlighted = numItems
+                self.scrollAudio.stop()
+                self.scrollAudio.play()
 
             # overlay nav
             if key == kb.K_RIGHT or key == kb.K_d:

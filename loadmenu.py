@@ -11,6 +11,8 @@ class LoadMenu(Menu):
         self.menuTabs = 0
         self.songList = os.listdir('songlibrary')
         topY = 20
+        self.TitleFont = GameFont(self, 'fonts/vcr.ttf', 10, isSys = False)
+        self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
         for myfoldername in self.songList:
             self.Buttons.append( { 
                 'folderName' : myfoldername,
@@ -19,6 +21,10 @@ class LoadMenu(Menu):
                 'imgSelected' : GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 233, 127)),
             })
             topY += 8
+
+    def on_render(self):
+        super().on_render()
+        self.menuTitle.render()
 
     def doAction(self, isDown, key, mod):
         if isDown:

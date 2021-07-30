@@ -25,5 +25,4 @@ class PythonFunkin(GameApp):               # Main app
         # Timers
 
 if __name__ == '__main__':
-
     PythonFunkin().start()
