@@ -1,5 +1,5 @@
 # type: ignore
-from typing import Tuple
+from typing import Tuple, List
 
 
 class Point():
@@ -124,7 +124,7 @@ class Rect():
         return self._height
 
     @height.setter
-    def heigh(self, value: float):
+    def height(self, value: float):
         self._height = float(value)
 
 
@@ -236,5 +236,40 @@ class Rect():
     def __deepcopy__(self):
         return Rect(self.left, self.top, self.width, self.height)
 
+    #######
+
+    def collideRect(self, rect)->bool:
+        ret = False
+
+        if self.left < rect.right and \
+            self.right > rect.left and \
+            self.top < rect.bottom and \
+            self.bottom > rect.top :
+                ret = True
+
+        return ret
+
+    # def collideRectList(self, list)->int:
+    #     ret = -1
+    #     for i, rect in enumerate(list):
+    #         rect: Rect
+    #         if rect.collideRect(rect):
+    #             return i
+
+    #     return ret
+
+    # def containRect(self, items):
+    #     pass
+
+    def collidePoint(self, point: Point):
+        ret = False
+
+        if self.left < point.x and \
+            self.right > point.x and \
+            self.top < point.y and \
+            self.right  > point.y :
+                ret = True
+
+        return ret
 
 
