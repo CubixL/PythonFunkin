@@ -41,6 +41,13 @@ class MainMenu(Menu):
             'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', position=(17, 17)),
         })
 
+        self.Buttons.append( {
+            'section' : 'settingsmenu',
+            'menuTab' : 0,
+            'imgNormal' : GameImage(self, 'images/gui/GUI_ButtonSettings.png', position=(17, 60)),
+            'imgSelected' : GameImage(self, 'images/gui/GUI_ButtonSettingsSelected.png', position=(17, 57)),
+        })
+
         self.Buttons.append( { 
             'section' : 'quit',
             'menuTab' : 0,
@@ -57,7 +64,6 @@ class MainMenu(Menu):
                     self.parent.quit()
                 else:
                     self.parent.currentSectionName = self.Buttons[self.highlighted]['section']
-            
             if key == kb.K_ESCAPE:
                 self.parent.quit()
 

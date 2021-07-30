@@ -11,6 +11,7 @@ from level import Level
 from mainmenu import MainMenu
 from funkeditor import Editor
 from loadmenu import LoadMenu
+from settingsmenu import SettingsMenu
    
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):
@@ -21,6 +22,7 @@ class PythonFunkin(GameApp):               # Main app
         self.sections['mainmenu'] = MainMenu(self)
         self.sections['editor'] = Editor(self)
         self.sections['loadmenu'] = LoadMenu(self)
+        self.sections['settingsmenu'] = SettingsMenu(self)
 
         # Timers
 

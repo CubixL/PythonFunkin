@@ -13,6 +13,9 @@ class LoadMenu(Menu):
         topY = 20
         self.TitleFont = GameFont(self, 'fonts/vcr.ttf', 10, isSys = False)
         self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
+        self.menuDetails = GameText(self, self.TitleFont, text = 'DETAILS', position = (188, 6), RGB = (255, 255, 255))
+        self.details = []
+
         for myfoldername in self.songList:
             self.Buttons.append( { 
                 'folderName' : myfoldername,
@@ -25,15 +28,12 @@ class LoadMenu(Menu):
     def on_render(self):
         super().on_render()
         self.menuTitle.render()
+        self.menuDetails.render()
 
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == kb.K_ESCAPE:
                 self.parent.currentSectionName = 'mainmenu'
-            if key == kb.K_LEFT and self.highlightedOverlay == 0:
-                self.MenuOverlay.render((0, 0))
-            if key == kb.K_RIGHT and self.highlightedOverlay == 1:
-                self.MenuOverlay.render((176, 0))
             
             if key == kb.K_RETURN and self.highlightedOverlay == 0:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
@@ -42,3 +42,6 @@ class LoadMenu(Menu):
                 # self.songList[self.highlighted]
                     # pass
                 # self.parent.sections['level'].
+
+        # chart = open(f'songlibrary/{songName}/{songName}.json')
+        # data = json.load(chart)
