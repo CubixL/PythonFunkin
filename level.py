@@ -7,7 +7,7 @@ import json, random
 class Level(GameSection):
     def __init__(self, parent):
         self.parent: GameApp = parent
-        self.LevelBackground = GameImage(self, 'images/background/StageBackground.gif')
+        self.LevelBackground = GameImage(self, 'images/background/LevelBackground1.gif')
         self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
         self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
         self.IntroGo = GameImage(self, 'images/level/go-pixel.png', position = (76, 40))
