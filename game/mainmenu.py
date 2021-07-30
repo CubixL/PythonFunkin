@@ -1,4 +1,4 @@
-from menu import Menu, MenuButton
+from game.menu import Menu, MenuButton
 from gameapp import GameImage, kb
 
 class MainMenu(Menu):   

@@ -1,5 +1,5 @@
 from gameapp import GameImage, GameFont, GameText, kb, GameSection
-from editorarrow import EditorArrow
+from game.editorarrow import EditorArrow
 
 class Editor(GameSection):
     def __init__(self, parent):

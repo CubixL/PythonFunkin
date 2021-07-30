@@ -1,5 +1,5 @@
 from gameapp import GameImage, GameText, kb
-from menu import Menu, MenuButton
+from game.menu import Menu, MenuButton
 
 class SettingsMenu(Menu):
     def __init__(self, parent):

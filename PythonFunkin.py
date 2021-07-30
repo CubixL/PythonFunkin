@@ -7,11 +7,12 @@
 # YouTube channel: https://www.youtube.com/channel/UCNNHpyTeYJqK9bfFeub3uNw
 
 from gameapp import GameApp
-from level import Level
-from mainmenu import MainMenu
-from funkeditor import Editor
-from loadmenu import LoadMenu
-from settingsmenu import SettingsMenu
+
+from game.level import Level
+from game.mainmenu import MainMenu
+from game.funkeditor import Editor
+from game.loadmenu import LoadMenu
+from game.settingsmenu import SettingsMenu
    
 class PythonFunkin(GameApp):               # Main app
     def __init__(self):

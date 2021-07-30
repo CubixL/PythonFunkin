@@ -1,6 +1,6 @@
 import os, json
 from gameapp import GameImage, GameText, GameFont, kb
-from menu import Menu, MenuButton
+from game.menu import Menu, MenuButton
 
 
 class LoadMenu(Menu):
