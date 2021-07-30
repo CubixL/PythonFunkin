@@ -1,4 +1,4 @@
-import os
+import os, json
 from gameapp import GameImage, GameText, GameFont, kb
 from menu import Menu
 
@@ -15,6 +15,7 @@ class LoadMenu(Menu):
         self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
         self.menuDetails = GameText(self, self.TitleFont, text = 'DETAILS', position = (188, 6), RGB = (255, 255, 255))
         self.details = []
+        self.songName = None
 
         for myfoldername in self.songList:
             self.Buttons.append( { 
@@ -25,10 +26,18 @@ class LoadMenu(Menu):
             })
             topY += 8
 
+        self.loadDetails()
+
+    def on_loop(self):
+        pass
+
     def on_render(self):
         super().on_render()
         self.menuTitle.render()
         self.menuDetails.render()
+        if self.details:
+            for info in range(len(self.details)):
+                self.details[info].render()
 
     def doAction(self, isDown, key, mod):
         if isDown:
@@ -39,9 +48,17 @@ class LoadMenu(Menu):
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
                 self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()
-                # self.songList[self.highlighted]
-                    # pass
-                # self.parent.sections['level'].
+            if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
+                self.loadDetails()
 
-        # chart = open(f'songlibrary/{songName}/{songName}.json')
-        # data = json.load(chart)
+    def loadDetails(self):
+        self.details.clear()
+        self.songName = self.Buttons[self.highlighted]['folderName']
+        chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
+        data = json.load(chart)
+        self.JSONbpm = data['song']['bpm']
+        self.JSONspeed = round(data['song']['speed'], 2)
+        self.JSONsections = len(data['song']['notes'])
+        self.details.append(GameText(self, self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), RGB = (255, 255, 255)))
+        self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
+        self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))

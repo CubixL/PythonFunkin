@@ -213,7 +213,6 @@ class Level(GameSection):
 
         # Song variables
         self.JSONsections = len(data['song']['notes'])
-        # print(self.JSONsections)
         self.JSONspeed = data['song']['speed']
         self.totalMoveTime = 1500 / self.JSONspeed
         self.JSONbpm = data['song']['bpm']
