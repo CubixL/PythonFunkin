@@ -1,6 +1,6 @@
 import os, json
 from gameapp import GameImage, GameText, GameFont, kb
-from menu import Menu
+from menu import Menu, MenuButton
 
 
 class LoadMenu(Menu):
@@ -18,12 +18,12 @@ class LoadMenu(Menu):
         self.songName = None
 
         for myfoldername in self.songList:
-            self.Buttons.append( { 
-                'folderName' : myfoldername,
-                'menuTab' : 0,
-                'imgNormal' : GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 255, 255)),
-                'imgSelected' : GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 233, 127)),
-            })
+            self.Buttons.append(MenuButton(
+            name = myfoldername,
+            menuTab = 0,
+            imgNormal = GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 255, 255)),
+            imgSelected = GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 233, 127)),
+        ))   
             topY += 8
 
         self.loadDetails()
@@ -53,7 +53,7 @@ class LoadMenu(Menu):
 
     def loadDetails(self):
         self.details.clear()
-        self.songName = self.Buttons[self.highlighted]['folderName']
+        self.songName = self.Buttons[self.highlighted].name
         chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
         data = json.load(chart)
         self.JSONbpm = data['song']['bpm']

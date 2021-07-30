@@ -31,9 +31,9 @@ class Level(GameSection):
         self.music_inst = GameAudio()
         self.music_voices = GameAudio()
         self.sound_missList = [
-            GameAudio('sounds/missnote1', 0.2), 
-            GameAudio('sounds/missnote2', 0.2), 
-            GameAudio('sounds/missnote3', 0.2)
+            GameAudio('sounds/missnote1', 0.3), 
+            GameAudio('sounds/missnote2', 0.3), 
+            GameAudio('sounds/missnote3', 0.3)
         ]
         self.sound_introList = [
             GameAudio('sounds/intro3', 0.4),
@@ -118,11 +118,11 @@ class Level(GameSection):
                 if self.currentRating == 'Sick':
                     self.RatingSick.render((100, self.RatingYpos))
                 if self.currentRating == 'Good':
-                    self.RatingGood.render((100, self.RatingYpos))
+                    self.RatingGood.render((103, self.RatingYpos))
                 if self.currentRating == 'Bad':
-                    self.RatingBad.render((100, self.RatingYpos))
+                    self.RatingBad.render((106, self.RatingYpos))
                 if self.currentRating == 'Shit':
-                    self.RatingShit.render((100, self.RatingYpos))
+                    self.RatingShit.render((102, self.RatingYpos))
 
         if self.BPMTimer: 
             if self.BPMTimer.numLoopsPerformed == 2:
@@ -268,7 +268,10 @@ class Level(GameSection):
             # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
             self.isStarted = True
             self.parent.addTimer('BPM', 60000.0 / self.JSONbpm, delayMS=350)
-            self.parent.addTimer('Girlfriend', 120000.0 / self.JSONbpm / 9, delayMS = 350)
+            if self.JSONbpm < 200:
+                self.parent.addTimer('Girlfriend', 120000.0 / self.JSONbpm / 9, delayMS = 350)
+            elif self.JSONbpm >= 200:
+                self.parent.addTimer('Girlfriend', 240000.0 / self.JSONbpm / 9, delayMS = 350)
             self.BPMTimer = self.parent.timers['BPM']
             self.GFTimer = self.parent.timers['Girlfriend']
             self.milliAtStart = self.parent.getMS() 

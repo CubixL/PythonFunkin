@@ -1,12 +1,17 @@
 from gameapp import GameFont, GameText, GameImage, kb, GameSection, GameAudio
 
+class MenuButton():
+    def __init__(self, name, menuTab, imgNormal, imgSelected):
+        self.name = name
+        self.menuTab = menuTab
+        self.imgNormal = imgNormal
+        self.imgSelected = imgSelected
+        self.isActive = False
+
 class Menu(GameSection):
     def __init__(self, parent):
         self.parent = parent
-        
         self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
-        # self.TestText = GameText(self, self.GUIFont, RGB = (255, 0, 0))
-        # self.TestText2 = GameText(self, self.GUIFont, position = (12, 0), RGB = (255, 0, 0))
 
         self.Buttons = []
         self.MenuBackground = GameImage(self)
@@ -24,26 +29,16 @@ class Menu(GameSection):
         self.MenuBackground.render()
         if self.MenuOverlay:
             self.MenuOverlay.render()
-        # self.TestText.renderText(f'{self.highlighted}')
-        # self.TestText2.renderText(f'{self.highlightedOverlay}')
 
         # buttons
         for index in range(0, len(self.Buttons)):
             currentButton = self.Buttons[index]
-            if currentButton['menuTab'] == self.highlightedOverlay:
+            if currentButton.menuTab == self.highlightedOverlay:
                 if index == self.highlighted:
-                    currentButton['imgSelected'].render()
-                    # for future usage when using GameButton class, 
-                    # currentButton.imgSelected.render()
+                    currentButton.imgSelected.render()
 
                 else:
-                    currentButton['imgNormal'].render()
-                    # for future usage when using GameButton class, 
-                    # currentButton.imgNormal.render()
-
-         
-
-        
+                    currentButton.imgNormal.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown:
@@ -77,7 +72,6 @@ class Menu(GameSection):
                     self.highlighted = 0
                 else:
                     pass
-            
         self.doAction(isDown, key, mod)
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -85,7 +79,6 @@ class Menu(GameSection):
         if isDown:
             if key == 1:
                 pass
-
 
     def doAction(self, isDown, key, mod):
         pass
