@@ -55,7 +55,7 @@ class SettingsMenu(Menu):
             if key == kb.K_RETURN:
                 if self.highlighted == len(self.Buttons) - 1:
                     self.saveFile['settings'].append({
-                        'LevelBackground' : f'{self.currentStage}'
+                        'LevelBackground' : {self.currentStage}
                     })
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)

@@ -13,10 +13,9 @@ class Level(GameSection):
         with open('saveFile.json') as json_file:
             self.saveFile = json.load(json_file)
         
-        if self.saveFile['settings'][0] == 1:
-            self.LevelBackground = GameImage(self, 'images/background/LevelBackground1.gif')
-        if self.saveFile['settings'][0] == 2:
-            self.LevelBackground = GameImage(self, 'images/background/LevelBackground2.gif')
+        self.phillyLights = None
+        savedStage = self.saveFile['settings'][0]['LevelBackground']
+        self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
         
         self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
         self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
@@ -107,18 +106,24 @@ class Level(GameSection):
         self.PlayerScore += currentscore
 
     def on_render(self):
-        self.LevelBackground.render()                                           # 1. Background
-        self.PlayerArrowL.render()                                              # 2. Player arrows
+        self.LevelBackground.render() 
+        if self.saveFile['settings'][0]['LevelBackground'] == 3:
+            if self.phillyLights:
+                self.phillyLights.render()
+            ground = GameImage(self, 'images/background/LevelBackground3_ground.gif')
+            ground.render()
+
+        self.PlayerArrowL.render()
         self.PlayerArrowD.render()
         self.PlayerArrowU.render()
         self.PlayerArrowR.render()
         
         self.GFimgList[self.curGFframe].render()
         
-        for target in self.TargetList:                                          # 3. Target arrows (Note, then sustain line, then sustain end)
+        for target in self.TargetList: 
             target.render()
            
-        self.MSText.renderText(f'Game time: {self.getMS()}')                 # 4. GUI (Text)
+        self.MSText.renderText(f'Game time: {self.getMS()}') 
         self.FPSText.renderText(f'FPS: {1000.0/self.parent.getLastFrameMS()}', position = (0, 4))
         self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
         self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
@@ -284,6 +289,8 @@ class Level(GameSection):
                 self.parent.addTimer('Girlfriend', 240000.0 / self.JSONbpm / 9, delayMS = 350)
             self.BPMTimer = self.parent.timers['BPM']
             self.GFTimer = self.parent.timers['Girlfriend']
+            if self.saveFile['settings'][0]['LevelBackground'] == 3:
+                self.parent.addTimer('PhillyLights', 240000.0 / self.JSONbpm, delayMS = 350 + (self.JSONbpm * 2))
             self.milliAtStart = self.parent.getMS() 
             if self.parent.platform == 'win':
                 self.milliAtStart += 350
@@ -316,3 +323,6 @@ class Level(GameSection):
 
         if name == 'Girlfriend':
             self.curGFframe = self.GFTimer.numLoopsPerformed % 9
+
+        if name == 'PhillyLights':
+            self.phillyLights = GameImage(self, f'images/background/LevelBackground3_lights{random.randrange(1, 6)}.gif')
