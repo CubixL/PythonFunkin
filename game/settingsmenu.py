@@ -8,7 +8,10 @@ class SettingsMenu(Menu):
         self.MenuBackground = GameImage(self, 'images/background/BGE_SettingsBackground.png')
         self.MenuOverlay = GameImage(self, 'images/background/BGE_SettingsOverlay.png')
         self.menuTabs = 0
-        self.currentStage = 1
+
+        with open('saveFile.json') as json_file:
+            self.saveFile = json.load(json_file)
+        self.currentStage = self.saveFile['settings'][0]['LevelBackground']
         self.menuTitle = GameText(self, self.TitleFont, text = 'SETTINGS', position = (10, 6), RGB = (255, 255, 255))
 
         self.saveFile = {}
@@ -42,20 +45,22 @@ class SettingsMenu(Menu):
             
             numStages = 6
             if key == kb.K_a or key == kb.K_LEFT:
-                if self.currentStage != 1:
-                    self.currentStage -= 1
-                else:
-                    self.currentStage = numStages
+                if self.highlighted == 0:
+                    if self.currentStage != 1:
+                        self.currentStage -= 1
+                    else:
+                        self.currentStage = numStages
             if key == kb.K_d or key == kb.K_RIGHT:
-                if self.currentStage != numStages:
-                    self.currentStage += 1
-                else:
-                    self.currentStage = 1
+                if self.highlighted == 0:
+                    if self.currentStage != numStages:
+                        self.currentStage += 1
+                    else:
+                        self.currentStage = 1
 
             if key == kb.K_RETURN:
                 if self.highlighted == len(self.Buttons) - 1:
                     self.saveFile['settings'].append({
-                        'LevelBackground' : {self.currentStage}
+                        'LevelBackground' : self.currentStage
                     })
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)

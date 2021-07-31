@@ -14,8 +14,6 @@ class Level(GameSection):
             self.saveFile = json.load(json_file)
         
         self.phillyLights = None
-        savedStage = self.saveFile['settings'][0]['LevelBackground']
-        self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
         
         self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
         self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
@@ -212,8 +210,14 @@ class Level(GameSection):
         # When called, reset score, timer and note list to 0 before loading
         if self.loadedSong == None:
             self.loadedSong = 'Tutorial'
-
         songName = self.loadedSong
+
+        # Refreshing settings
+        with open('saveFile.json') as json_file:
+            self.saveFile = json.load(json_file)
+        savedStage = self.saveFile['settings'][0]['LevelBackground']
+        self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
+
         
         self.PlayerScore = 0
         # self.milliAtStart = self.parent.getMS()
