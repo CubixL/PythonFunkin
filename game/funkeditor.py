@@ -5,7 +5,7 @@ class Editor(GameSection):
     def __init__(self, parent):
         self.parent = parent
         
-        self.EditorBackground = GameImage(self, 'images/background/EditBackground.gif')
+        self.EditorBackground = GameImage(self, 'images/background/menu/EditBackground.gif')
         self.mousePos = (0, 0)
         self.EditorFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
         self.MouseText = GameText(self, self.EditorFont)

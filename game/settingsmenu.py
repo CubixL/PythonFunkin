@@ -5,8 +5,8 @@ import json
 class SettingsMenu(Menu):
     def __init__(self, parent):
         super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images/background/BGE_SettingsBackground.png')
-        self.MenuOverlay = GameImage(self, 'images/background/BGE_SettingsOverlay.png')
+        self.MenuBackground = GameImage(self, 'images/background/menu/BGE_SettingsBackground.png')
+        self.MenuOverlay = GameImage(self, 'images/background/menu/BGE_SettingsOverlay.png')
         self.menuTabs = 0
 
         with open('saveFile.json') as json_file:
@@ -43,7 +43,7 @@ class SettingsMenu(Menu):
             if key == kb.K_ESCAPE:
                 self.parent.currentSectionName = 'mainmenu'
             
-            numStages = 6
+            numStages = 7
             if key == kb.K_a or key == kb.K_LEFT:
                 if self.highlighted == 0:
                     if self.currentStage != 1:

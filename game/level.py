@@ -13,7 +13,7 @@ class Level(GameSection):
         with open('saveFile.json') as json_file:
             self.saveFile = json.load(json_file)
         
-        self.phillyLights = None
+        self.BackgroundBeat = None
         
         self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
         self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
@@ -67,12 +67,19 @@ class Level(GameSection):
         self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (110, 10))
         self.RatingTimer = None
 
-        # Girlfriend
+        # Girlfriend and dancers
         self.GFimgList = []
+        self.DemonImgList = []
         self.GFTimer = None
+        self.BGBeatTimer = None
         self.curGFframe = 0
         for image in range(9):
             self.GFimgList.append(GameImage(self, f'images/level/girlfriend/gf_frame{image}.png', position = (60, 6)))
+
+        self.curBGframe = 1
+        if self.saveFile['settings'][0]['LevelBackground'] == 4:
+            for image in range(1, 7):
+                self.DemonImgList.append(GameImage(self, f'images/background/limo/dancer{image}.png', position = (55, 19)))
 
     def getMS(self):
         # return the number of milliseconds since start of level
@@ -106,17 +113,27 @@ class Level(GameSection):
     def on_render(self):
         self.LevelBackground.render() 
         if self.saveFile['settings'][0]['LevelBackground'] == 3:
-            if self.phillyLights:
-                self.phillyLights.render()
-            ground = GameImage(self, 'images/background/LevelBackground3_ground.gif')
+            if self.BackgroundBeat:
+                self.BackgroundBeat.render()
+            ground = GameImage(self, 'images/background/philly/LevelBackground3_ground.gif')
             ground.render()
+
+        if self.saveFile['settings'][0]['LevelBackground'] == 4:
+            self.DemonImgList[self.curBGframe].render(position = (55, 19))
+            self.DemonImgList[self.curBGframe].render(position = (105, 19))
+            self.DemonImgList[self.curBGframe].render(position = (155, 19))
+            self.DemonImgList[self.curBGframe].render(position = (205, 19))
+
+        self.GFimgList[self.curGFframe].render()
+
+        if self.saveFile['settings'][0]['LevelBackground'] == 4:
+            limo = GameImage(self, 'images/background/limo/LevelBackground4_limo.gif', position = (-6, 77))
+            limo.render()
 
         self.PlayerArrowL.render()
         self.PlayerArrowD.render()
         self.PlayerArrowU.render()
         self.PlayerArrowR.render()
-        
-        self.GFimgList[self.curGFframe].render()
         
         for target in self.TargetList: 
             target.render()
@@ -151,6 +168,7 @@ class Level(GameSection):
             self.music_voices.stop()
             self.parent.stopTimer('BPM')
             self.parent.stopTimer('Girlfriend')
+            self.parent.stopTimer('BackgroundBeat')
             self.parent.currentSectionName = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -201,6 +219,7 @@ class Level(GameSection):
                 self.music_voices.stop()
                 self.parent.stopTimer('BPM')
                 self.parent.stopTimer('Girlfriend')
+                self.parent.stopTimer('BackgroundBeat')
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):
@@ -218,7 +237,7 @@ class Level(GameSection):
         savedStage = self.saveFile['settings'][0]['LevelBackground']
         self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
 
-        
+
         self.PlayerScore = 0
         # self.milliAtStart = self.parent.getMS()
         self.TargetList.clear()
@@ -294,7 +313,10 @@ class Level(GameSection):
             self.BPMTimer = self.parent.timers['BPM']
             self.GFTimer = self.parent.timers['Girlfriend']
             if self.saveFile['settings'][0]['LevelBackground'] == 3:
-                self.parent.addTimer('PhillyLights', 240000.0 / self.JSONbpm, delayMS = 350 + (self.JSONbpm * 2))
+                self.parent.addTimer('BackgroundBeat', 240000.0 / self.JSONbpm, delayMS = 350 + (self.JSONbpm * 2))
+            if self.saveFile['settings'][0]['LevelBackground'] == 4:
+                self.parent.addTimer('BackgroundBeat', 120000.0 / self.JSONbpm / 6, delayMS = 350)
+                self.BGBeatTimer = self.parent.timers['BackgroundBeat']
             self.milliAtStart = self.parent.getMS() 
             if self.parent.platform == 'win':
                 self.milliAtStart += 350
@@ -328,5 +350,8 @@ class Level(GameSection):
         if name == 'Girlfriend':
             self.curGFframe = self.GFTimer.numLoopsPerformed % 9
 
-        if name == 'PhillyLights':
-            self.phillyLights = GameImage(self, f'images/background/LevelBackground3_lights{random.randrange(1, 6)}.gif')
+        if name == 'BackgroundBeat':
+            if self.saveFile['settings'][0]['LevelBackground'] == 3:
+                self.BackgroundBeat = GameImage(self, f'images/background/philly/LevelBackground3_lights{random.randrange(1, 6)}.gif')
+            if self.saveFile['settings'][0]['LevelBackground'] == 4:
+                self.curBGframe = self.BGBeatTimer.numLoopsPerformed % 6

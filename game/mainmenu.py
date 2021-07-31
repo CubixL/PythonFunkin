@@ -4,7 +4,7 @@ from gameapp import GameImage, kb
 class MainMenu(Menu):   
     def __init__(self, parent):
         super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images/background/BGE_MenuBackground.png')
+        self.MenuBackground = GameImage(self, 'images/background/menu/BGE_MenuBackground.png')
 
         self.Buttons.append(MenuButton(
             name = 'loadmenu',
