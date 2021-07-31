@@ -96,19 +96,19 @@ class TargetArrow():                       # Arrows that rise up and hitting the
                 score = -10
             elif self.img.position.y < -5 :     # Between -17 and -5: Out of score range but should still be displayed
                 score = 0
-            elif self.img.position.y < -2 :     # Between -5 and -2: SHIT
+            elif self.img.position.y < -3 :     # Between -5 and -2: SHIT
                 score = 50
-            elif self.img.position.y < 2 :      # Between -2 and 2: BAD
+            elif self.img.position.y < 0 :      # Between -2 and 2: BAD
                 score = 100
-            elif self.img.position.y < 7 :      # Between 2 and 7: GOOD!
+            elif self.img.position.y < 8 :      # Between 2 and 7: GOOD!
                 score = 200
             elif self.img.position.y < 13 :     # Between 7 and 13: SICK!!!
                 score = 350
-            elif self.img.position.y < 19 :     # Between 13 and 19: GOOD!
+            elif self.img.position.y < 21 :     # Between 13 and 19: GOOD!
                 score = 200
-            elif self.img.position.y < 22 :     # Between 19 and 22: BAD
+            elif self.img.position.y < 24 :     # Between 19 and 22: BAD
                 score = 100
-            elif self.img.position.y < 25 :     # Between 22 and 25: SHIT
+            elif self.img.position.y < 26 :     # Between 22 and 25: SHIT
                 score = 50
         # If more than 26, out of input range
         return score

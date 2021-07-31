@@ -7,7 +7,17 @@ import json, random
 class Level(GameSection):
     def __init__(self, parent):
         self.parent: GameApp = parent
-        self.LevelBackground = GameImage(self, 'images/background/LevelBackground1.gif')
+
+        self.LevelBackground = None
+        # Background
+        with open('saveFile.json') as json_file:
+            self.saveFile = json.load(json_file)
+        
+        if self.saveFile['settings'][0] == 1:
+            self.LevelBackground = GameImage(self, 'images/background/LevelBackground1.gif')
+        if self.saveFile['settings'][0] == 2:
+            self.LevelBackground = GameImage(self, 'images/background/LevelBackground2.gif')
+        
         self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
         self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
         self.IntroGo = GameImage(self, 'images/level/go-pixel.png', position = (76, 40))

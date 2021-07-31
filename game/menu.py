@@ -12,6 +12,7 @@ class Menu(GameSection):
     def __init__(self, parent):
         self.parent = parent
         self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
+        self.TitleFont = GameFont(self, 'fonts/vcr.ttf', 10, isSys = False)
 
         self.Buttons = []
         self.MenuBackground = GameImage(self)
@@ -33,12 +34,10 @@ class Menu(GameSection):
         # buttons
         for index in range(0, len(self.Buttons)):
             currentButton = self.Buttons[index]
-            if currentButton.menuTab == self.highlightedOverlay:
-                if index == self.highlighted:
-                    currentButton.imgSelected.render()
-
-                else:
-                    currentButton.imgNormal.render()
+            if index == self.highlighted:
+                 currentButton.imgSelected.render()
+            else:
+                currentButton.imgNormal.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown:
@@ -63,13 +62,11 @@ class Menu(GameSection):
             if key == kb.K_RIGHT or key == kb.K_d:
                 if self.highlightedOverlay < self.menuTabs:
                     self.highlightedOverlay += 1
-                    self.highlighted = 0
                 else:
                     pass
             if key == kb.K_LEFT or key == kb.K_a:
                 if self.highlightedOverlay > 0:
                     self.highlightedOverlay -= 1
-                    self.highlighted = 0
                 else:
                     pass
         self.doAction(isDown, key, mod)

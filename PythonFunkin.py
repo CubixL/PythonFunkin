@@ -25,7 +25,5 @@ class PythonFunkin(GameApp):               # Main app
         self.sections['loadmenu'] = LoadMenu(self)
         self.sections['settingsmenu'] = SettingsMenu(self)
 
-        # Timers
-
 if __name__ == '__main__':
     PythonFunkin().start()
