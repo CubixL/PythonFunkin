@@ -60,17 +60,22 @@ class LoadMenu(Menu):
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
                 self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()
-            # if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
-                # self.loadDetails()
+            if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
+                self.loadDetails()
 
     def loadDetails(self):
         self.details.clear()
         self.songName = self.Buttons[self.highlighted].name
-        chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
-        data = json.load(chart)
-        self.JSONbpm = data['song']['bpm']
-        self.JSONspeed = round(data['song']['speed'], 2)
-        self.JSONsections = len(data['song']['notes'])
-        self.details.append(GameText(self, self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), RGB = (255, 255, 255)))
-        self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
-        self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))
+
+        try:
+            chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
+            data = json.load(chart)
+            self.JSONbpm = data['song']['bpm']
+            self.JSONspeed = round(data['song']['speed'], 2)
+            self.JSONsections = len(data['song']['notes'])
+            self.details.append(GameText(self, self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), RGB = (255, 255, 255)))
+            self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
+            self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))
+        except:
+            self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (180, 20), RGB = (255, 255, 255)))
+            self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (180, 28), RGB = (255, 255, 255)))

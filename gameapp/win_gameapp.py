@@ -160,7 +160,10 @@ class GameAudio():
         self.played = False
 
     def set_volume(self, volume = 1):
-        self.mySound.set_volume(volume)
+        try:
+            self.mySound.set_volume(volume)
+        except:
+            pass
 
     def get_length(self):
         self.mySound.get_length()

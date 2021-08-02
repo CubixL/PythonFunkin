@@ -2,8 +2,13 @@
 from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
 from game.playerarrow import PlayerArrow
 from game.targetarrow import TargetArrow
-import json, random
+import json, random, ctypes
 import os.path
+
+# Error message box.
+def ErrorBox(title, text, style = 0):
+    if os.name == 'nt':
+        return ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
 class Level(GameSection):
     def __init__(self, parent):
@@ -178,8 +183,11 @@ class Level(GameSection):
         
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == kb.K_ESCAPE:
-            self.music_inst.stop()
-            self.music_voices.stop()
+            try:
+                self.music_inst.stop()
+                self.music_voices.stop()
+            except:
+                pass
             self.parent.stopTimer('BPM')
             self.parent.stopTimer('Girlfriend')
             self.parent.stopTimer('BackgroundBeat')
@@ -229,8 +237,11 @@ class Level(GameSection):
 
             # R resets the chart
             if isDown == True and key == kb.K_r:
-                self.music_inst.stop()
-                self.music_voices.stop()
+                try:
+                    self.music_inst.stop()
+                    self.music_voices.stop()
+                except:
+                    pass
                 self.parent.stopTimer('BPM')
                 self.parent.stopTimer('Girlfriend')
                 self.parent.stopTimer('BackgroundBeat')
@@ -260,52 +271,72 @@ class Level(GameSection):
         self.TargetList.clear()
         self.Combo = 0
 
-        self.music_inst.load(f'songlibrary/{songName}/{songName}_Inst')
-        self.music_voices.load(f'songlibrary/{songName}/{songName}_Voices')
+        try:
+            self.music_inst.load(f'songlibrary/{songName}/{songName}_Inst')
+            self.music_voices.load(f'songlibrary/{songName}/{songName}_Voices')
+        except:
+            ErrorBox('Error',  
+            f'''
+            Failure to load OGG / CAF files.
+            Have you tried:
+                - Checking if the file(s) exists
+                (They should be labeled "{songName}_Inst.ogg" or "{songName}_Vocals.ogg")
+                - Checking if a file is corrupted
+            '''
+            )
 
-        chart = open(f'songlibrary/{songName}/{songName}.json')
-        data = json.load(chart)
+        try:
+            chart = open(f'songlibrary/{songName}/{songName}.json')
+            data = json.load(chart)
 
-        # Song variables
-        self.JSONsections = len(data['song']['notes'])
-        self.JSONspeed = data['song']['speed']
-        self.totalMoveTime = 1500 / self.JSONspeed
-        self.JSONbpm = data['song']['bpm']
+            # Song variables
+            self.JSONsections = len(data['song']['notes'])
+            self.JSONspeed = data['song']['speed']
+            self.totalMoveTime = 1500 / self.JSONspeed
+            self.JSONbpm = data['song']['bpm']
 
-        # for section in range (0, self.JSONsections):
-        #     print (data['notes'][section]['sectionNotes'])
+            # for section in range (0, self.JSONsections):
+            #     print (data['notes'][section]['sectionNotes'])
 
-        # The big complicated note stuff
-        for section in range (0, self.JSONsections): # Find the number of notes in every single section
-            self.JSONnotenumber = len(data['song']['notes'][section]['sectionNotes'])
-            for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
-                self.JSONmilliseconds = data['song']['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
-                self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
-                self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
-                self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
-                self.HitTime = self.JSONmilliseconds + ((60000.0 / self.JSONbpm) * 5)
-                if self.JSONtype == 0:
-                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 1:
-                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 2:
-                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 3:
-                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 4:
-                    self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 5:
-                    self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 6:
-                    self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
-                if self.JSONtype == 7:
-                    self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+            # The big complicated note stuff
+            for section in range (0, self.JSONsections): # Find the number of notes in every single section
+                self.JSONnotenumber = len(data['song']['notes'][section]['sectionNotes'])
+                for note in range (0, self.JSONnotenumber): # For every note in a section, find all it's characteristics
+                    self.JSONmilliseconds = data['song']['notes'][section]['sectionNotes'][note][0] # - self.totalMoveTime
+                    self.JSONtype = data['song']['notes'][section]['sectionNotes'][note][1]
+                    self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
+                    self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
+                    self.HitTime = self.JSONmilliseconds + ((60000.0 / self.JSONbpm) * 5)
+                    if self.JSONtype == 0:
+                        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 1:
+                        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 2:
+                        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 3:
+                        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 4:
+                        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 5:
+                        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 6:
+                        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                    if self.JSONtype == 7:
+                        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
 
-        self.isStarted = False
-        self.milliAtStart = self.parent.getMS()
-        # print(f'ms after load: {self.parent.getMS()}')
-        # self.music_inst.play()
-        # self.music_voices.play()
+            self.isStarted = False
+            self.milliAtStart = self.parent.getMS()
+        except:
+            ErrorBox('Error',  
+            f'''
+            Failure to load JSON file.
+            Have you tried:
+                - Checking if the file exists / is properly named (It should be named "{songName}.json")
+                - Checking if the file has extra data at the end
+                - Checking if the file is corrupted
+            '''
+            )
+            self.JSONbpm = 120
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes
@@ -355,8 +386,11 @@ class Level(GameSection):
                 self.sound_introList[3].play()
                 self.IntroGo.render()
             if self.BPMTimer.numLoopsPerformed == 5:
-                self.music_inst.play()
-                self.music_voices.play()
+                try:
+                    self.music_inst.play()
+                    self.music_voices.play()
+                except:
+                    pass
 
         if name == 'Rating':
             if self.RatingTimer.numLoopsPerformed <= 3:
