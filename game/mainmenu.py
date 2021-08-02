@@ -9,20 +9,26 @@ class MainMenu(Menu):
         self.Buttons.append(MenuButton(
             name = 'loadmenu',
             menuTab = 0,
-            imgNormal = GameImage(self, 'images/gui/GUI_ButtonPlay.png', position=(17, 20)),
-            imgSelected = GameImage(self, 'images/gui/GUI_ButtonPlaySelected.png', position=(17, 17))
+            type = 'image',
+            position = (17, 20),
+            positionSelected = (17, 17),
+            fileName = 'images/gui/GUI_ButtonPlay'
         ))
         self.Buttons.append(MenuButton(
             name = 'settingsmenu',
             menuTab = 0,
-            imgNormal = GameImage(self, 'images/gui/GUI_ButtonSettings.png', position=(17, 60)),
-            imgSelected = GameImage(self, 'images/gui/GUI_ButtonSettingsSelected.png', position=(17, 57))
+            type = 'image',
+            position = (17, 60),
+            positionSelected = (17, 57),
+            fileName = 'images/gui/GUI_ButtonSettings'
         ))
         self.Buttons.append(MenuButton(
             name = 'quit',
             menuTab = 0,
-            imgNormal = GameImage(self, 'images/gui/GUI_ButtonQuit.png', position=(17, 99)),
-            imgSelected = GameImage(self, 'images/gui/GUI_ButtonQuitSelected.png', position=(17, 97))
+            type = 'image',
+            position = (17, 99),
+            positionSelected = (17, 97),
+            fileName = 'images/gui/GUI_ButtonQuit'
         ))   
 
     def doAction(self, isDown, key, mod):

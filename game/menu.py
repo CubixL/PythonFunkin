@@ -1,12 +1,30 @@
 from gameapp import GameFont, GameText, GameImage, kb, GameSection, GameAudio
 
 class MenuButton():
-    def __init__(self, name, menuTab, imgNormal, imgSelected):
+    def __init__(self, name, menuTab, type, position, menuText = None, normalColor = (255, 255, 255), selectedColor = (255, 233, 127), fileName = None, positionSelected = None):
         self.name = name
         self.menuTab = menuTab
-        self.imgNormal = imgNormal
-        self.imgSelected = imgSelected
+        self.type = type
+        self.position = position
+        self.positionSelected = positionSelected
+        if self.positionSelected == None:
+            self.positionSelected = self.position
+        self.fileName = fileName
+
         self.isActive = False
+        self.menuText = menuText
+        self.normalColor = normalColor
+        self.selectedColor = selectedColor
+        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
+        self.update()
+
+    def update(self):
+        if self.type == 'text':
+            self.imgNormal = GameText(self, self.GUIFont, text = self.menuText, position = self.position, RGB = self.normalColor)
+            self.imgSelected = GameText(self, self.GUIFont, text = self.menuText, position = self.positionSelected, RGB = self.selectedColor)
+        elif self.type == 'image':
+            self.imgNormal = GameImage(self, f'{self.fileName}.png', position = self.position)
+            self.imgSelected = GameImage(self, f'{self.fileName}Selected.png', position = self.positionSelected)
 
 class Menu(GameSection):
     def __init__(self, parent):
@@ -19,8 +37,9 @@ class Menu(GameSection):
         self.MenuOverlay = None
         self.mousePos = (0, 0)
         self.highlighted = 0
-        self.highlightedOverlay = 0
+        self.highlightedTab = 0
         self.menuTabs = 0
+        self.maxButtons = 1000
         self.scrollAudio = GameAudio('sounds/menuselect')
 
     def on_loop(self):
@@ -34,10 +53,11 @@ class Menu(GameSection):
         # buttons
         for index in range(0, len(self.Buttons)):
             currentButton = self.Buttons[index]
-            if index == self.highlighted:
-                 currentButton.imgSelected.render()
-            else:
-                currentButton.imgNormal.render()
+            if currentButton.menuTab == self.highlightedTab:
+                if index == self.highlighted:
+                    currentButton.imgSelected.render()
+                else:
+                    currentButton.imgNormal.render()
 
     def on_key(self, isDown, key, mod): 
         if isDown:
@@ -46,29 +66,18 @@ class Menu(GameSection):
             if key == kb.K_DOWN or key == kb.K_s:
                 if self.highlighted < numItems:
                     self.highlighted += 1
-                else:
-                    self.highlighted = 0
+                    if (self.highlighted % self.maxButtons) == 0:
+                        self.highlightedTab += 1
                 self.scrollAudio.stop()
                 self.scrollAudio.play()
             if key == kb.K_UP or key == kb.K_w:
                 if self.highlighted > 0:
                     self.highlighted -= 1
-                else:
-                    self.highlighted = numItems
+                    if (self.highlighted % self.maxButtons) == self.maxButtons - 1:
+                        self.highlightedTab -= 1
                 self.scrollAudio.stop()
                 self.scrollAudio.play()
 
-            # overlay nav
-            if key == kb.K_RIGHT or key == kb.K_d:
-                if self.highlightedOverlay < self.menuTabs:
-                    self.highlightedOverlay += 1
-                else:
-                    pass
-            if key == kb.K_LEFT or key == kb.K_a:
-                if self.highlightedOverlay > 0:
-                    self.highlightedOverlay -= 1
-                else:
-                    pass
         self.doAction(isDown, key, mod)
 
     def on_mouse(self, isDown, key, xcoord, ycoord):

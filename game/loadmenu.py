@@ -10,6 +10,7 @@ class LoadMenu(Menu):
         self.MenuOverlay = GameImage(self, 'images/background/menu/BGE_LoadOverlay.png')
         self.menuTabs = 0
         self.songList = os.listdir('songlibrary')
+        self.maxButtons = 14
         topY = 20
         
         self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
@@ -18,16 +19,27 @@ class LoadMenu(Menu):
         self.songName = None
 
         for myfoldername in self.songList:
-            self.Buttons.append(MenuButton(
-            name = myfoldername,
-            menuTab = 0,
-            imgNormal = GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 255, 255)),
-            imgSelected = GameText(self, self.GUIFont, text = f'{myfoldername}', position = (5, topY), RGB = (255, 233, 127)),
-        ))   
-            topY += 8
+            print(len(self.Buttons))
+         
+            if (len(self.Buttons) % self.maxButtons) == 0:
+                topY = 20
+            else:
+                topY += 8            
+
+            button = MenuButton(
+                name = myfoldername,
+                menuTab = 0,
+                type = 'text',
+                position = (5, topY),
+                menuText = f'{myfoldername}'
+        )
+            button.menuTab = int(len(self.Buttons) / self.maxButtons)
+            self.Buttons.append(button)
 
         self.loadDetails()
 
+
+    
     def on_loop(self):
         pass
 
@@ -44,12 +56,12 @@ class LoadMenu(Menu):
             if key == kb.K_ESCAPE:
                 self.parent.currentSectionName = 'mainmenu'
             
-            if key == kb.K_RETURN and self.highlightedOverlay == 0:
+            if key == kb.K_RETURN and self.highlightedTab == 0:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
                 self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()
-            if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
-                self.loadDetails()
+            # if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
+                # self.loadDetails()
 
     def loadDetails(self):
         self.details.clear()

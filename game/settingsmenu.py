@@ -11,7 +11,7 @@ class SettingsMenu(Menu):
 
         with open('saveFile.json') as json_file:
             self.saveFile = json.load(json_file)
-        self.currentStage = self.saveFile['settings'][0]['LevelBackground']
+        self.currentStage = self.saveFile['settings']['LevelBackground']
         self.menuTitle = GameText(self, self.TitleFont, text = 'SETTINGS', position = (10, 6), RGB = (255, 255, 255))
 
         self.saveFile = {}
@@ -20,14 +20,18 @@ class SettingsMenu(Menu):
         self.Buttons.append(MenuButton(
             name = 'background',
             menuTab = 0,
-            imgNormal = GameText(self, self.GUIFont, text = f'Level Background: {self.currentStage}', position = (10, 20), RGB = (255, 255, 255)),
-            imgSelected = GameText(self, self.GUIFont, text = f'Level Background: {self.currentStage}', position = (10, 20), RGB = (255, 233, 127)),
+            type = 'text',
+            position = (10, 20),
+            menuText = self.getStageText()
         ))  
         self.Buttons.append(MenuButton(
             name = 'apply',
             menuTab = 0,
-            imgNormal = GameText(self, self.GUIFont, text = 'Apply', position = (10, 30), RGB = (27, 174, 27)),
-            imgSelected = GameText(self, self.GUIFont, text = 'Apply', position = (10, 30), RGB = (50, 255, 50)),
+            type = 'text',
+            position = (10, 28),
+            menuText = 'Apply',
+            normalColor = (27, 174, 27),
+            selectedColor = (50, 255, 50)
         ))  
 
     def on_loop(self):
@@ -37,6 +41,9 @@ class SettingsMenu(Menu):
         super().on_render()
         self.menuTitle.render()
         self.testText.render()
+
+    def getStageText(self):
+        return f'Level Background: {self.currentStage}'
 
     def doAction(self, isDown, key, mod):
         if isDown:
@@ -57,11 +64,15 @@ class SettingsMenu(Menu):
                     else:
                         self.currentStage = 1
 
+            StageButton:MenuButton = self.Buttons[0]
+            StageButton.menuText = self.getStageText()
+            StageButton.update()
+
             if key == kb.K_RETURN:
                 if self.highlighted == len(self.Buttons) - 1:
-                    self.saveFile['settings'].append({
+                    self.saveFile['settings'] = {
                         'LevelBackground' : self.currentStage
-                    })
+                    }
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)
                     print('Data saved')
