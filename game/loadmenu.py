@@ -12,15 +12,17 @@ class LoadMenu(Menu):
         self.songList = os.listdir('songlibrary')
         self.maxButtons = 14
         topY = 20
-        
+
         self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
         self.menuDetails = GameText(self, self.TitleFont, text = 'DETAILS', position = (188, 6), RGB = (255, 255, 255))
         self.details = []
         self.songName = None
 
+        with open('saveFile.json') as json_file:
+                self.saveFile = json.load(json_file)
+        self.highscore = None
+
         for myfoldername in self.songList:
-            print(len(self.Buttons))
-         
             if (len(self.Buttons) % self.maxButtons) == 0:
                 topY = 20
             else:
@@ -35,10 +37,7 @@ class LoadMenu(Menu):
         )
             button.menuTab = int(len(self.Buttons) / self.maxButtons)
             self.Buttons.append(button)
-
         self.loadDetails()
-
-
     
     def on_loop(self):
         pass
@@ -68,6 +67,10 @@ class LoadMenu(Menu):
         self.songName = self.Buttons[self.highlighted].name
 
         try:
+            self.highscore = self.saveFile['highscores'][f'{self.songName}']
+        except:
+            self.highscore = 0
+        try:
             chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
             data = json.load(chart)
             self.JSONbpm = data['song']['bpm']
@@ -79,3 +82,5 @@ class LoadMenu(Menu):
         except:
             self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (180, 20), RGB = (255, 255, 255)))
             self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (180, 28), RGB = (255, 255, 255)))
+        self.details.append(GameText(self, self.GUIFont, text = f'Highscore: ', position = (188, 52), RGB = (255, 255, 255)))
+        self.details.append(GameText(self, self.GUIFont, text = f'{self.highscore}', position = (188, 58), RGB = (0, 255, 147)))

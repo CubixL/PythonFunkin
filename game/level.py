@@ -16,12 +16,14 @@ class Level(GameSection):
 
         self.LevelBackground = None
         self.saveFile = {}
+        self.saveFile['highscores'] = []
         # Background
         fileName = 'saveFile.json'
         if not os.path.exists(fileName):
             self.saveFile['settings'] = {
                         'LevelBackground' : 1
                     }
+            self.saveFile['highscores'] = {}
             with open('saveFile.json', 'w') as outfile:
                 json.dump(self.saveFile, outfile, indent = 2)
         else:
@@ -122,6 +124,16 @@ class Level(GameSection):
                     self.music_voices.set_volume(1)
             target.move() # Move targets up
         self.PlayerScore += currentscore
+
+        # If song has ended
+        if not self.music_inst.get_busy() and self.TargetList[0].state == 'played':
+            self.saveFile['highscores'] = {
+                f'{self.loadedSong}' : self.PlayerScore
+            }
+            with open('saveFile.json', 'w') as outfile:
+                json.dump(self.saveFile, outfile, indent = 2)
+                print('Score saved')
+            self.parent.currentSectionName = 'loadmenu'
 
     def on_render(self):
         self.LevelBackground.render() 

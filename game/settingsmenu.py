@@ -75,4 +75,4 @@ class SettingsMenu(Menu):
                     }
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)
-                    print('Data saved')
+                    print('Settings saved')
