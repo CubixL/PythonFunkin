@@ -71,7 +71,7 @@ class SettingsMenu(Menu):
 
             # Enter key
             if key == kb.K_RETURN:
-                if self.highlighted == len(self.Buttons) - 1:
+                if self.Buttons[self.highlighted].name == 'apply':
                     self.saveFile['settings'] = {
                         'LevelBackground' : self.currentStage
                     }
