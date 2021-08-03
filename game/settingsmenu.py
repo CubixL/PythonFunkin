@@ -50,6 +50,7 @@ class SettingsMenu(Menu):
             if key == kb.K_ESCAPE:
                 self.parent.currentSectionName = 'mainmenu'
             
+            # Stage background settings
             numStages = 7
             if key == kb.K_a or key == kb.K_LEFT:
                 if self.highlighted == 0:
@@ -68,6 +69,7 @@ class SettingsMenu(Menu):
             StageButton.menuText = self.getStageText()
             StageButton.update()
 
+            # Enter key
             if key == kb.K_RETURN:
                 if self.highlighted == len(self.Buttons) - 1:
                     self.saveFile['settings'] = {

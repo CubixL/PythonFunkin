@@ -100,6 +100,16 @@ class Level(GameSection):
         # return the number of milliseconds since start of level
         return self.parent.getMS() - self.milliAtStart
 
+    def stopAssets(self):
+        try:
+            self.music_inst.stop()
+            self.music_voices.stop()
+        except:
+            pass
+        self.parent.stopTimer('BPM')
+        self.parent.stopTimer('Girlfriend')
+        self.parent.stopTimer('BackgroundBeat')
+
     def on_loop(self):
         currentscore = 0
         
@@ -127,13 +137,21 @@ class Level(GameSection):
 
         # If song has ended
         if not self.music_inst.get_busy() and self.TargetList[0].state == 'played':
-            self.saveFile['highscores'] = {
-                f'{self.loadedSong}' : self.PlayerScore
-            }
-            with open('saveFile.json', 'w') as outfile:
-                json.dump(self.saveFile, outfile, indent = 2)
-                print('Score saved')
+            try:
+                if self.PlayerScore > self.saveFile['highscores'][f'{self.loadedSong}']:
+                    self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
+                    with open('saveFile.json', 'w') as outfile:
+                        json.dump(self.saveFile, outfile, indent = 2)
+                        print('Score saved')
+            except:
+                self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
+                with open('saveFile.json', 'w') as outfile:
+                    json.dump(self.saveFile, outfile, indent = 2)
+                    print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
+            
+            self.stopAssets()
             self.parent.currentSectionName = 'loadmenu'
+            self.parent.sections['loadmenu'].refreshPage()
 
     def on_render(self):
         self.LevelBackground.render() 
@@ -195,14 +213,7 @@ class Level(GameSection):
         
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == kb.K_ESCAPE:
-            try:
-                self.music_inst.stop()
-                self.music_voices.stop()
-            except:
-                pass
-            self.parent.stopTimer('BPM')
-            self.parent.stopTimer('Girlfriend')
-            self.parent.stopTimer('BackgroundBeat')
+            self.stopAssets()
             self.parent.currentSectionName = 'mainmenu'
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
@@ -249,14 +260,7 @@ class Level(GameSection):
 
             # R resets the chart
             if isDown == True and key == kb.K_r:
-                try:
-                    self.music_inst.stop()
-                    self.music_voices.stop()
-                except:
-                    pass
-                self.parent.stopTimer('BPM')
-                self.parent.stopTimer('Girlfriend')
-                self.parent.stopTimer('BackgroundBeat')
+                self.stopAssets()
                 self.loadFile()
 
     def on_mouse(self, isDown, key, xcoord, ycoord):

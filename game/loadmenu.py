@@ -3,7 +3,7 @@ from gameapp import GameImage, GameText, GameFont, kb
 from game.menu import Menu, MenuButton
 
 
-class LoadMenu(Menu):
+class LoadMenu(Menu): # menu for loading songs
     def __init__(self, parent):
         super().__init__(parent)
         self.MenuBackground = GameImage(self, 'images/background/menu/BGE_LoadBackground.png')
@@ -66,11 +66,13 @@ class LoadMenu(Menu):
         self.details.clear()
         self.songName = self.Buttons[self.highlighted].name
 
+        # Assume highscore is zero if it doesn't exist.
         try:
             self.highscore = self.saveFile['highscores'][f'{self.songName}']
         except:
             self.highscore = 0
-        try:
+        
+        try: # Details from JSON
             chart = open(f'songlibrary/{self.songName}/{self.songName}.json')
             data = json.load(chart)
             self.JSONbpm = data['song']['bpm']
@@ -79,8 +81,15 @@ class LoadMenu(Menu):
             self.details.append(GameText(self, self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), RGB = (255, 255, 255)))
             self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
             self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))
-        except:
+        except: # If JSON cannot be loaded, show error message
             self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (180, 20), RGB = (255, 255, 255)))
             self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (180, 28), RGB = (255, 255, 255)))
         self.details.append(GameText(self, self.GUIFont, text = f'Highscore: ', position = (188, 52), RGB = (255, 255, 255)))
         self.details.append(GameText(self, self.GUIFont, text = f'{self.highscore}', position = (188, 58), RGB = (0, 255, 147)))
+
+    # Sub-init function
+    def refreshPage(self):
+        with open('saveFile.json') as json_file:
+                self.saveFile = json.load(json_file)
+        self.loadDetails()
+        
