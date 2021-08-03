@@ -1,15 +1,15 @@
-# type: ignore
+# dtype: ignore
 from typing import Tuple, List
-
+import math
 
 class Point():
-    x: float
-    y: float
-    top: float
-    left: float
-    topleft: Tuple[float, float]
+    # x: float
+    # y: float
+    # top: float
+    # left: float
+    # center: Tuple[float, float]
 
-    def __init__(self, left: float, top: float, width: float = 0, height: float = 0): # noqa
+    def __init__(self, left: float = 0.0, top: float = 0.0): 
         self._left = float(left)
         self._top = float(top)
 
@@ -46,10 +46,10 @@ class Point():
         self.top = value
 
     @property
-    def topleft(self)->Tuple[float,float]:
+    def center(self)->Tuple[float,float]:
         return (self.left, self.top)
 
-    @topleft.setter
+    @center.setter
     def topleft(self, value:Tuple[float,float]):
         self.left = value[0]
         self.top = value[1]
@@ -63,19 +63,38 @@ class Point():
     def __deepcopy__(self):
         return Point(self.left, self.top)
 
+    ###############
+    def distanceTo(self, point)->float:
+        dx = self.x - point.x
+        dy = self.y - point.y
+        return math.sqrt((dx*dx)+(dy*dy))
+
+    def rotateAround(self, angle, point):
+        ang = math.radians(angle)
+        c = math.cos(ang)
+        s = math.sin(ang)
+        px = self.x - point[0]
+        py = self.y - point[1]
+
+        xnew = px * c - py * s
+        ynew = px * s + py * c
+
+        self.x = xnew + point[0]
+        self.y = ynew + point[1]
 
 class Rect():
-    x: float
-    y: float
-    top: float
-    left: float
-    bottom: float
-    right: float
-    topleft: Tuple[float, float]
-    bottomleft: Tuple[float, float]
-    topright: Tuple[float, float]
-    bottomright: Tuple[float, float]
-    size: Tuple[float, float]
+    # x: float
+    # y: float
+    # top: float
+    # left: float
+    # bottom: float
+    # right: float
+    # topleft: Tuple[float, float]
+    # bottomleft: Tuple[float, float]
+    # topright: Tuple[float, float]
+    # bottomright: Tuple[float, float]
+    # size: Tuple[float, float]
+
     # midtop: Tuple[float, float]
     # midleft: Tuple[float, float]
     # midbottom: Tuple[float, float]
@@ -83,13 +102,14 @@ class Rect():
     # center: Tuple[float, float]
     # centerx: float
     # centery: float
-    width: float
-    height: float
-    w: float
-    h: float
+
+    # width: float
+    # height: float
+    # w: float
+    # h: float
 
     # noqa
-    def __init__(self, left: float, top: float, width: float = 0, height: float = 0): # noqa
+    def __init__(self, left: float = 0.0, top: float = 0.0, width: float = 0.0, height: float = 0.0): # noqa
         self._left = float(left)
         self._top = float(top)
         self._width = float(width)
@@ -173,7 +193,7 @@ class Rect():
 
     @property
     def bottom(self)->float: 
-        return self.left + self.width
+        return self.top + self.height
 
     @bottom.setter
     def bottom(self, value: float):
@@ -248,6 +268,18 @@ class Rect():
                 ret = True
 
         return ret
+
+    def containsRect(self, rect)->bool:
+        ret = False
+
+        if self.left < rect.left and \
+            self.right > rect.right and \
+            self.top < rect.top and \
+            self.bottom > rect.bottom :
+                ret = True
+
+        return ret
+        
 
     # def collideRectList(self, list)->int:
     #     ret = -1
