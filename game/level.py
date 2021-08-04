@@ -98,7 +98,6 @@ class Level(GameSection):
 
         self.curBGframe = 1
 
-
     def getMS(self):
         # return the number of milliseconds since start of level
         return self.parent.getMS() - self.milliAtStart
@@ -162,12 +161,6 @@ class Level(GameSection):
         self.LevelBackground.render() 
 
         # Render more stuff around the girlfriend if certain backgounds are selected (i.e. dancers, lights, cars)
-        if self.saveFile['settings']['LevelBackground'] == 3:
-            if self.BackgroundBeat:
-                self.BackgroundBeat.render()
-            ground = GameImage(self, 'images/background/philly/LevelBackground3_ground.gif')
-            ground.render()
-
         if self.saveFile['settings']['LevelBackground'] == 4:
             self.DemonImgList[self.curBGframe].render(position = (55, 19))
             self.DemonImgList[self.curBGframe].render(position = (105, 19))
@@ -283,6 +276,8 @@ class Level(GameSection):
         savedStage = self.saveFile['settings']['LevelBackground']
         self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
 
+        if self.saveFile['settings']['LevelBackground'] == 3:
+            self.LevelBackground = GameImage(self, 'images/background/philly/LevelBackground3_lights1.gif')
         if self.saveFile['settings']['LevelBackground'] == 4:
             for image in range(1, 7):
                 self.DemonImgList.append(GameImage(self, f'images/background/limo/dancer{image}.png', position = (55, 19)))
@@ -430,6 +425,6 @@ class Level(GameSection):
 
         if name == 'BackgroundBeat':
             if self.saveFile['settings']['LevelBackground'] == 3:
-                self.BackgroundBeat = GameImage(self, f'images/background/philly/LevelBackground3_lights{random.randrange(1, 6)}.gif')
+                self.LevelBackground = GameImage(self, f'images/background/philly/LevelBackground3_lights{random.randrange(1, 6)}.gif')
             if self.saveFile['settings']['LevelBackground'] == 4:
                 self.curBGframe = self.BGBeatTimer.numLoopsPerformed % 6
