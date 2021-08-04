@@ -1,14 +1,15 @@
 from gameapp import GameImage, kb
 
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
-    def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
+    def __init__(self, parent, type, sustype, milliseconds, isEnemy, sustainLength):
         # Set up variables
         self.type = type
         self.parent = parent
         self.milliseconds = milliseconds
+        self.sustainLength = sustainLength
         
         self.isEnemy = isEnemy
-        self.sustainLength = sustainLength
+        self.sustype = sustype
 
         # Set up sprites + starting Y position
         self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
@@ -87,7 +88,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.state == 'active':
             self.img.position.y -= moveDist
             self.img_sustain.position.y -= moveDist
-            self.img_sustainend.position.y -= moveDist + self.sustainLength
+            self.img_sustainend.position.y -= moveDist
 
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
         score = 0

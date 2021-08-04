@@ -55,7 +55,7 @@ class LoadMenu(Menu): # menu for loading songs
             if key == kb.K_ESCAPE:
                 self.parent.currentSectionName = 'mainmenu'
             
-            if key == kb.K_RETURN and self.highlightedTab == 0:
+            if key == kb.K_RETURN:
                 self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
                 self.parent.currentSectionName = 'level'
                 self.parent.sections['level'].loadFile()

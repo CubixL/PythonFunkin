@@ -141,17 +141,18 @@ class Level(GameSection):
         # If song has ended
         if self.hadException == False:
             if not self.music_inst.get_busy() and self.TargetList[0].state == 'played':
-                try:
+                if f'{self.loadedSong}' in self.saveFile == True: # If song already has a highscore AND current score is higher, overwrite
                     if self.PlayerScore > self.saveFile['highscores'][f'{self.loadedSong}']:
                         self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
                         with open('saveFile.json', 'w') as outfile:
                             json.dump(self.saveFile, outfile, indent = 2)
                             print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
-                except:
+                else: # If song doesn't have a highscore yet, add one
                     self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)
                         print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
+                # If song already has a highscore but current score is lower, do nothing
                 
                 self.stopAssets()
                 self.parent.currentSectionName = 'loadmenu'
@@ -331,22 +332,23 @@ class Level(GameSection):
                     self.JSONenemy = not data['song']['notes'][section]['mustHitSection']
                     self.JSONsustain = data['song']['notes'][section]['sectionNotes'][note][2]
                     self.HitTime = self.JSONmilliseconds + ((60000.0 / self.JSONbpm) * 5)
+                    # Order of parameters: self, type, sustype, milliseconds, isEnemy
                     if self.JSONtype == 0:
-                        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Left', 'arrow', self.HitTime, self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 1:
-                        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Down', 'arrow', self.HitTime, self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 2:
-                        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Up', 'arrow', self.HitTime, self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 3:
-                        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Right', 'arrow', self.HitTime, self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 4:
-                        self.TargetList.append(TargetArrow(self, type = 'Left', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Left', 'arrow', self.HitTime, not self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 5:
-                        self.TargetList.append(TargetArrow(self, type = 'Down', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Down', 'arrow', self.HitTime, not self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 6:
-                        self.TargetList.append(TargetArrow(self, type = 'Up', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Up', 'arrow', self.HitTime, not self.JSONenemy, self.JSONsustain))
                     if self.JSONtype == 7:
-                        self.TargetList.append(TargetArrow(self, type = 'Right', milliseconds = self.HitTime, isEnemy = not self.JSONenemy, sustainLength = self.JSONsustain))
+                        self.TargetList.append(TargetArrow(self, 'Right', 'arrow', self.HitTime, not self.JSONenemy, self.JSONsustain))
 
             self.isStarted = False
             self.milliAtStart = self.parent.getMS()
