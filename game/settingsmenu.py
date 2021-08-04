@@ -1,6 +1,7 @@
 from gameapp import GameImage, GameText, kb
 from game.menu import Menu, MenuButton
 import json
+import os.path
 
 class SettingsMenu(Menu):
     def __init__(self, parent):
@@ -13,9 +14,6 @@ class SettingsMenu(Menu):
             self.saveFile = json.load(json_file)
         self.currentStage = self.saveFile['settings']['LevelBackground']
         self.menuTitle = GameText(self, self.TitleFont, text = 'SETTINGS', position = (10, 6), RGB = (255, 255, 255))
-
-        self.saveFile = {}
-        self.saveFile['settings'] = []
 
         self.Buttons.append(MenuButton(
             name = 'background',
@@ -72,6 +70,16 @@ class SettingsMenu(Menu):
             # Enter key
             if key == kb.K_RETURN:
                 if self.Buttons[self.highlighted].name == 'apply':
+                    if not os.path.exists('saveFile.json'):
+                        self.saveFile['settings'] = {
+                                    'LevelBackground' : 1
+                                }
+                        self.saveFile['highscores'] = {
+                            'Tutorial' : 0
+                        }
+                    else:
+                        with open('saveFile.json') as json_file:
+                            self.saveFile = json.load(json_file)
                     self.saveFile['settings'] = {
                         'LevelBackground' : self.currentStage
                     }

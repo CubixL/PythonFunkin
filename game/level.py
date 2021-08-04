@@ -16,19 +16,22 @@ class Level(GameSection):
 
         self.LevelBackground = None
         self.saveFile = {}
-        self.saveFile['highscores'] = []
+        self.saveFile['highscores'] = {}
         # Background
         fileName = 'saveFile.json'
         if not os.path.exists(fileName):
             self.saveFile['settings'] = {
                         'LevelBackground' : 1
                     }
-            self.saveFile['highscores'] = {}
+            self.saveFile['highscores'] = {
+                'Tutorial' : 0
+            }
             with open('saveFile.json', 'w') as outfile:
                 json.dump(self.saveFile, outfile, indent = 2)
         else:
             with open('saveFile.json') as json_file:
                 self.saveFile = json.load(json_file)
+        self.hadException = False
         
         self.BackgroundBeat = None
         
@@ -136,22 +139,23 @@ class Level(GameSection):
         self.PlayerScore += currentscore
 
         # If song has ended
-        if not self.music_inst.get_busy() and self.TargetList[0].state == 'played':
-            try:
-                if self.PlayerScore > self.saveFile['highscores'][f'{self.loadedSong}']:
+        if self.hadException == False:
+            if not self.music_inst.get_busy() and self.TargetList[0].state == 'played':
+                try:
+                    if self.PlayerScore > self.saveFile['highscores'][f'{self.loadedSong}']:
+                        self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
+                        with open('saveFile.json', 'w') as outfile:
+                            json.dump(self.saveFile, outfile, indent = 2)
+                            print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
+                except:
                     self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)
-                        print('Score saved')
-            except:
-                self.saveFile['highscores'].update({f'{self.loadedSong}' : self.PlayerScore})
-                with open('saveFile.json', 'w') as outfile:
-                    json.dump(self.saveFile, outfile, indent = 2)
-                    print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
-            
-            self.stopAssets()
-            self.parent.currentSectionName = 'loadmenu'
-            self.parent.sections['loadmenu'].refreshPage()
+                        print(f'Highscore saved: {self.PlayerScore} points for {self.loadedSong}')
+                
+                self.stopAssets()
+                self.parent.currentSectionName = 'loadmenu'
+                self.parent.sections['loadmenu'].refreshPage()
 
     def on_render(self):
         self.LevelBackground.render() 
@@ -287,6 +291,8 @@ class Level(GameSection):
         self.TargetList.clear()
         self.Combo = 0
 
+        # Loading music
+        self.hadException = False
         try:
             self.music_inst.load(f'songlibrary/{songName}/{songName}_Inst')
             self.music_voices.load(f'songlibrary/{songName}/{songName}_Voices')
@@ -300,7 +306,9 @@ class Level(GameSection):
                 - Checking if a file is corrupted
             '''
             )
+            self.hadException = True
 
+        # Loading JSON
         try:
             chart = open(f'songlibrary/{songName}/{songName}.json')
             data = json.load(chart)
@@ -353,6 +361,7 @@ class Level(GameSection):
             '''
             )
             self.JSONbpm = 120
+            self.hadException = True
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes

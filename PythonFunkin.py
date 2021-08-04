@@ -14,10 +14,10 @@ from game.funkeditor import Editor
 from game.loadmenu import LoadMenu
 from game.settingsmenu import SettingsMenu
    
-class PythonFunkin(GameApp):               # Main app
+class PythonFunkin(GameApp): # Main app
     def __init__(self):
         # GameApp variables
-        super().__init__(width=240, height=135, displayNumber=1, fps = 80) # Screen size + number of the display
+        super().__init__(width=240, height=135, displayNumber=1, fps = 80, scale = 8) # Screen size + number of the display
         self.currentSectionName = 'mainmenu'
         self.sections['level'] = Level(self)
         self.sections['mainmenu'] = MainMenu(self)

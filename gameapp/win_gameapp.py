@@ -401,10 +401,8 @@ class GameApp:
             timer.active = True
 
     def stopTimer(self, name):
-        self.timers[name].active = False
-
-
-
+        if name in self.timers:
+            self.timers[name].active = False
 
     def start(self):
 
