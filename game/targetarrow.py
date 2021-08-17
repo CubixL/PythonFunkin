@@ -18,8 +18,12 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.initialypos = 140
         self.perfectypos = 10
         self.img.position.y = self.initialypos
-        self.img_sustain.position.y = 146
-        self.img_sustainend.position.y = 146
+        if self.sustainLength != 0:
+            self.img_sustain.position.y = self.initialypos + 6
+            self.img_sustainend.position.y = self.initialypos + 6 + (130 / self.sustainLength / 1500)
+        else:
+            self.img_sustain.position.y = self.initialypos
+            self.img_sustainend.position.y = self.initialypos
 
         # Note characteristics
         self.state = 'hidden'
@@ -116,6 +120,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
 
     def render(self): # Render only if is currently on the screen.
         if self.state == 'active':
-            self.img_sustainend.render()
-            self.img_sustain.render()
+            if self.sustainLength != 0:
+                self.img_sustainend.render()
+                self.img_sustain.render()
             self.img.render()
