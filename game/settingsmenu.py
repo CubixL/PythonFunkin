@@ -14,11 +14,17 @@ class SettingsMenu(Menu):
         with open('saveFile.json') as json_file:
             self.saveFile = json.load(json_file)
         self.currentStage = self.saveFile['settings']['LevelBackground']
-        self.leftKeybind = keys[self.saveFile['settings']['LeftKeybind']]
-        self.downKeybind = keys[self.saveFile['settings']['DownKeybind']]
-        self.upKeybind = keys[self.saveFile['settings']['UpKeybind']]
-        self.rightKeybind = keys[self.saveFile['settings']['RightKeybind']]
+        self.leftKeyDisplay = keys[self.saveFile['settings']['LeftKeybind']]
+        self.downKeyDisplay = keys[self.saveFile['settings']['DownKeybind']]
+        self.upKeyDisplay = keys[self.saveFile['settings']['UpKeybind']]
+        self.rightDisplay = keys[self.saveFile['settings']['RightKeybind']]
+        self.leftKeybind = self.saveFile['settings']['LeftKeybind']
+        self.downKeybind = self.saveFile['settings']['DownKeybind']
+        self.upKeybind = self.saveFile['settings']['UpKeybind']
+        self.rightKeybind = self.saveFile['settings']['RightKeybind']
         self.menuTitle = GameText(self, self.TitleFont, text = 'SETTINGS', position = (10, 6), RGB = (255, 255, 255))
+        self.state = 'idle'
+        self.stateText = None
 
         self.Buttons.append(MenuButton(
             name = 'background',
@@ -33,7 +39,7 @@ class SettingsMenu(Menu):
             menuTab = 0,
             type = 'text',
             position = (10, 28),
-            menuText = f'Left Keybind: {self.leftKeybind}'
+            menuText = f'Left Keybind: {self.leftKeyDisplay}'
         )) 
 
         self.Buttons.append(MenuButton(
@@ -41,7 +47,7 @@ class SettingsMenu(Menu):
             menuTab = 0,
             type = 'text',
             position = (10, 36),
-            menuText = f'Down Keybind: {self.downKeybind}'
+            menuText = f'Down Keybind: {self.downKeyDisplay}'
         )) 
 
         self.Buttons.append(MenuButton(
@@ -49,7 +55,7 @@ class SettingsMenu(Menu):
             menuTab = 0,
             type = 'text',
             position = (10, 44),
-            menuText = f'Up Keybind: {self.upKeybind}'
+            menuText = f'Up Keybind: {self.upKeyDisplay}'
         )) 
 
         self.Buttons.append(MenuButton(
@@ -57,7 +63,7 @@ class SettingsMenu(Menu):
             menuTab = 0,
             type = 'text',
             position = (10, 52),
-            menuText = f'Right Keybind: {self.rightKeybind}'
+            menuText = f'Right Keybind: {self.rightDisplay}'
         )) 
         
         self.Buttons.append(MenuButton(
@@ -71,19 +77,41 @@ class SettingsMenu(Menu):
         ))  
 
     def on_loop(self):
-        self.testText = GameText(self, self.GUIFont, text = f'{self.currentStage}', position = (0, 0), RGB = (255, 255, 255))
+        if self.state == 'input':
+            self.stateText = GameText(self, self.GUIFont, text = 'Waiting for input..', position = (60, 8), RGB = (255, 0, 0))
+        if self.state == 'idle':
+            self.stateText = None
 
     def on_render(self):
         super().on_render()
         self.menuTitle.render()
-        self.testText.render()
+        if self.stateText:
+            self.stateText.render()
 
     def getStageText(self):
-        return f'Level Background: {self.currentStage}'
+        return f'< Level Background: {self.currentStage} >'
+
+    def updateText(self):
+        StageButton:MenuButton = self.Buttons[0]
+        LeftKeyText:MenuButton = self.Buttons[1]
+        DownKeyText:MenuButton = self.Buttons[2]
+        UpKeyText:MenuButton = self.Buttons[3]
+        RightKeyText:MenuButton = self.Buttons[4]
+        StageButton.menuText = self.getStageText()
+        LeftKeyText.menuText = f'Left Keybind: {self.leftKeyDisplay}'
+        DownKeyText.menuText = f'Down Keybind: {self.downKeyDisplay}'
+        UpKeyText.menuText = f'Up Keybind: {self.upKeyDisplay}'
+        RightKeyText.menuText = f'Right Keybind: {self.rightDisplay}'
+        StageButton.update()
+        LeftKeyText.update()
+        DownKeyText.update()
+        UpKeyText.update()
+        RightKeyText.update()
 
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == kb.K_ESCAPE:
+                self.state == 'idle'
                 self.parent.currentSectionName = 'mainmenu'
             
             # Stage background settings
@@ -101,14 +129,12 @@ class SettingsMenu(Menu):
                     else:
                         self.currentStage = 1
 
-            StageButton:MenuButton = self.Buttons[0]
-            StageButton.menuText = self.getStageText()
-            StageButton.update()
-
+            self.updateText()
+    
             # Enter key
             if key == kb.K_RETURN:
-                if 'keybind' in self.Buttons[self.highlighted].name == True:
-                    print('success')
+                if ('keybind' in self.Buttons[self.highlighted].name) and self.state == 'idle':
+                    self.state = 'input'
 
                 if self.Buttons[self.highlighted].name == 'apply':
                     if not os.path.exists('saveFile.json'):
@@ -126,8 +152,31 @@ class SettingsMenu(Menu):
                         with open('saveFile.json') as json_file:
                             self.saveFile = json.load(json_file)
                     self.saveFile['settings'] = {
-                        'LevelBackground' : self.currentStage
+                        'LevelBackground' : self.currentStage,
+                        'LeftKeybind' : self.leftKeybind,
+                        'DownKeybind' : self.downKeybind,
+                        'UpKeybind' : self.upKeybind,
+                        'RightKeybind' : self.rightKeybind
                     }
                     with open('saveFile.json', 'w') as outfile:
                         json.dump(self.saveFile, outfile, indent = 2)
                     print('Settings saved')
+
+            if self.state == 'input':
+                if key == kb.K_DOWN or key == kb.K_UP:
+                    self.state = 'idle'
+                if key in keys:
+                    if self.highlighted == 1:
+                        self.leftKeyDisplay = keys[key]
+                        self.leftKeybind = key
+                    if self.highlighted == 2:
+                        self.downKeyDisplay = keys[key]
+                        self.downKeybind = key
+                    if self.highlighted == 3:
+                        self.upKeyDisplay = keys[key]
+                        self.upKeybind = key
+                    if self.highlighted == 4:
+                        self.rightDisplay = keys[key]
+                        self.rightKeybind = key
+                    self.state = 'idle'
+                    self.updateText()

@@ -247,7 +247,17 @@ class Level(GameSection):
                         self.RatingTimer = self.parent.timers['Rating']
             
             # If score is still 0, the bad key was pressed
-            if currentscore == 0 and key in (kb.K_DOWN, kb.K_UP, kb.K_LEFT, kb.K_RIGHT, kb.K_w, kb.K_a, kb.K_s, kb.K_d) and isDown:
+            if currentscore == 0 and key in (
+                    kb.K_DOWN, 
+                    kb.K_UP, 
+                    kb.K_LEFT, 
+                    kb.K_RIGHT, 
+                    self.PlayerArrowL.altkey, 
+                    self.PlayerArrowD.altkey, 
+                    self.PlayerArrowU.altkey, 
+                    self.PlayerArrowR.altkey,
+                ) and isDown:
+
                 currentscore = -10
                 # reset combo
                 self.Combo = 0
@@ -273,6 +283,11 @@ class Level(GameSection):
         if self.loadedSong == None:
             self.loadedSong = 'Tutorial'
         songName = self.loadedSong
+
+        self.PlayerArrowL.altkey = self.saveFile['settings']['LeftKeybind']
+        self.PlayerArrowD.altkey = self.saveFile['settings']['DownKeybind']
+        self.PlayerArrowU.altkey = self.saveFile['settings']['UpKeybind']
+        self.PlayerArrowR.altkey = self.saveFile['settings']['RightKeybind']
 
         # Refreshing settings
         with open('saveFile.json') as json_file:

@@ -41,6 +41,7 @@ class Menu(GameSection): # Base class for all menus
         self.menuTabs = 0
         self.maxButtons = 1000
         self.scrollAudio = GameAudio('sounds/menuselect')
+        self.state = 'idle'
 
     def on_loop(self):
         pass
@@ -60,7 +61,7 @@ class Menu(GameSection): # Base class for all menus
                     currentButton.imgNormal.render()
 
     def on_key(self, isDown, key, mod): 
-        if isDown:
+        if isDown and self.state == 'idle':
             # menu navigating
             numItems = len(self.Buttons) - 1
             if key == kb.K_DOWN or key == kb.K_s:
