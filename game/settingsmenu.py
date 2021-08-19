@@ -112,6 +112,16 @@ class SettingsMenu(Menu):
         if isDown:
             if key == kb.K_ESCAPE:
                 self.state == 'idle'
+                self.currentStage = self.saveFile['settings']['LevelBackground']
+                self.leftKeyDisplay = keys[self.saveFile['settings']['LeftKeybind']]
+                self.downKeyDisplay = keys[self.saveFile['settings']['DownKeybind']]
+                self.upKeyDisplay = keys[self.saveFile['settings']['UpKeybind']]
+                self.rightDisplay = keys[self.saveFile['settings']['RightKeybind']]
+                self.leftKeybind = self.saveFile['settings']['LeftKeybind']
+                self.downKeybind = self.saveFile['settings']['DownKeybind']
+                self.upKeybind = self.saveFile['settings']['UpKeybind']
+                self.rightKeybind = self.saveFile['settings']['RightKeybind']
+                self.highlighted == 1
                 self.parent.currentSectionName = 'mainmenu'
             
             # Stage background settings
