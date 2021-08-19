@@ -28,12 +28,17 @@ class LoadMenu(Menu): # menu for loading songs
             else:
                 topY += 8            
 
+            if len(myfoldername) > 16:
+                displayedname = myfoldername[:16]
+            else:
+                displayedname = myfoldername
+            
             button = MenuButton(
                 name = myfoldername,
                 menuTab = 0,
                 type = 'text',
                 position = (5, topY),
-                menuText = f'{myfoldername}'
+                menuText = f'{displayedname}'
         )
             button.menuTab = int(len(self.Buttons) / self.maxButtons)
             self.Buttons.append(button)
@@ -82,8 +87,8 @@ class LoadMenu(Menu): # menu for loading songs
             self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
             self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))
         except: # If JSON cannot be loaded, show error message
-            self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (180, 20), RGB = (255, 255, 255)))
-            self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (180, 28), RGB = (255, 255, 255)))
+            self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (182, 20), RGB = (255, 255, 255)))
+            self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (190, 28), RGB = (255, 255, 255)))
         self.details.append(GameText(self, self.GUIFont, text = f'Highscore: ', position = (188, 52), RGB = (255, 255, 255)))
         self.details.append(GameText(self, self.GUIFont, text = f'{self.highscore}', position = (188, 58), RGB = (0, 255, 147)))
 

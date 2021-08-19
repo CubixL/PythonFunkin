@@ -1,7 +1,8 @@
 from gameapp import GameImage, kb
+import json
 
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
-    def __init__(self, parent, type, sustype, milliseconds, isEnemy, sustainLength):
+    def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
         # Set up variables
         self.type = type
         self.parent = parent
@@ -9,7 +10,13 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.sustainLength = sustainLength
         
         self.isEnemy = isEnemy
-        self.sustype = sustype
+
+        # settings for keybinds
+        self.saveFile = {}
+        self.saveFile['settings'] = {}
+        
+        with open('saveFile.json') as json_file:
+            self.saveFile = json.load(json_file)
 
         # Set up sprites + starting Y position
         self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
@@ -34,49 +41,49 @@ class TargetArrow():                       # Arrows that rise up and hitting the
             self.img_sustain.position.x = 150
             self.img_sustainend.position.x = 150
             self.key = kb.K_LEFT
-            self.altkey = kb.K_a
+            self.altkey = self.saveFile['settings']['LeftKeybind']
             if self.type == 'Down':
                 self.img.position.x = 165
                 self.img_sustain.position.x = 171
                 self.img_sustainend.position.x = 171
                 self.key = kb.K_DOWN
-                self.altkey = kb.K_s
+                self.altkey = self.saveFile['settings']['DownKeybind']
             if self.type == 'Up':
                 self.img.position.x = 186
                 self.img_sustain.position.x = 191
                 self.img_sustainend.position.x = 191
                 self.key = kb.K_UP
-                self.altkey = kb.K_w
+                self.altkey = self.saveFile['settings']['UpKeybind']
             if self.type == 'Right':
                 self.img.position.x = 207
                 self.img_sustain.position.x = 213
                 self.img_sustainend.position.x = 213
                 self.key = kb.K_RIGHT
-                self.altkey = kb.K_d
+                self.altkey = self.saveFile['settings']['RightKeybind']
         else:
             self.img.position.x = 17
             self.img_sustain.position.x = 23
             self.img_sustainend.position.x = 23
             self.key = kb.K_LEFT
-            self.altkey = kb.K_a
+            self.altkey = self.saveFile['settings']['LeftKeybind']
             if self.type == 'Down':
                 self.img.position.x = 38
                 self.img_sustain.position.x = 44
                 self.img_sustainend.position.x = 44
                 self.key = kb.K_DOWN
-                self.altkey = kb.K_s
+                self.altkey = self.saveFile['settings']['DownKeybind']
             if self.type == 'Up':
                 self.img.position.x = 59
                 self.img_sustain.position.x = 65
                 self.img_sustainend.position.x = 65
                 self.key = kb.K_UP
-                self.altkey = kb.K_w
+                self.altkey = self.saveFile['settings']['UpKeybind']
             if self.type == 'Right':
                 self.img.position.x = 80
                 self.img_sustain.position.x = 86
                 self.img_sustainend.position.x = 86
                 self.key = kb.K_RIGHT
-                self.altkey = kb.K_d
+                self.altkey = self.saveFile['settings']['RightKeybind']
     
     def move(self): # Move up the screen every frame
 
