@@ -1,20 +1,21 @@
+from game.level import Level
 import os, json
 from gameapp import GameImage, GameText, GameFont, kb
 from game.menu import Menu, MenuButton
 
 
 class LoadMenu(Menu): # menu for loading songs
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images/background/menu/BGE_LoadBackground.png')
-        self.MenuOverlay = GameImage(self, 'images/background/menu/BGE_LoadOverlay.png')
+    def on_start(self):
+        super().on_start()
+        self.MenuBackground = GameImage('images/background/menu/BGE_LoadBackground.png')
+        self.MenuOverlay = GameImage('images/background/menu/BGE_LoadOverlay.png')
         self.menuTabs = 0
         self.songList = os.listdir('songlibrary')
         self.maxButtons = 14
         topY = 20
 
-        self.menuTitle = GameText(self, self.TitleFont, text = 'SONG LIST', position = (5, 6), RGB = (255, 255, 255))
-        self.menuDetails = GameText(self, self.TitleFont, text = 'DETAILS', position = (188, 6), RGB = (255, 255, 255))
+        self.menuTitle = GameText(font = self.TitleFont, text = 'SONG LIST', position = (5, 6), color = (255, 255, 255))
+        self.menuDetails = GameText(font = self.TitleFont, text = 'DETAILS', position = (188, 6), color = (255, 255, 255))
         self.details = []
         self.songName = None
 
@@ -58,12 +59,17 @@ class LoadMenu(Menu): # menu for loading songs
     def doAction(self, isDown, key, mod):
         if isDown:
             if key == kb.K_ESCAPE:
-                self.parent.currentSectionName = 'mainmenu'
+                self.active = False
+                self.gameapp.sections['mainmenu'].active = True
+                return False
             
             if key == kb.K_RETURN:
-                self.parent.sections['level'].loadedSong = self.songList[self.highlighted]
-                self.parent.currentSectionName = 'level'
-                self.parent.sections['level'].loadFile()
+                level = self.gameapp.sections['level']
+                level.loadedSong = self.songList[self.highlighted] # type:ignore
+                self.active = False
+                self.gameapp.sections['level'].active = True
+                self.gameapp.sections['level'].loadFile() # type:ignore
+                return False
             if key == kb.K_w or key == kb.K_s or key == kb.K_UP or key == kb.K_DOWN:
                 self.loadDetails()
 
@@ -83,14 +89,14 @@ class LoadMenu(Menu): # menu for loading songs
             self.JSONbpm = data['song']['bpm']
             self.JSONspeed = round(data['song']['speed'], 2)
             self.JSONsections = len(data['song']['notes'])
-            self.details.append(GameText(self, self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), RGB = (255, 255, 255)))
-            self.details.append(GameText(self, self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), RGB = (255, 255, 255)))
-            self.details.append(GameText(self, self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), RGB = (255, 255, 255)))
+            self.details.append(GameText(font = self.GUIFont, text = f'BPM: {self.JSONbpm}', position = (188, 20), color = (255, 255, 255)))
+            self.details.append(GameText(font = self.GUIFont, text = f'Speed: {self.JSONspeed}', position = (188, 28), color = (255, 255, 255)))
+            self.details.append(GameText(font = self.GUIFont, text = f'Sections: {self.JSONsections}', position = (188, 36), color = (255, 255, 255)))
         except: # If JSON cannot be loaded, show error message
-            self.details.append(GameText(self, self.GUIFont, text = f'Failed to load', position = (182, 20), RGB = (255, 255, 255)))
-            self.details.append(GameText(self, self.GUIFont, text = f'JSON file.', position = (190, 28), RGB = (255, 255, 255)))
-        self.details.append(GameText(self, self.GUIFont, text = f'Highscore: ', position = (188, 52), RGB = (255, 255, 255)))
-        self.details.append(GameText(self, self.GUIFont, text = f'{self.highscore}', position = (188, 58), RGB = (0, 255, 147)))
+            self.details.append(GameText(font = self.GUIFont, text = f'Failed to load', position = (182, 20), color = (255, 255, 255)))
+            self.details.append(GameText(font = self.GUIFont, text = f'JSON file.', position = (190, 28), color = (255, 255, 255)))
+        self.details.append(GameText(font = self.GUIFont, text = f'Highscore: ', position = (188, 52), color = (255, 255, 255)))
+        self.details.append(GameText(font = self.GUIFont, text = f'{self.highscore}', position = (188, 58), color = (0, 255, 147)))
 
     # Sub-init function
     def refreshPage(self):

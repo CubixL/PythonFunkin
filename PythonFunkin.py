@@ -13,17 +13,14 @@ from game.mainmenu import MainMenu
 from game.funkeditor import Editor
 from game.loadmenu import LoadMenu
 from game.settingsmenu import SettingsMenu
-   
-class PythonFunkin(GameApp): # Main app
-    def __init__(self):
-        # GameApp variables
-        super().__init__(width=240, height=135, displayNumber=1, fps = 80, scale = 5) # Screen size + number of the display
-        self.currentSectionName = 'mainmenu'
-        self.sections['level'] = Level(self)
-        self.sections['mainmenu'] = MainMenu(self)
-        self.sections['editor'] = Editor(self)
-        self.sections['loadmenu'] = LoadMenu(self)
-        self.sections['settingsmenu'] = SettingsMenu(self)
 
 if __name__ == '__main__':
-    PythonFunkin().start()
+    game = GameApp(width=240, height=135, display_number=1, scale = 5)
+    game.set_gbl_anchor_point((0,0))
+    game.add_section('mainmenu', MainMenu(game))
+    game.add_section('loadmenu', LoadMenu(game))
+    game.add_section('level', Level(game))
+    game.add_section('editor', Editor(game))
+    game.add_section('settingsmenu', SettingsMenu(game))
+    game.sections['mainmenu'].active = True
+    game.start()

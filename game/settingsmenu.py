@@ -5,10 +5,10 @@ import json
 import os.path
 
 class SettingsMenu(Menu):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images/background/menu/BGE_SettingsBackground.png')
-        self.MenuOverlay = GameImage(self, 'images/background/menu/BGE_SettingsOverlay.png')
+    def on_start(self):
+        super().on_start()
+        self.MenuBackground = GameImage('images/background/menu/BGE_SettingsBackground.png')
+        self.MenuOverlay = GameImage('images/background/menu/BGE_SettingsOverlay.png')
         self.menuTabs = 0
 
         with open('saveFile.json') as json_file:
@@ -22,7 +22,7 @@ class SettingsMenu(Menu):
         self.downKeybind = self.saveFile['settings']['DownKeybind']
         self.upKeybind = self.saveFile['settings']['UpKeybind']
         self.rightKeybind = self.saveFile['settings']['RightKeybind']
-        self.menuTitle = GameText(self, self.TitleFont, text = 'SETTINGS', position = (10, 6), RGB = (255, 255, 255))
+        self.menuTitle = GameText(font = self.TitleFont, text = 'SETTINGS', position = (10, 6), color = (255, 255, 255))
         self.state = 'idle'
         self.stateText = None
 
@@ -78,7 +78,7 @@ class SettingsMenu(Menu):
 
     def on_loop(self):
         if self.state == 'input':
-            self.stateText = GameText(self, self.GUIFont, text = 'Waiting for input..', position = (60, 8), RGB = (255, 0, 0))
+            self.stateText = GameText(font = self.GUIFont, text = 'Waiting for input..', position = (60, 8), color = (255, 0, 0))
         if self.state == 'idle':
             self.stateText = None
 
@@ -122,7 +122,9 @@ class SettingsMenu(Menu):
                 self.upKeybind = self.saveFile['settings']['UpKeybind']
                 self.rightKeybind = self.saveFile['settings']['RightKeybind']
                 self.highlighted == 1
-                self.parent.currentSectionName = 'mainmenu'
+                self.active = False
+                self.gameapp.sections['mainmenu'].active = True
+                return False
             
             # Stage background settings
             numStages = 7

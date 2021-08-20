@@ -10,7 +10,7 @@ class EditorArrow():
         # self.isEnemy = isEnemy
         # self.sustainLength = sustainLength
 
-        self.img = GameImage(self, f'images/funkeditor/Arrow{type}Editor.gif')
+        self.img = GameImage(f'images/funkeditor/Arrow{type}Editor.gif')
         self.img.position.x = 8
         self.img.position.y = 7
 

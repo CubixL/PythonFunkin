@@ -1,5 +1,8 @@
-from gameapp import GameImage, kb
+from gameapp import GameImage, kb, GameSection
 import json
+
+
+from gameapp.win_gameapp import GameApp
 
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
     def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
@@ -19,9 +22,9 @@ class TargetArrow():                       # Arrows that rise up and hitting the
             self.saveFile = json.load(json_file)
 
         # Set up sprites + starting Y position
-        self.img = GameImage(self, f'images/arrows/GUI_Arrow{type}Target.png') 
-        self.img_sustain = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeld.png')
-        self.img_sustainend = GameImage(self, f'images/arrows/GUI_Arrow{type}TargetHeldEnd.png')
+        self.img = GameImage(f'images/arrows/GUI_Arrow{type}Target.png') 
+        self.img_sustain = GameImage(f'images/arrows/GUI_Arrow{type}TargetHeld.png')
+        self.img_sustainend = GameImage(f'images/arrows/GUI_Arrow{type}TargetHeldEnd.png')
         self.initialypos = 140
         self.perfectypos = 10
         self.img.position.y = self.initialypos
@@ -92,7 +95,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         # Total time for a note to move from bottom to top. If speed is default then it's 2500
         # totalMoveTime = 2000 / self.parent.JSONspeed
         # Time since last frame
-        lastFrameTime = self.parent.parent.getLastFrameMS()
+        lastFrameTime = self.parent.gameapp.get_lastframe_MS()
         # Number of pixels to move in this frame
         moveDist = totalMoveDist * lastFrameTime / self.parent.totalMoveTime
 

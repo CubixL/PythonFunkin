@@ -2,9 +2,9 @@ from game.menu import Menu, MenuButton
 from gameapp import GameImage, kb
 
 class MainMenu(Menu):   
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.MenuBackground = GameImage(self, 'images/background/menu/BGE_MenuBackground.png')
+    def on_start(self):
+        super().on_start()
+        self.MenuBackground = GameImage('images/background/menu/BGE_MenuBackground.png')
 
         self.Buttons.append(MenuButton(
             name = 'loadmenu',
@@ -37,9 +37,11 @@ class MainMenu(Menu):
                 # if using the GameButton class, we need to acces the values with . instead of []
                 # self.parent.currentSectionName = self.Buttons[self.highlighted].currentSection
                 if self.Buttons[self.highlighted].name == 'quit':
-                    self.parent.quit()
+                    self.gameapp.quit()
                 else:
-                    self.parent.currentSectionName = self.Buttons[self.highlighted].name
+                    self.active = False
+                    self.gameapp.sections[self.Buttons[self.highlighted].name].active = True
+                    return False
             if key == kb.K_ESCAPE:
-                self.parent.quit()
+                self.gameapp.quit()
 

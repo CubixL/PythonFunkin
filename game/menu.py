@@ -15,22 +15,21 @@ class MenuButton(): # Selectable buttons for navigating menus
         self.menuText = menuText # displayed name
         self.normalColor = normalColor # text color
         self.selectedColor = selectedColor
-        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
+        self.GUIFont = GameFont('fonts/vcr.ttf', 6, False)
         self.update()
 
     def update(self):
         if self.type == 'text':
-            self.imgNormal = GameText(self, self.GUIFont, text = self.menuText, position = self.position, RGB = self.normalColor)
-            self.imgSelected = GameText(self, self.GUIFont, text = self.menuText, position = self.positionSelected, RGB = self.selectedColor)
+            self.imgNormal = GameText(font = self.GUIFont, text = self.menuText, position = self.position, color = self.normalColor)
+            self.imgSelected = GameText(font = self.GUIFont, text = self.menuText, position = self.positionSelected, color = self.selectedColor)
         elif self.type == 'image':
-            self.imgNormal = GameImage(self, f'{self.fileName}.png', position = self.position)
-            self.imgSelected = GameImage(self, f'{self.fileName}Selected.png', position = self.positionSelected)
+            self.imgNormal = GameImage(f'{self.fileName}.png', position = self.position)
+            self.imgSelected = GameImage(f'{self.fileName}Selected.png', position = self.positionSelected)
 
 class Menu(GameSection): # Base class for all menus
-    def __init__(self, parent):
-        self.parent = parent
-        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
-        self.TitleFont = GameFont(self, 'fonts/vcr.ttf', 10, isSys = False)
+    def on_start(self):
+        self.GUIFont = GameFont('fonts/vcr.ttf', 6, False)
+        self.TitleFont = GameFont('fonts/vcr.ttf', 10, is_sys = False)
 
         self.Buttons = []
         self.MenuBackground = GameImage(self)
@@ -79,13 +78,13 @@ class Menu(GameSection): # Base class for all menus
                     self.scrollAudio.stop()
                     self.scrollAudio.play()
 
-        self.doAction(isDown, key, mod)
+        return self.doAction(isDown, key, mod)
 
-    def on_mouse(self, isDown, key, xcoord, ycoord):
-        self.mousePos = (xcoord, ycoord)
-        if isDown:
-            if key == 1:
-                pass
+    # def on_mouse(self, isDown, key, xcoord, ycoord):
+    #     self.mousePos = (xcoord, ycoord)
+    #     if isDown:
+    #         if key == 1:
+    #             pass
 
     def doAction(self, isDown, key, mod):
         pass

@@ -2,13 +2,11 @@ from gameapp import GameImage, GameFont, GameText, kb, GameSection
 from game.editorarrow import EditorArrow
 
 class Editor(GameSection):
-    def __init__(self, parent):
-        self.parent = parent
-        
-        self.EditorBackground = GameImage(self, 'images/background/menu/EditBackground.gif')
+    def on_start(self):
+        self.EditorBackground = GameImage('images/background/menu/EditBackground.gif')
         self.mousePos = (0, 0)
-        self.EditorFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
-        self.MouseText = GameText(self, self.EditorFont)
+        self.EditorFont = GameFont('fonts/vcr.ttf', 6, False)
+        self.MouseText = GameText(font = self.EditorFont)
         self.ArrowList = []
         
 
@@ -20,17 +18,19 @@ class Editor(GameSection):
         for arrow in self.ArrowList:
             arrow.render()
     
-        self.MouseText.renderText(f'{self.mousePos}')
+        self.MouseText.render_text(f'{self.mousePos}')
 
     def on_key(self, isDown, key, mod):
         if isDown:
             if key == kb.K_ESCAPE:
-                self.parent.currentSectionName = 'mainmenu'
+                self.active = False
+                self.gameapp.sections['mainmenu'].active = True
+                return False
             if key == kb.K_r:
                 self.ArrowList.clear()
 
-    def on_mouse(self, isDown, key, xcoord, ycoord):
-        if isDown:
-            if key == 1:
-                self.mousePos = (xcoord, ycoord)
-                self.ArrowList.append(EditorArrow(self, 'Left'))
+    # def on_mouse(self, isDown, key, xcoord, ycoord):
+    #     if isDown:
+    #         if key == 1:
+    #             self.mousePos = (xcoord, ycoord)
+    #             self.ArrowList.append(EditorArrow(self, 'Left'))

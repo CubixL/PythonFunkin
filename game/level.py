@@ -1,9 +1,10 @@
 #from __future__ import annotations
 from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
+from gameapp.win_gameapp import GameTimer
 from game.playerarrow import PlayerArrow
 from game.targetarrow import TargetArrow
 import json, random, ctypes
-import os.path
+import os
 
 # Error message box.
 def ErrorBox(title, text, style = 0):
@@ -11,10 +12,9 @@ def ErrorBox(title, text, style = 0):
         return ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
 class Level(GameSection):
-    def __init__(self, parent):
-        self.parent: GameApp = parent
+    def on_start(self):
 
-        self.LevelBackground = None
+        self.LevelBackground = GameImage()
         self.saveFile = {}
         self.saveFile['highscores'] = {}
         # Background
@@ -39,9 +39,9 @@ class Level(GameSection):
         
         self.BackgroundBeat = None
         
-        self.IntroReady = GameImage(self, 'images/level/ready-pixel.png', position = (76, 40))
-        self.IntroSet = GameImage(self, 'images/level/set-pixel.png', position = (76, 40))
-        self.IntroGo = GameImage(self, 'images/level/go-pixel.png', position = (76, 40))
+        self.IntroReady = GameImage('images/level/ready-pixel.png', position = (76, 40))
+        self.IntroSet = GameImage('images/level/set-pixel.png', position = (76, 40))
+        self.IntroGo = GameImage('images/level/go-pixel.png', position = (76, 40))
         self.PlayerArrowL = PlayerArrow(self, type = 'Left')
         self.PlayerArrowD = PlayerArrow(self, type = 'Down')
         self.PlayerArrowU = PlayerArrow(self, type = 'Up')
@@ -49,14 +49,14 @@ class Level(GameSection):
         self.Combo = 0
         self.loadedSong = None
         self.isStarted = False
-        self.BPMTimer = None 
+        self.BPMTimer = GameTimer('', 0, 0, 0)
         
         self.JSONspeed = 1
         self.totalMoveTime = 1500
 
         self.TargetList = []
         self.PlayerScore = 0
-        self.milliAtStart = self.parent.getMS()
+        self.milliAtStart = self.gameapp.get_MS()
 
         # Audio / sounds
         self.music_inst = GameAudio()
@@ -75,36 +75,36 @@ class Level(GameSection):
         self.sound_tempo = GameAudio('sounds/tempo', 1)
 
         # font & text
-        self.GUIFont = GameFont(self, 'fonts/vcr.ttf', 6, False)
-        self.DebugFont = GameFont(self, 'fonts/vcr.ttf', 4, False)
-        self.MSText = GameText(self, self.DebugFont)
-        self.FPSText = GameText(self, self.DebugFont)
-        self.ScoreText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
-        self.ComboText = GameText(self, self.GUIFont, RGB = (255, 255, 255))
+        self.GUIFont = GameFont('fonts/vcr.ttf', 6, False)
+        self.DebugFont = GameFont('fonts/vcr.ttf', 4, False)
+        self.MSText = GameText(font = self.DebugFont)
+        self.FPSText = GameText(font = self.DebugFont)
+        self.ScoreText = GameText(font = self.GUIFont, color = (255, 255, 255))
+        self.ComboText = GameText(font = self.GUIFont, color = (255, 255, 255))
 
         # Rating
         self.RatingYpos = 10
         self.currentRating = None
-        self.RatingSick = GameImage(self, 'images/level/sick-pixel.png', position = (100, 10))
-        self.RatingGood = GameImage(self, 'images/level/good-pixel.png', position = (108, 10))
-        self.RatingBad = GameImage(self, 'images/level/bad-pixel.png', position = (115, 10))
-        self.RatingShit = GameImage(self, 'images/level/shit-pixel.png', position = (110, 10))
-        self.RatingTimer = None
+        self.RatingSick = GameImage('images/level/sick-pixel.png', position = (100, 10))
+        self.RatingGood = GameImage('images/level/good-pixel.png', position = (108, 10))
+        self.RatingBad = GameImage('images/level/bad-pixel.png', position = (115, 10))
+        self.RatingShit = GameImage('images/level/shit-pixel.png', position = (110, 10))
+        self.RatingTimer = GameTimer('', 0, 0, 0)
 
         # Girlfriend and dancers
         self.GFimgList = []
         self.DemonImgList = []
-        self.GFTimer = None
-        self.BGBeatTimer = None
+        self.GFTimer = GameTimer('', 0, 0, 0)
+        self.BGBeatTimer = GameTimer('', 0, 0, 0)
         self.curGFframe = 0
         for image in range(9):
-            self.GFimgList.append(GameImage(self, f'images/level/girlfriend/gf_frame{image}.png', position = (60, 6)))
+            self.GFimgList.append(GameImage(f'images/level/girlfriend/gf_frame{image}.png', position = (60, 6)))
 
         self.curBGframe = 1
 
     def getMS(self):
         # return the number of milliseconds since start of level
-        return self.parent.getMS() - self.milliAtStart
+        return self.gameapp.get_MS() - self.milliAtStart
 
     def stopAssets(self):
         try:
@@ -112,9 +112,9 @@ class Level(GameSection):
             self.music_voices.stop()
         except:
             pass
-        self.parent.stopTimer('BPM')
-        self.parent.stopTimer('Girlfriend')
-        self.parent.stopTimer('BackgroundBeat')
+        self.gameapp.stop_timer('BPM')
+        self.gameapp.stop_timer('Girlfriend')
+        self.gameapp.stop_timer('BackgroundBeat')
 
     def on_loop(self):
         currentscore = 0
@@ -158,8 +158,10 @@ class Level(GameSection):
                 # If song already has a highscore but current score is lower, do nothing
                 
                 self.stopAssets()
-                self.parent.currentSectionName = 'loadmenu'
-                self.parent.sections['loadmenu'].refreshPage()
+                self.active = False
+                self.gameapp.sections['loadmenu'].active = True
+                self.gameapp.sections['loadmenu'].refreshPage() # type:ignore
+                
 
     def on_render(self):
         self.LevelBackground.render() 
@@ -174,7 +176,7 @@ class Level(GameSection):
         self.GFimgList[self.curGFframe].render()
 
         if self.saveFile['settings']['LevelBackground'] == 4:
-            limo = GameImage(self, 'images/background/limo/LevelBackground4_limo.gif', position = (-6, 77))
+            limo = GameImage('images/background/limo/LevelBackground4_limo.gif', position = (-6, 77))
             limo.render()
 
         # After the visuals, we render the player + target arrows
@@ -187,10 +189,10 @@ class Level(GameSection):
             target.render()
         
         # then the overlay text
-        self.MSText.renderText(f'Game time: {self.getMS()}') 
-        self.FPSText.renderText(f'FPS: {1000.0/self.parent.getLastFrameMS()}', position = (0, 4))
-        self.ScoreText.renderText(f'Score: {self.PlayerScore}', position = (98, 124))
-        self.ComboText.renderText(f'Combo: {self.Combo}', position = (98, 114))
+        self.MSText.render_text(f'Game time: {self.getMS()}') 
+        self.FPSText.render_text(f'FPS: {1000.0/self.gameapp.get_lastframe_MS()}', position = (0, 4))
+        self.ScoreText.render_text(f'Score: {self.PlayerScore}', position = (98, 124))
+        self.ComboText.render_text(f'Combo: {self.Combo}', position = (98, 114))
         
         # Rating text: SICK, good, etc.
         if self.RatingTimer and self.currentRating:
@@ -206,17 +208,19 @@ class Level(GameSection):
 
         # 3-2-1 GO that appears at the start of the song.
         if self.BPMTimer: 
-            if self.BPMTimer.numLoopsPerformed == 2:
+            if self.BPMTimer.num_loops_performed == 2:
                 self.IntroReady.render()
-            if self.BPMTimer.numLoopsPerformed == 3:
+            if self.BPMTimer.num_loops_performed == 3:
                 self.IntroSet.render()
-            if self.BPMTimer.numLoopsPerformed == 4:
+            if self.BPMTimer.num_loops_performed == 4:
                 self.IntroGo.render()
         
     def on_key(self, isDown, key, mod): 
         if isDown == True and key == kb.K_ESCAPE:
             self.stopAssets()
-            self.parent.currentSectionName = 'mainmenu'
+            self.active = False
+            self.gameapp.sections['mainmenu'].active = True
+            return False
         else:
             self.PlayerArrowL.on_key(isDown, key) # Check player arrows to switch sprites
             self.PlayerArrowD.on_key(isDown, key)
@@ -243,8 +247,8 @@ class Level(GameSection):
                         if target.calcScore() == 50:
                             self.currentRating = 'Shit'
                         self.RatingYpos = 10
-                        self.parent.addTimer('Rating', 20, numRepeats = 8)
-                        self.RatingTimer = self.parent.timers['Rating']
+                        self.gameapp.add_timer('Rating', 20, num_repeats = 8)
+                        self.RatingTimer = self.gameapp.timers['Rating']
             
             # If score is still 0, the bad key was pressed
             if currentscore == 0 and key in (
@@ -275,10 +279,11 @@ class Level(GameSection):
                 self.stopAssets()
                 self.loadFile()
 
-    def on_mouse(self, isDown, key, xcoord, ycoord):
-        pass
 
     def loadFile(self): # Load the entire song chart (JSON file stuff)
+
+
+
         # When called, reset score, timer and note list to 0 before loading
         if self.loadedSong == None:
             self.loadedSong = 'Tutorial'
@@ -293,13 +298,13 @@ class Level(GameSection):
         with open('saveFile.json') as json_file:
             self.saveFile = json.load(json_file)
         savedStage = self.saveFile['settings']['LevelBackground']
-        self.LevelBackground = GameImage(self, f'images/background/LevelBackground{savedStage}.gif')
+        self.LevelBackground = GameImage(f'images/background/LevelBackground{savedStage}.gif')
 
         if self.saveFile['settings']['LevelBackground'] == 3:
-            self.LevelBackground = GameImage(self, 'images/background/philly/LevelBackground3_lights1.gif')
+            self.LevelBackground = GameImage('images/background/philly/LevelBackground3_lights1.gif')
         if self.saveFile['settings']['LevelBackground'] == 4:
             for image in range(1, 7):
-                self.DemonImgList.append(GameImage(self, f'images/background/limo/dancer{image}.png', position = (55, 19)))
+                self.DemonImgList.append(GameImage(f'images/background/limo/dancer{image}.png', position = (55, 19)))
 
         self.PlayerScore = 0
         # self.milliAtStart = self.parent.getMS()
@@ -365,7 +370,7 @@ class Level(GameSection):
                         self.TargetList.append(TargetArrow(self, type='Right', milliseconds=self.HitTime, isEnemy=not self.JSONenemy, sustainLength=self.JSONsustain))
 
             self.isStarted = False
-            self.milliAtStart = self.parent.getMS()
+            self.milliAtStart = self.gameapp.get_MS()
         except:
             ErrorBox('Error',  
             f'''
@@ -394,56 +399,56 @@ class Level(GameSection):
         if not self.isStarted:
             # print(f'ms at on_after_render: {self.parent.getMS()}    {self.getMS()}')
             self.isStarted = True
-            self.parent.addTimer('BPM', 60000.0 / self.JSONbpm, delayMS=350)
+            self.gameapp.add_timer('BPM', 60000.0 / self.JSONbpm, delay_MS=350)
             if self.JSONbpm < 200:
-                self.parent.addTimer('Girlfriend', 120000.0 / self.JSONbpm / 9, delayMS = 350)
+                self.gameapp.add_timer('Girlfriend', 120000.0 / self.JSONbpm / 9, delay_MS = 350)
             elif self.JSONbpm >= 200:
-                self.parent.addTimer('Girlfriend', 240000.0 / self.JSONbpm / 9, delayMS = 350)
-            self.BPMTimer = self.parent.timers['BPM']
-            self.GFTimer = self.parent.timers['Girlfriend']
+                self.gameapp.add_timer('Girlfriend', 240000.0 / self.JSONbpm / 9, delay_MS = 350)
+            self.BPMTimer = self.gameapp.timers['BPM']
+            self.GFTimer = self.gameapp.timers['Girlfriend']
             if self.saveFile['settings']['LevelBackground'] == 3:
-                self.parent.addTimer('BackgroundBeat', 240000.0 / self.JSONbpm, delayMS = 350 + (self.JSONbpm * 2))
+                self.gameapp.add_timer('BackgroundBeat', 240000.0 / self.JSONbpm, delay_MS = 350 + (self.JSONbpm * 2))
             if self.saveFile['settings']['LevelBackground'] == 4:
-                self.parent.addTimer('BackgroundBeat', 120000.0 / self.JSONbpm / 6, delayMS = 350)
-                self.BGBeatTimer = self.parent.timers['BackgroundBeat']
-            self.milliAtStart = self.parent.getMS() 
-            if self.parent.platform == 'win':
+                self.gameapp.add_timer('BackgroundBeat', 120000.0 / self.JSONbpm / 6, delay_MS = 350)
+                self.BGBeatTimer = self.gameapp.timers['BackgroundBeat']
+            self.milliAtStart = self.gameapp.get_MS() 
+            if self.gameapp.platform == 'win':
                 self.milliAtStart += 350
 
-    def on_timer(self, name):
-        if name == 'BPM':
-            if self.BPMTimer.numLoopsPerformed == 1:
+    def on_timer(self, timer:GameTimer):
+        if timer.name == 'BPM':
+            if self.BPMTimer.num_loops_performed == 1:
                 self.sound_introList[0].stop()
                 self.sound_introList[0].play()
-            if self.BPMTimer.numLoopsPerformed == 2:
+            if self.BPMTimer.num_loops_performed == 2:
                 self.sound_introList[1].stop()
                 self.sound_introList[1].play()
-            if self.BPMTimer.numLoopsPerformed == 3:
+            if self.BPMTimer.num_loops_performed == 3:
                 self.sound_introList[2].stop()
                 self.sound_introList[2].play()
                 self.IntroSet.render()
-            if self.BPMTimer.numLoopsPerformed == 4:
+            if self.BPMTimer.num_loops_performed == 4:
                 self.sound_introList[3].stop()
                 self.sound_introList[3].play()
                 self.IntroGo.render()
-            if self.BPMTimer.numLoopsPerformed == 5:
+            if self.BPMTimer.num_loops_performed == 5:
                 try:
                     self.music_inst.play()
                     self.music_voices.play()
                 except:
                     pass
 
-        if name == 'Rating':
-            if self.RatingTimer.numLoopsPerformed <= 3:
+        if timer.name == 'Rating':
+            if self.RatingTimer.num_loops_performed <= 3:
                 self.RatingYpos -= 1
             else:
                 self.RatingYpos += 1
 
-        if name == 'Girlfriend':
-            self.curGFframe = self.GFTimer.numLoopsPerformed % 9
+        if timer.name == 'Girlfriend':
+            self.curGFframe = self.GFTimer.num_loops_performed % 9
 
-        if name == 'BackgroundBeat':
+        if timer.name == 'BackgroundBeat':
             if self.saveFile['settings']['LevelBackground'] == 3:
-                self.LevelBackground = GameImage(self, f'images/background/philly/LevelBackground3_lights{random.randrange(1, 6)}.gif')
+                self.LevelBackground = GameImage(f'images/background/philly/LevelBackground3_lights{random.randrange(1, 6)}.gif')
             if self.saveFile['settings']['LevelBackground'] == 4:
-                self.curBGframe = self.BGBeatTimer.numLoopsPerformed % 6
+                self.curBGframe = self.BGBeatTimer.num_loops_performed % 6
