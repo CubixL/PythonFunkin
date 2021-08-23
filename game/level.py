@@ -231,24 +231,26 @@ class Level(GameSection):
             currentscore = 0
             for target in self.TargetList:
                 # If target arrow was in score range and correct key was pressed
-                if target.calcScore() > 0 and isDown and target.state == 'active':
+                score = target.calcScore()
+                if score > 0 and isDown and target.state == 'active':
                     if key == target.key or key == target.altkey:
                         target.state = 'played'
-                        currentscore += target.calcScore()
+                        currentscore += score
                         self.Combo += 1
                         self.music_voices.set_volume(1)
 
-                        if target.calcScore() == 350:
+                        if score == 350:
                             self.currentRating = 'Sick'
-                        if target.calcScore() == 200:
+                        elif score == 200:
                             self.currentRating = 'Good'
-                        if target.calcScore() == 100:
+                        elif score == 100:
                             self.currentRating = 'Bad'
-                        if target.calcScore() == 50:
+                        elif score == 50:
                             self.currentRating = 'Shit'
                         self.RatingYpos = 10
                         self.gameapp.add_timer('Rating', 20, num_repeats = 8)
                         self.RatingTimer = self.gameapp.timers['Rating']
+                        break
             
             # If score is still 0, the bad key was pressed
             if currentscore == 0 and key in (
