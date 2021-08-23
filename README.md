@@ -27,9 +27,8 @@ This is necessary because we need to run the script on Python 2.7 in order for i
 8. A new window next to the console should have appeared, titled StaSh. Type this into the command line:
 ```
 rm -r PythonFunkin/
-git clone https://YourUsername:YourPassword@github.com/CubixL/PythonFunkin
+git clone https://github.com/CubixL/PythonFunkin
 ```
-**Make sure that `YourUsername` is changed to your GitHub username, as well as `YourPassword` changed to your actual password.**
 
 9. Before processing that last command, StaSh might say something about installing the `dulwich` module. Simply press `y` and click enter.
 10. You have successfully imported the game! The PythonFunkin folder should be somewhere inside the "This iPad" folder.
@@ -48,7 +47,11 @@ You can download Python [here.](https://www.python.org/downloads/)
 
 You can download Visual Studio Code [here.](https://code.visualstudio.com/)
 
-To install Pygame, you can type this into a command prompt:
+To install the required libraries and the project itself, you can type this into a command prompt:
 ```
-python3 -m pip install -U pygame --user
+pip install -U pygame --user
+git clone https://github.com/SirNytram/gameapp
+pip install -e gameapp
+git clone https://github.com/CubixL/PythonFunkin
+code PythonFunkin
 ```
