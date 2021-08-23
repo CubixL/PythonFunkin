@@ -281,9 +281,6 @@ class Level(GameSection):
 
 
     def loadFile(self): # Load the entire song chart (JSON file stuff)
-
-
-
         # When called, reset score, timer and note list to 0 before loading
         if self.loadedSong == None:
             self.loadedSong = 'Tutorial'
