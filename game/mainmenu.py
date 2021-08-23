@@ -37,11 +37,11 @@ class MainMenu(Menu):
                 # if using the GameButton class, we need to acces the values with . instead of []
                 # self.parent.currentSectionName = self.Buttons[self.highlighted].currentSection
                 if self.Buttons[self.highlighted].name == 'quit':
-                    self.gameapp.quit()
+                    self.gameapp.stop()
                 else:
                     self.active = False
                     self.gameapp.sections[self.Buttons[self.highlighted].name].active = True
                     return False
             if key == kb.K_ESCAPE:
-                self.gameapp.quit()
+                self.gameapp.stop()
 
