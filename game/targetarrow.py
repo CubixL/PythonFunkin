@@ -11,6 +11,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.parent = parent
         self.milliseconds = milliseconds
         self.sustainLength = sustainLength
+        self.sustainMilli = self.milliseconds + self.sustainLength
         
         self.isEnemy = isEnemy
 
@@ -30,13 +31,11 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.img.position.y = self.initialypos
         if self.sustainLength != 0:
             self.img_sustain.position.y = self.initialypos + 6
-            self.img_sustainend.position.y = self.initialypos + 6 + (130 / self.sustainLength / 1500)
-        else:
-            self.img_sustain.position.y = self.initialypos
-            self.img_sustainend.position.y = self.initialypos
+            self.img_sustainend.position.y = self.initialypos + 6
 
         # Note characteristics
         self.state = 'hidden'
+        self.endstate = 'hidden'
        
         # X position and keys/altkeys determined by note type. Default is left.
         if self.isEnemy == False:
@@ -92,8 +91,8 @@ class TargetArrow():                       # Arrows that rise up and hitting the
 
         # Total number of pixels to move from bottom to top
         totalMoveDist = self.initialypos - self.perfectypos
-        # Total time for a note to move from bottom to top. If speed is default then it's 2500
-        # totalMoveTime = 2000 / self.parent.JSONspeed
+        # Total time for a note to move from bottom to top. If speed is default then it's 1500
+        # totalMoveTime = 1500 / self.parent.JSONspeed
         # Time since last frame
         lastFrameTime = self.parent.gameapp.get_lastframe_MS()
         # Number of pixels to move in this frame
@@ -102,6 +101,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.state == 'active':
             self.img.position.y -= moveDist
             self.img_sustain.position.y -= moveDist
+        if self.endstate == 'active':
             self.img_sustainend.position.y -= moveDist
 
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
@@ -129,8 +129,9 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         return score
 
     def render(self): # Render only if is currently on the screen.
+        if self.endstate == 'active':
+            self.img_sustainend.render()
         if self.state == 'active':
-            if self.sustainLength != 0:
-                self.img_sustainend.render()
-                self.img_sustain.render()
+            # if self.sustainLength != 0:
+                # self.img_sustain.render()
             self.img.render()

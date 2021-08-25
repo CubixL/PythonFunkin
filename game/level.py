@@ -126,6 +126,10 @@ class Level(GameSection):
             # if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
             if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime):
                 target.state = 'active'
+            if target.endstate == 'hidden' and (ms >= target.sustainMilli - self.totalMoveTime):
+                target.endstate = 'active'
+            if target.endstate == 'active' and target.img_sustainend.position.y < 19:
+                target.endstate = 'played'
             # Check for targets that have passed the input range (If it is the enemy's, it has to seem like it hit the note)
             if target.isEnemy == False:
                 if target.state == 'active' and score < 0:
