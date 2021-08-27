@@ -1,4 +1,4 @@
-from gameapp import GameImage, kb, GameSection
+from gameapp import GameImage, kb
 import json
 
 
@@ -12,6 +12,9 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.milliseconds = milliseconds
         self.sustainLength = sustainLength
         self.sustainMilli = self.milliseconds + self.sustainLength
+        self.sustainTop = 140
+        self.sustainBottom = 140
+        self.sustainShaftLength = 50
         
         self.isEnemy = isEnemy
 
@@ -29,14 +32,17 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.initialypos = 140
         self.perfectypos = 10
         self.img.position.y = self.initialypos
-        if self.sustainLength != 0:
-            self.img_sustain.position.y = self.initialypos + 6
-            self.img_sustainend.position.y = self.initialypos + 6
+        
+        self.img_sustain.position.y = self.initialypos + 6
+        self.img_sustainend.position.y = self.initialypos + 6
 
         # Note characteristics
         self.state = 'hidden'
         self.endstate = 'hidden'
        
+        # if self.sustainLength != 0:
+        #     x = x + 1
+
         # X position and keys/altkeys determined by note type. Default is left.
         if self.isEnemy == False:
             self.img.position.x = 144
@@ -104,6 +110,10 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.endstate == 'active':
             self.img_sustainend.position.y -= moveDist
 
+    # def updateLength(self):
+    #     # self.sustainShaftLength = int(self.img_sustainend.position.y) - int(self.img.position.y)
+    #     self.img_sustain.resize(width = 7, height = self.sustainShaftLength, in_place = True)
+    
     def calcScore(self, key = None, isDown = True): # Calculate score base on Y position
         score = 0
         if self.isEnemy == False:
@@ -132,6 +142,9 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         if self.endstate == 'active':
             self.img_sustainend.render()
         if self.state == 'active':
-            # if self.sustainLength != 0:
-                # self.img_sustain.render()
+            if self.sustainLength != 0:
+                self.img_sustain.render()
             self.img.render()
+        elif self.state == 'played':
+            if self.sustainLength != 0:
+                pass # resize img_sustain

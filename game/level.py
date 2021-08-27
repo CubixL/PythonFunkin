@@ -5,6 +5,7 @@ from game.playerarrow import PlayerArrow
 from game.targetarrow import TargetArrow
 import json, random, ctypes
 import os
+from typing import List
 
 # Error message box.
 def ErrorBox(title, text, style = 0):
@@ -54,7 +55,7 @@ class Level(GameSection):
         self.JSONspeed = 1
         self.totalMoveTime = 1500
 
-        self.TargetList = []
+        self.TargetList:List[TargetArrow] = []
         self.PlayerScore = 0
         self.milliAtStart = self.gameapp.get_MS()
 
@@ -126,6 +127,17 @@ class Level(GameSection):
             # if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime + 300):
             if target.state == 'hidden' and (ms >= target.milliseconds - self.totalMoveTime):
                 target.state = 'active'
+                if target.sustainLength != 0:
+                                                                # total move dist
+                    susHeight = int((130 * target.sustainLength) / self.totalMoveTime)
+
+                    target.img_sustain.resize(width = 7, height = susHeight, in_place = True)
+                    # target.img_sustain.rect.top = target.img.rect.center_y
+                    
+
+
+
+
             if target.endstate == 'hidden' and (ms >= target.sustainMilli - self.totalMoveTime):
                 target.endstate = 'active'
             if target.endstate == 'active' and target.img_sustainend.position.y < 19:
@@ -332,7 +344,8 @@ class Level(GameSection):
             self.hadException = True
 
         # Loading JSON
-        try:
+        #try:
+        if True:
             chart = open(f'songlibrary/{songName}/{songName}.json')
             data = json.load(chart)
 
@@ -374,18 +387,18 @@ class Level(GameSection):
 
             self.isStarted = False
             self.milliAtStart = self.gameapp.get_MS()
-        except:
-            ErrorBox('Error',  
-            f'''
-            Failure to load JSON file.
-            Have you tried:
-                - Checking if the file exists / is properly named (It should be named "{songName}.json")
-                - Checking if the file has extra data at the end
-                - Checking if the file is corrupted
-            '''
-            )
-            self.JSONbpm = 120
-            self.hadException = True
+        # except:
+        #     ErrorBox('Error',  
+        #     f'''
+        #     Failure to load JSON file.
+        #     Have you tried:
+        #         - Checking if the file exists / is properly named (It should be named "{songName}.json")
+        #         - Checking if the file has extra data at the end
+        #         - Checking if the file is corrupted
+        #     '''
+        #     )
+        #     self.JSONbpm = 120
+        #     self.hadException = True
 
         # 1. 'song': The main folder, contains everything
         # 2. 'notes': the entire list of all the notes
