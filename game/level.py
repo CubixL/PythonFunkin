@@ -133,6 +133,7 @@ class Level(GameSection):
 
                     target.img_sustain.resize(width = 7, height = susHeight, in_place = True)
                     # target.img_sustain.rect.top = target.img.rect.center_y
+                    # target.img_sustainend.rect.top = target.img_sustain.rect.bottom
                     
 
 

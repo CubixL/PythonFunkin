@@ -14,7 +14,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         self.sustainMilli = self.milliseconds + self.sustainLength
         self.sustainTop = 140
         self.sustainBottom = 140
-        self.sustainShaftLength = 50
+        self.sustainShaftLength = int((130 * self.sustainLength) / self.parent.totalMoveTime)
         
         self.isEnemy = isEnemy
 
@@ -39,6 +39,7 @@ class TargetArrow():                       # Arrows that rise up and hitting the
         # Note characteristics
         self.state = 'hidden'
         self.endstate = 'hidden'
+        self.finishedResize = False
        
         # if self.sustainLength != 0:
         #     x = x + 1
@@ -146,5 +147,18 @@ class TargetArrow():                       # Arrows that rise up and hitting the
                 self.img_sustain.render()
             self.img.render()
         elif self.state == 'played':
-            if self.sustainLength != 0:
-                pass # resize img_sustain
+            if self.sustainLength != 0 and self.finishedResize == False:
+                # Total number of pixels to move from bottom to top
+                totalMoveDist = self.initialypos - self.perfectypos
+                # Total time for a note to move from bottom to top. If speed is default then it's 1500
+                # totalMoveTime = 1500 / self.parent.JSONspeed
+                # Time since last frame
+                lastFrameTime = self.parent.gameapp.get_lastframe_MS()
+                # Number of pixels to move in this frame
+                moveDist = totalMoveDist * lastFrameTime / self.parent.totalMoveTime
+                self.sustainShaftLength -= moveDist
+                if self.sustainShaftLength <= 0:
+                    self.finishedResize = True
+                else:
+                    self.img_sustain.resize(width = 7, height = int(self.sustainShaftLength), in_place = True)
+                    self.img_sustain.render()
