@@ -160,5 +160,6 @@ class TargetArrow():                       # Arrows that rise up and hitting the
                 if self.sustainShaftLength <= 0:
                     self.finishedResize = True
                 else:
+                    self.img_sustain.position.y = 19
                     self.img_sustain.resize(width = 7, height = int(self.sustainShaftLength), in_place = True)
                     self.img_sustain.render()
