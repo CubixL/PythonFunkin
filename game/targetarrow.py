@@ -53,14 +53,14 @@ class TargetArrow():                       # Arrows that rise up and hitting the
             self.altkey = self.saveFile['settings']['LeftKeybind']
             if self.type == 'Down':
                 self.img.position.x = 165
-                self.img_sustain.position.x = 171
-                self.img_sustainend.position.x = 171
+                self.img_sustain.position.x = 170
+                self.img_sustainend.position.x = 170
                 self.key = kb.K_DOWN
                 self.altkey = self.saveFile['settings']['DownKeybind']
             if self.type == 'Up':
                 self.img.position.x = 186
-                self.img_sustain.position.x = 191
-                self.img_sustainend.position.x = 191
+                self.img_sustain.position.x = 190
+                self.img_sustainend.position.x = 190
                 self.key = kb.K_UP
                 self.altkey = self.saveFile['settings']['UpKeybind']
             if self.type == 'Right':
@@ -77,14 +77,14 @@ class TargetArrow():                       # Arrows that rise up and hitting the
             self.altkey = self.saveFile['settings']['LeftKeybind']
             if self.type == 'Down':
                 self.img.position.x = 38
-                self.img_sustain.position.x = 44
-                self.img_sustainend.position.x = 44
+                self.img_sustain.position.x = 43
+                self.img_sustainend.position.x = 43
                 self.key = kb.K_DOWN
                 self.altkey = self.saveFile['settings']['DownKeybind']
             if self.type == 'Up':
                 self.img.position.x = 59
-                self.img_sustain.position.x = 65
-                self.img_sustainend.position.x = 65
+                self.img_sustain.position.x = 64
+                self.img_sustainend.position.x = 64
                 self.key = kb.K_UP
                 self.altkey = self.saveFile['settings']['UpKeybind']
             if self.type == 'Right':
