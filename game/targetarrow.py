@@ -1,9 +1,6 @@
 from gameapp import GameImage, kb
 import json
 
-
-from gameapp.win_gameapp import GameApp
-
 class TargetArrow():                       # Arrows that rise up and hitting them rewards score
     def __init__(self, parent, type, milliseconds, isEnemy, sustainLength):
         # Set up variables

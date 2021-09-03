@@ -1,6 +1,5 @@
 #from __future__ import annotations
-from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp
-from gameapp.win_gameapp import GameTimer
+from gameapp import GameImage, GameAudio, GameFont, GameText, kb, GameSection, GameApp, GameTimer
 from game.playerarrow import PlayerArrow
 from game.targetarrow import TargetArrow
 import json, random, ctypes
